@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "typeRoots": ["node_modules/@types"],
+    "types":["resize-observer-browser"]
+  },
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "map":{
+    "resize-observer-polyfill": "npm:resize-observer-polyfill"
+  },
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

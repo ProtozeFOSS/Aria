@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'Caveat';
+    src: url('../../fonts/Bold/Caveat-Bold.woff2') format('woff2'),
+        url('../../fonts/Bold/Caveat-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Caveat';
+    src: url('../../fonts/Regular/Caveat-Regular.woff2') format('woff2'),
+        url('../../fonts/Regular/Caveat-Regular.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+  font-family: 'FigurineSymbolT1';
+  src: url('../../fonts/3rd Party/ChessVariants/FigurineSymbolT1Bold.woff2') format('woff2'),
+      url('../../fonts/3rd Party/ChessVariants/FigurineSymbolT1Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FigurineSymbolT1';
+  src: url('../../fonts/3rd Party/ChessVariants/FigurineSymbolT1.woff2') format('woff2'),
+      url('../../fonts/3rd Party/ChessVariants/FigurineSymbolT1.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+

@@ -1,0 +1,9 @@
+<div  *ngIf="this.move.length === 2">
+  <a class="score-invismove" [style.font-size.px]="gameScoreService.scoreFontSize | async" [style.font-family]="gameScoreService.scoreFontFamily | async" *ngIf="this.black">Q</a>
+  <a class="score-move" [style.font-size.px]="gameScoreService.scoreFontSize | async"  [style.font-family]="gameScoreService.scoreFontFamily | async">{{this.move}}</a>
+  <a class="score-invismove" [style.font-size.px]="gameScoreService.scoreFontSize | async" [style.font-family]="gameScoreService.scoreFontFamily | async" *ngIf="!this.black">Q</a>
+</div>
+<div  *ngIf="this.move.length !== 2">
+  <a class="score-move"  [style.font-size.px]="gameScoreService.scoreFontSize | async" [style.font-family]="gameScoreService.scoreFontFamily | async">{{this.move}}</a>
+</div>
+

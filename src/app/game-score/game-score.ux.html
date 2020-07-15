@@ -1,0 +1,13 @@
+<mat-card class="div-background">
+  <mat-card-title>
+    <h1 class="score-title">Score</h1>
+  </mat-card-title>
+  <mat-card-content class="score-list">
+    <app-gamescore-item-ux></app-gamescore-item-ux>
+    <mat-grid-list  cols="{{this.columnCount}}" rowHeight="{{this.rowHeight}}">
+      <mat-grid-tile class="score-font" *ngFor="let moves of gameScore; index as i;">
+        <b class="score-ply">{{i+1}}.</b> <app-playermove [move]="moves.w" [black]="false"></app-playermove>  <app-playermove [black]="true" [move]="moves.b"></app-playermove>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </mat-card-content>
+</mat-card>
