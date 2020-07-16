@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, AfterViewInit } from '@angular/core';
-import { GamescoreService } from '../../services/gamescore.service';
+import { GameScoreService } from '../../services/game-score.service';
 import { ColorService } from '../../services/colors.service';
 import { MatSliderChange } from '@angular/material/slider';
 
@@ -10,7 +10,7 @@ import { MatSliderChange } from '@angular/material/slider';
 })
 export class GamescoreSettingsComponent implements OnInit, AfterViewInit {
 
-  constructor( public gameScoreService: GamescoreService, public colorService: ColorService ) { }
+  constructor( public gameScoreService: GameScoreService, public colorService: ColorService ) { }
 
   ngOnInit(): void {
   }

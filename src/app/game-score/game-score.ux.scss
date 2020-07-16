@@ -15,14 +15,13 @@ mat-divider {
   font-size: 24px;
   text-align:auto;
 }
-
 .score-list{
-  width:100%;
-  top: 36px;
   position: absolute;
-  text-align:auto;
-  margin-right: 8px;
-  margin-top: 24px;
+  left:8px;
+  right:8px;
+  top: 60px;
+  bottom: 8px;
+  overflow: auto ;
 }
 .score-title{
   color:white;
@@ -32,9 +31,9 @@ mat-divider {
 
 .div-background{
     background-color: #585858ff;
-    width:100%;
     height:100%;
     border: 2px black solid;
+    overflow: hidden;
 }
 
 .score-font {

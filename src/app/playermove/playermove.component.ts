@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GamescoreService } from '../services/gamescore.service';
+import { GameScoreService } from '../services/game-score.service';
 
 @Component({
   selector: 'app-playermove',
@@ -9,7 +9,7 @@ import { GamescoreService } from '../services/gamescore.service';
 export class PlayermoveComponent implements OnInit {
   @Input() move: string = '';
   @Input() black = false;
-  constructor(public gameScoreService: GamescoreService) { }
+  constructor(public gameScoreService: GameScoreService) { }
 
   ngOnInit(): void {
 

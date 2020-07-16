@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
-import { GamescoreUxComponent } from '../gamescore/gamescore.ux';
+import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { OlgaBoardComponent } from '../olga-board/olga-board.component';
 @Component({
   selector: 'app-olga-test',
@@ -14,7 +14,7 @@ export class OlgaTestComponent implements OnInit, AfterViewInit {
   olgaBoard: OlgaBoardComponent | null = null;
   @Input() gameScore: HTMLElement | null = null;
   @Input() olgaID = '12312321';
-  @Output() gameScoreWidth: number | null =  360 ;
+  @Output() gameScoreWidth: number | null =  389;
   @Output() oldWidth: number | null = 0;
   ngOnInit(): void {
   }
