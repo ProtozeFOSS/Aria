@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, Output, AfterViewInit, ViewChild } from '@angular/core';
 import {
   trigger,
   state,
@@ -7,7 +7,8 @@ import {
   transition,
   // ...
 } from '@angular/animations';
-import { GameScoreService } from '../services/game-score.service';
+import { GameScoreService, GameScoreItem } from '../services/game-score.service';
+import { MatMenuTrigger } from '@angular/material/menu';
 interface Move {
   w: string;
   b: string;
@@ -64,7 +65,6 @@ interface Move {
 //   ]
 // })
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
-
   @Input() gameScoreFontSize: number | null = 24;
   columnCount = 3;
   gameScore: Move[] = [];
@@ -100,6 +100,11 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     } else {
       this.columnCount = 3;
     }
+  }
+
+  openItemMenu(event: UIEvent, item: GameScoreItem): void {
+    event.preventDefault();
+    console.log('Right clicked on item ' + item?.moveData?.move);
   }
 
   setWidth(width: number| null): void {

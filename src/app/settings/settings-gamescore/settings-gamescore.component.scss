@@ -4,8 +4,8 @@
 
 
 mat-card{
-  background-color: $primary-bg-inner;
-  color: $primary-text-color;
+  background-color: $bg-inner;
+  color: $text-color;
 }
 
 .color-input{
@@ -21,7 +21,7 @@ mat-card{
   .small-slider.mat-slider.mat-slider-horizontal .mat-slider-thumb {
     height: 32px;
     width: 32px;
-    border: solid 3px $primary-item-bg;
+    border: solid 3px $item-bg;
     bottom: -20px;
     right: -20px;
   }

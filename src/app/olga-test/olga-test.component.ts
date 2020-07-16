@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Input, Output,
 import { MatSliderChange } from '@angular/material/slider';
 import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { OlgaBoardComponent } from '../olga-board/olga-board.component';
+import { ColorService } from '../services/colors.service';
 @Component({
   selector: 'app-olga-test',
   templateUrl: './olga-test.component.html',
@@ -16,6 +17,7 @@ export class OlgaTestComponent implements OnInit, AfterViewInit {
   @Input() olgaID = '12312321';
   @Output() gameScoreWidth: number | null =  389;
   @Output() oldWidth: number | null = 0;
+  constructor(public colorService: ColorService) {}
   ngOnInit(): void {
   }
 
@@ -24,7 +26,8 @@ export class OlgaTestComponent implements OnInit, AfterViewInit {
     this.gameScore  = document.getElementById('app-gamescore' + this.olgaID);
     console.log('Got Game Score');
     console.log(this.gameScoreItem);
-    if(this.olgaBoard && this.gameScoreItem) {
+    this.colorService.initializeColorPalette();
+    if (this.olgaBoard && this.gameScoreItem) {
       this.olgaBoard.setSize(window.innerHeight * .9);
       this.gameScoreWidth = (window.innerHeight * .9) - window.innerHeight;
       this.gameScoreItem?.setWidth(this.gameScoreWidth);

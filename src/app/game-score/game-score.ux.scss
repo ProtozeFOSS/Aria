@@ -30,7 +30,7 @@ mat-divider {
 }
 
 .div-background{
-    background-color: #585858ff;
+    background: $bg-outer;
     height:100%;
     border: 2px black solid;
     overflow: hidden;

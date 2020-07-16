@@ -10,8 +10,8 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
   constructor( public colorService: ColorService ) { }
   name = 'OlgaBoard';
   UUID = 10231;
-  @Input() boardSize: number = 320;
-  @Output() tileSize = this.boardSize/8;
+  @Input() boardSize = 320;
+  @Output() tileSize = this.boardSize / 8;
   olgaBoard: fabric.Canvas | null = null;
   tileGroup: fabric.Group | null = null;
   @ViewChild("ogBoard", {static: false}) background: ElementRef | null = null;
@@ -77,7 +77,7 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
     //   ctx.fillRect(col * this.cellSize , row * this.cellSize, this.cellSize, this.cellSize);
     //   }
     // }
-  
+
   }
 
   private generateBoard(): void {
@@ -93,22 +93,18 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
             left: (row % 8 ) *this.tileSize,
             top:  ((col % 8) * this.tileSize)
           });
-          
+
           if(row % 2 == 0) { // even row 0, 2, 4, 6
             if(col % 2 == 0) {
               tile.setColor(this.colorService.boardBGDark.value);
-              tile.borderColor = 'black';
             } else {
               tile.setColor(this.colorService.boardBGLight.value);
-              tile.borderColor = 'black';
             }
           }else { // odd row 1, 3, 5, 7
             if(col % 2 == 0) {
               tile.setColor(this.colorService.boardBGLight.value);
-              tile.borderColor = 'black';
             } else {
               tile.setColor(this.colorService.boardBGDark.value);
-              tile.borderColor = 'black';
             }
           }
           tiles.push(tile);

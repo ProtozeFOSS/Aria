@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 
-// @import "./assets/scss/modules/_fonts.scss";
+@import "./assets/scss/modules/_fonts.scss";
 $gamescore-family: "FigurineSymbolT1";
 $gamescore-highlight: #585858ff;
 $gamescore-foreground: white;
@@ -13,12 +13,26 @@ $blue: #367bf0;
 $dark-blue: #265ab1;
 $maroon: #b8174c;
 $purple: #8c42ab;
-$primary-item: var(--primary-item);
-$primary-item-contrast: var(--primary-item-contrast);
-$primary-item-bg: var(--primary-item-bg);
-$primary-text-color: var(--primary-text);
-$primary-bg-outer: var(--primary-bg-outer);
-$primary-bg-inner: var(--primary-bg-inner);
+
+$textColor: var(--textColor); // Main Text Color
+$textColorAttention: var(--textColorAttention); // Attention text
+$textColorRemove: var(--textColorRemove); // Remove/Delete/Close
+$textColorAdd: var(--textColorAdd); // Add/Create/Open
+$textColorActive: var(--textColorActive); // Add/Create/Open
+$background: var(--background); // Main background Color
+$bgContainer: var(--bgContainer);// background of Containers
+$bgMenu: var(--bgMenu); // background of Menus
+$bgItem: var(--bgItem);// background of containers
+
+
+
+
+$item: var(--item);
+$item-contrast: var(--item-contrast);
+$item-bg: var(--item-bg);
+$text-color: var(--text-color);
+$bg-outer: var(--bg-outer);
+$bg-inner: var(--bg-inner);
 
 $bg-color: #f2f3f7;
 $fg-color: #383a41;

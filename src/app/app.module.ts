@@ -22,7 +22,10 @@ import { LabeledSliderComponent } from './common/labeled-slider/labeled-slider.c
 import { SettingsMenuComponent } from './settings/settings-menu/settings-menu.component';
 import { OlgaBoardComponent } from './olga-board/olga-board.component';
 import { SettingsBoardComponent } from './settings/settings-board/settings-board.component';
-import {MatInputModule, MatInput} from '@angular/material/input';
+import {MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MenuGameScoreItemComponent } from './game-score/menu-game-score-item/menu-game-score-item.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +40,7 @@ import {MatInputModule, MatInput} from '@angular/material/input';
     LabeledSliderComponent,
     SettingsMenuComponent,
     SettingsBoardComponent,
+    MenuGameScoreItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,8 +49,10 @@ import {MatInputModule, MatInput} from '@angular/material/input';
     MatButtonModule,
     MatCardModule,
     MatDividerModule,
+    MatIconModule,
     MatInputModule,
     MatGridListModule,
+    MatMenuModule,
     MatSliderModule,
     MatSlideToggleModule,
     MatTabsModule
