@@ -62,4 +62,9 @@ export class OlgaTestComponent implements OnInit, AfterViewInit {
       this.gameScoreItem?.setWidth(this.gameScoreWidth);
     }
   }
+  ignoreEvent(event: MouseEvent): void {
+    console.log('Ignoring ' + event);
+    event.preventDefault();
+    event.stopPropagation();
+  }
 }

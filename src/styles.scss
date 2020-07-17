@@ -14,6 +14,7 @@ $dark-blue: #265ab1;
 $maroon: #b8174c;
 $purple: #8c42ab;
 
+// Main OLGA Color Element Variables
 $textColor: var(--textColor); // Main Text Color
 $textColorAttention: var(--textColorAttention); // Attention text
 $textColorRemove: var(--textColorRemove); // Remove/Delete/Close
@@ -24,6 +25,10 @@ $bgContainer: var(--bgContainer);// background of Containers
 $bgMenu: var(--bgMenu); // background of Menus
 $bgItem: var(--bgItem);// background of containers
 
+// Context Menu
+$bgContext: var(--bgContext);// background of Context Menu
+$textColorContext: var(--textColorContext); // text color Context Menu
+$borderContext: var(--borderContext);// border Context Menu
 
 
 

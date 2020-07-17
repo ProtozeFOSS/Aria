@@ -1,4 +1,16 @@
 @import "../../../styles.scss";
-.context-menu-container{
-  background-color: $bg-outer;
+#context-menu-container{
+  background: $bgContext;
+  border: $borderContext;
+  color: $textColorContext;
+}
+mat-card-title{
+  color: $textColorContext;
+}
+
+.context-menu-button{
+  background: $item-bg;
+  border: $borderContext;
+  color: $textColorContext;
+  margin: 8px;
 }

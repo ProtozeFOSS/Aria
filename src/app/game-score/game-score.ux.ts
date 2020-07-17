@@ -8,7 +8,7 @@ import {
   // ...
 } from '@angular/animations';
 import { GameScoreService, GameScoreItem } from '../services/game-score.service';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MenuGameScoreItemComponent } from './menu-game-score-item/menu-game-score-item.component';
 interface Move {
   w: string;
   b: string;
@@ -65,6 +65,7 @@ interface Move {
 //   ]
 // })
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
+  @ViewChild(MenuGameScoreItemComponent) scoreItemMenu: MenuGameScoreItemComponent | null = null;
   @Input() gameScoreFontSize: number | null = 24;
   columnCount = 3;
   gameScore: Move[] = [];
@@ -90,6 +91,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+
     this.gameScoreService.loadPGN('');
     this.resizeScore();
   }
@@ -102,9 +104,17 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openItemMenu(event: UIEvent, item: GameScoreItem): void {
+  openItemMenu(event: MouseEvent, item: GameScoreItem): void {
     event.preventDefault();
+    event.stopPropagation();
     console.log('Right clicked on item ' + item?.moveData?.move);
+    this.scoreItemMenu?.openAt(item);
+  }
+
+  ignoreEvent(event: MouseEvent): void {
+    console.log('Ignoring ' + event);
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   setWidth(width: number| null): void {

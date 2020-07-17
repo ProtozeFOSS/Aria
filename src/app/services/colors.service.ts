@@ -18,9 +18,9 @@ export class ColorService  {
   @Input() @Output() readonly bgItem = '#353535'; // background of containers
 
   // Context menu specifically
-  @Input() readonly bgContext = new BehaviorSubject<string>("#CC9966");
-  @Input() readonly textColorContext = new BehaviorSubject<string>("#CC9966");
-  @Input() readonly boarderContext = new BehaviorSubject<string>("#CC9966");
+  @Input() readonly bgContext = '#CC9966';
+  @Input() readonly textColorContext = 'white';
+  @Input() readonly borderContext = '#CC9966';
 
 
   // Control Elements (Buttons, sliders, number wheels, toggle switches)
@@ -71,6 +71,7 @@ export class ColorService  {
 
   initializeColorPalette(): void {
     console.log('Setting primary color to ' + this.fgItem);
+    // Main Elements
     document.documentElement.style.setProperty('--textCoolor', this.textColor);
     document.documentElement.style.setProperty('--itextColorAttention', this.textColorAttention);
     document.documentElement.style.setProperty('--textColorRemove', this.textColorRemove);
@@ -80,5 +81,10 @@ export class ColorService  {
     document.documentElement.style.setProperty('--bgItem', this.bgItem);
     document.documentElement.style.setProperty('--bgContainer', this.bgContainer);
     document.documentElement.style.setProperty('--bgMenu', this.bgMenu);
+
+    // Context Menu
+    document.documentElement.style.setProperty('--bgContext', this.bgContext);
+    document.documentElement.style.setProperty('--textColorContext', this.textColorContext);
+    document.documentElement.style.setProperty('--borderContext', this.borderContext);
   }
 }
