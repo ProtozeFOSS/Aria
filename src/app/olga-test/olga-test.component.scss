@@ -1,14 +1,18 @@
 @import "../../styles.scss";
 
+.olga-container{
+  position: absolute;
+}
+
 app-game-score-ux{
   position: absolute;
-  right:4px;
-  top: 4%;
+  right: 4px;
+  top: 20%;
   height: 40%;
 }
 
 app-olga-board{
-  position:absolute;
+  position: absolute;
   top: 4px;
   left:4px;
 }
@@ -16,14 +20,13 @@ app-olga-board{
 app-gamescore-settings {
   position: absolute;
   right: 4px;
-  bottom :10%;
-  height: 45%;
-  width: 30%;
+  bottom :4%;
+  height: 35%;
 }
 
 .size-slider{
-  width: 50%;
   position: absolute;
+  width: 50%;
   bottom:40px;
   left: 25%;
 }

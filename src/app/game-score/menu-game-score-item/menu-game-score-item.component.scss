@@ -1,16 +1,40 @@
 @import "../../../styles.scss";
-#context-menu-container{
-  background: $bgContext;
+
+.gs-context-menu-container {
+  background-color: $bgContext;
+  border-radius: 3%;
   border: $borderContext;
   color: $textColorContext;
+  position: absolute;
+  display: flexbox;
+  width: 40%;
+  max-width: 160px;
+  min-width: 130px;
+  min-height: 200px;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  bottom: 15%;
 }
-mat-card-title{
-  color: $textColorContext;
+.gs-context-menu-overaly {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  text-align: center;
+  .context-menu-button {
+    background: $item-bg;
+    border: $borderContext;
+    color: $textColorContext;
+    margin: 8px;
+    height: 10%;
+    top: 15%;
+    text-align: center;
+    line-height: 10%;
+  }
 }
 
-.context-menu-button{
-  background: $item-bg;
-  border: $borderContext;
+mat-card-title {
   color: $textColorContext;
-  margin: 8px;
 }

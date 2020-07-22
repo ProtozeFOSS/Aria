@@ -11,7 +11,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 export class MenuGameScoreItemComponent implements OnInit, AfterViewInit{
   @Input() data: GameScoreItem | null = null
   @Input() menuTitle = 'Menu Title';
-  @Input() open = false;
+  public open = false;
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger | null = null;
   constructor() { }
 

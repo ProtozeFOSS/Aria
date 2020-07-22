@@ -1,10 +1,10 @@
-import { Injectable, Output, Input  } from '@angular/core';
+import { Injectable, Output, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ColorService  {
+export class ColorService {
   // DEFAULTING TO DARK COLOR PALLETE
   // Main Elements (background, sub containers, context menu)
   @Input() @Output() readonly textColor = 'white'; // Main Text Color
@@ -17,51 +17,72 @@ export class ColorService  {
   @Input() @Output() readonly bgMenu = '#353535'; // background of Menus
   @Input() @Output() readonly bgItem = '#353535'; // background of containers
 
-  // Context menu specifically
+  // Context menu
   @Input() readonly bgContext = '#CC9966';
   @Input() readonly textColorContext = 'white';
-  @Input() readonly borderContext = '#CC9966';
-
+  @Input() readonly borderContext = 'solid black 1px';
+  @Input() readonly overlayContextBackground = 'rgb(199,199,199)';
+  @Input() readonly overlayContextBackgroundGradient =
+    'linear-gradient(153deg, rgba(199,199,199,0.9051995798319328) 41%, rgba(249,249,249,0.8911939775910365) 83%)';
 
   // Control Elements (Buttons, sliders, number wheels, toggle switches)
   @Input() @Output() readonly fgItem = '#00ffffff';
   @Input() @Output() readonly fgItemContrast = '#e25400';
 
   // Board Colors
-  @Input() readonly boardBGDark = new BehaviorSubject<string>("#CC9966");
-  @Input() readonly boardBGLight = new BehaviorSubject<string>("#FFCC99");
+  @Input() readonly boardBGDark = new BehaviorSubject<string>('#CC9966');
+  @Input() readonly boardBGLight = new BehaviorSubject<string>('#FFCC99');
 
   // Game Score Colors
-  @Input() @Output() readonly gsFontColor = new BehaviorSubject<string>('white');
-  @Input() @Output() readonly gsBackground = new BehaviorSubject<string>('#353535');
+  @Input() @Output() readonly gsFontColor = new BehaviorSubject<string>(
+    'white'
+  );
+  @Input() @Output() readonly gsBackground = new BehaviorSubject<string>(
+    '#353535'
+  );
   @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('#353535');
 
   // Game Score Highlight Colors
-  @Input() @Output() readonly gsFontColorHG = new BehaviorSubject<string>('white');
-  @Input() @Output() readonly gsBgColorHG = new BehaviorSubject<string>('#353535');
-  @Input() @Output() readonly gsBorderHG = new BehaviorSubject<string>('black 1px solid');
+  @Input() @Output() readonly gsFontColorHG = new BehaviorSubject<string>(
+    'white'
+  );
+  @Input() @Output() readonly gsBgColorHG = new BehaviorSubject<string>(
+    '#353535'
+  );
+  @Input() @Output() readonly gsBorderHG = new BehaviorSubject<string>(
+    'black 1px solid'
+  );
 
   // Game Score Item Colors
-  @Input() @Output() readonly gsFontColorItem = new BehaviorSubject<string>('white');
-  @Input() @Output() readonly gsBgColorItem = new BehaviorSubject<string>('#353535');
-  @Input() @Output() readonly gsBorderItem = new BehaviorSubject<string>('black 1px solid');
+  @Input() @Output() readonly gsFontColorItem = new BehaviorSubject<string>(
+    'white'
+  );
+  @Input() @Output() readonly gsBgColorItem = new BehaviorSubject<string>(
+    '#353535'
+  );
+  @Input() @Output() readonly gsBorderItem = new BehaviorSubject<string>(
+    'black 1px solid'
+  );
 
   // Game Score Ply Count
-  @Input() @Output() readonly gsFontColorCount = new BehaviorSubject<string>('white');
-  @Input() @Output() readonly gsBgColorCount = new BehaviorSubject<string>('#353535');
-  @Input() @Output() readonly gsBorderCount = new BehaviorSubject<string>('black 1px solid');
+  @Input() @Output() readonly gsFontColorCount = new BehaviorSubject<string>(
+    'white'
+  );
+  @Input() @Output() readonly gsBgColorCount = new BehaviorSubject<string>(
+    '#353535'
+  );
+  @Input() @Output() readonly gsBorderCount = new BehaviorSubject<string>(
+    'black 1px solid'
+  );
 
   // Menu specific Colors
 
-
   // Title Colors
-  constructor() { }
+  constructor() {}
 
-  setDarkColorPalette(): void {
-  }
+  setDarkColorPalette(): void {}
 
-  setLightColorPalette(): void {
-  }
+  setLightColorPalette(): void {}
 
   setStoredColorPalette(): void {
     // 1.) Read User color palette sent from CG.com
@@ -73,18 +94,48 @@ export class ColorService  {
     console.log('Setting primary color to ' + this.fgItem);
     // Main Elements
     document.documentElement.style.setProperty('--textCoolor', this.textColor);
-    document.documentElement.style.setProperty('--itextColorAttention', this.textColorAttention);
-    document.documentElement.style.setProperty('--textColorRemove', this.textColorRemove);
-    document.documentElement.style.setProperty('--textColorAdd', this.textColorAdd);
-    document.documentElement.style.setProperty('--textColorActive', this.textColorActive);
+    document.documentElement.style.setProperty(
+      '--itextColorAttention',
+      this.textColorAttention
+    );
+    document.documentElement.style.setProperty(
+      '--textColorRemove',
+      this.textColorRemove
+    );
+    document.documentElement.style.setProperty(
+      '--textColorAdd',
+      this.textColorAdd
+    );
+    document.documentElement.style.setProperty(
+      '--textColorActive',
+      this.textColorActive
+    );
     document.documentElement.style.setProperty('--background', this.background);
     document.documentElement.style.setProperty('--bgItem', this.bgItem);
-    document.documentElement.style.setProperty('--bgContainer', this.bgContainer);
+    document.documentElement.style.setProperty(
+      '--bgContainer',
+      this.bgContainer
+    );
     document.documentElement.style.setProperty('--bgMenu', this.bgMenu);
 
     // Context Menu
     document.documentElement.style.setProperty('--bgContext', this.bgContext);
-    document.documentElement.style.setProperty('--textColorContext', this.textColorContext);
-    document.documentElement.style.setProperty('--borderContext', this.borderContext);
+    document.documentElement.style.setProperty(
+      '--overlayContextBackground',
+      this.overlayContextBackground
+    );
+    document.documentElement.style.setProperty(
+      '--textColorContext',
+      this.textColorContext
+    );
+    document.documentElement.style.setProperty('--bgContext', this.bgContext);
+    document.documentElement.style.setProperty(
+      '--overlayContextBackgroundGradient',
+      this.overlayContextBackgroundGradient
+    );
+    document.documentElement.style.setProperty(
+      '--borderContext',
+      this.borderContext
+    );
   }
 }

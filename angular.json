@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Olga2": {
+    "Olga": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,16 +17,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/Olga2",
+            "outputPath": "dist/Olga",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.scss"
@@ -67,18 +64,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "Olga2:build"
+            "browserTarget": "Olga:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "Olga2:build:production"
+              "browserTarget": "Olga:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Olga2:build"
+            "browserTarget": "Olga:build"
           }
         },
         "test": {
@@ -88,10 +85,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.scss"
@@ -107,27 +101,25 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "Olga2:serve"
+            "devServerTarget": "Olga:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "Olga2:serve:production"
+              "devServerTarget": "Olga:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "Olga2",
+  "defaultProject": "Olga",
   "cli": {
     "analytics": false
   }
