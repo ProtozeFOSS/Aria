@@ -65,3 +65,14 @@ mat-divider {
   font-weight: bold;
   margin-right: 6px;
 }
+
+.resize-handle {
+  position: absolute;
+  left: -7px;
+  top: calc(50% - 24px);
+  width: 10px;
+  border-radius: 5px;
+  border: solid grey 2px;
+  height: 48px;
+  background-color: rgba(0,0,10,255);
+}

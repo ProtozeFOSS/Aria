@@ -1,24 +1,104 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  Input,
+  Output,
+} from '@angular/core';
 import { OlgaTestComponent } from './olga-test/olga-test.component';
+import { GamescoreUxComponent } from './game-score/game-score.ux';
+import { OlgaBoardComponent } from './olga-board/olga-board.component';
+import { ColorService } from './services/colors.service';
+import { MatSliderChange } from '@angular/material/slider';
+import { EngineService } from './services/engine.service';
+import { Piece } from 'chessops/types';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
   title = 'Olga2';
-  @ViewChild(OlgaTestComponent)
-  olga: OlgaTestComponent | null = null;
-  constructor() { }
-  ngAfterViewInit(): void {
-    window.addEventListener("resize", (event) => {
-      const boardSize = window.innerHeight - 24;
-      this.olga?.setBoardSize(boardSize);
-      this.olga?.setGameScoreSize(window.innerWidth - boardSize - 24);
-    });
+  @ViewChild(GamescoreUxComponent)
+  gameScoreUx: GamescoreUxComponent | null = null;
+  @ViewChild(OlgaBoardComponent)
+  olgaBoard: OlgaBoardComponent | null = null;
+  @Input() gameScore: HTMLElement | null = null;
+  @Input() olgaID = '12312321';
+  @Output() gameScoreWidth: number | null = 389;
+  @Output() oldWidth: number | null = 0;
+  constructor(
+    public colorService: ColorService,
+    public chessEngine: EngineService
+  ) {
+    const date = new Date();
+    this.olgaID = 'OLGA-' + date.getTime().toString();
+    console.log('ID: ' + this.olgaID);
   }
 
-  onResized( event: UIEvent): void {
-    
+  // tslint:disable-next-line: typedef
+  ngAfterViewInit() {
+    this.gameScore = document.getElementById('app-gamescore' + this.olgaID);
+    console.log('Got Game Score');
+    console.log(this.gameScoreUx);
+    this.colorService.initializeColorPalette();
+    if (this.olgaBoard && this.gameScoreUx) {
+      this.olgaBoard.setSize(window.innerHeight * 0.9);
+      this.gameScoreWidth = window.innerHeight * 0.9 - window.innerHeight;
+      this.gameScoreUx?.setWidth(this.gameScoreWidth);
+    }
+    window.addEventListener('resize', (event) => {
+      const boardSize = window.innerHeight - 24;
+      this.setBoardSize(boardSize);
+      this.setGameScoreSize(window.innerWidth - boardSize - 24);
+    });
+    const piece = this.chessEngine.checkPosition('f', 'g');
+    console.log('Piece Color: ' + piece?.color);
+    console.log('Piece Role: ' + piece?.role);
+    if (this.gameScoreUx) {
+      this.gameScoreUx.resizeHandleEvent = this.resizeBoard.bind(this);
+    }
+  }
+
+  resizeGameScore(event: MatSliderChange): void {
+    if (event) {
+      this.gameScoreWidth = event.value;
+      if (this.gameScoreUx) {
+        this.gameScoreUx?.setWidth(this.gameScoreWidth);
+      }
+    }
+  }
+
+  resizeBoard(event: DragEvent): void {
+    if (event && event.clientX > 64) {
+      console.log(event);
+      if (this.olgaBoard) {
+        const gsSize = window.innerWidth - event.clientX;
+        const widthAvailable = window.innerWidth - (gsSize + 18);
+        if (window.innerHeight - 12 > widthAvailable) {
+          this.setBoardSize(widthAvailable);
+          this.setGameScoreSize(gsSize);
+        } else {
+          this.setBoardSize(window.innerHeight - 12);
+        }
+      }
+    }
+  }
+  setBoardSize(size: number): void {
+    if (this.olgaBoard) {
+      this.olgaBoard.setSize(size);
+    }
+  }
+  setGameScoreSize(size: number): void {
+    this.gameScoreWidth = size;
+    if (this.gameScoreUx) {
+      this.gameScoreUx?.setWidth(this.gameScoreWidth);
+    }
+  }
+  ignoreEvent(event: MouseEvent): void {
+    console.log('Ignoring ' + event);
+    event.preventDefault();
+    event.stopPropagation();
   }
 }

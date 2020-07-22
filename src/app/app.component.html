@@ -1,3 +1,22 @@
-<app-olga-test #olga ></app-olga-test>
+<div id="olga-container">
+  <app-olga-board></app-olga-board>
+  <app-game-score-ux
+    (contextmenu)="ignoreEvent($event)"
+    #gameScoreItem
+    [style.width.px]="gameScoreWidth"
+    [scoreWidth]="gameScoreWidth"
+  >
 
-<router-outlet></router-outlet>
+  </app-game-score-ux>
+  <app-gamescore-settings #gameScore></app-gamescore-settings>
+
+  <mat-slider
+    class="size-slider"
+    thumbLabel
+    min="389"
+    max="1099"
+    step="52"
+    value="389"
+    (input)="resizeGameScore($event)"
+  ></mat-slider>
+</div>
