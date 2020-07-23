@@ -6,6 +6,7 @@ import {
   Output,
   AfterViewInit,
   ViewChild,
+  ElementRef,
 } from '@angular/core';
 import {
   trigger,
@@ -30,60 +31,18 @@ interface Move {
   templateUrl: './game-score.ux.html',
   styleUrls: ['./game-score.ux.scss'],
 })
-// animations: [
-//   trigger('resize', [
-//     // ...
-//     state('large', style({
-//       width: '65%',
-//       height: '50%',
-//       fontSize: '32px',
-//     })),
-//     state('medium', style({
-//       width: '45%',
-//       height: '50%',
-//       fontSize: '24px'
-//     })),
-//     state('small', style({
-//       width: '30%',
-//       height: '50%',
-//       fontSize: '18px'
-//     })),
-//     state('large-p', style({
-//       height: '40%',
-//       width: '100%',
-//       fontSize: '24px'
-//     })),
-//     state('medium-p', style({
-//       width: '100%',
-//       height: '25%',
-//       fontSize: '18px'
-//     })),
-//     state('small-p', style({
-//       height: '10%',
-//       width: '100%',
-//       fontSize: '14px'
-//     })),
-//     transition( 'small => large, small-p => large-p', [
-//       animate('1.5s')
-//     ]),
-//     transition('small => medium, medium => large, small => small-p, medium => medium-p, large => large-p,  small-p => small, medium-p => medium, large-p => large', [
-//       animate('1s')
-//     ]),
-//     transition('large => medium, medium => small, large-p => medium-p, medium-p => small-p', [
-//       animate('0.5s')
-//     ]),
-//   ]),
-//   ]
-// })
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
   @ViewChild(MenuGameScoreItemComponent)
   scoreItemMenu: MenuGameScoreItemComponent | null = null;
+  @ViewChild('resizeHandle')
+  resizeHandle: ElementRef | null = null;
   @Input() gameScoreFontSize: number | null = 24;
   columnCount = 3;
   gameScore: Move[] = [];
   rowHeight = '50px';
   maxPlySize = 178;
   @Input() scoreWidth: number | null = 360;
+  protected previousCursor = 'pointer';
   constructor(public gameScoreService: GameScoreService) {
     this.gameScore = [
       { w: 'd4', b: 'Qd5' },
@@ -138,7 +97,44 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     }
   }
 
-  resizeHandleEvent(event: DragEvent) {
+  resetResizeHandle(event: DragEvent | MouseEvent): void {
+    document.removeEventListener('mousemove', this.resizeHandleCore.bind(this));
+    if (this.resizeHandle && event.buttons === 0) {
+      document.body.style.cursor = this.previousCursor;
+    }
+    if (this.resizeHandleEvent) {
+      this.resizeHandleEvent(event);
+    }
+  }
+
+  setGrabCursor(event: DragEvent | MouseEvent): void {
+    event.preventDefault();
+    document.addEventListener('mousemove', this.resizeHandleCore.bind(this));
+    // if (event && event.dataTransfer) {
+    //   event.dataTransfer.effectAllowed = 'none';
+    //   event.dataTransfer.dropEffect = 'move';
+    // }
+    this.previousCursor = document.body.style.cursor;
+
+    document.body.style.cursor = 'grab';
+    if (this.resizeHandle) {
+      this.resizeHandle.nativeElement.style.cursor = 'grab';
+    }
+  }
+
+  resizeHandleEvent(event: DragEvent | MouseEvent): void {
     console.log(event);
+  }
+
+  resizeHandleCore(event: DragEvent | MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    document.body.style.cursor = 'grab';
+    if (this.resizeHandle) {
+      this.resizeHandle.nativeElement.style.cursor = 'grab';
+    }
+    if (event.buttons > 0 && this.resizeHandleEvent) {
+      this.resizeHandleEvent(event);
+    }
   }
 }

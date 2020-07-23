@@ -6,7 +6,6 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { OlgaTestComponent } from './olga-test/olga-test.component';
 import { GamescoreUxComponent } from './game-score/game-score.ux';
 import { OlgaBoardComponent } from './olga-board/olga-board.component';
 import { ColorService } from './services/colors.service';
@@ -28,6 +27,7 @@ export class AppComponent implements AfterViewInit {
   @Input() olgaID = '12312321';
   @Output() gameScoreWidth: number | null = 389;
   @Output() oldWidth: number | null = 0;
+  protected doneResizingScore = false;
   constructor(
     public colorService: ColorService,
     public chessEngine: EngineService
@@ -53,9 +53,7 @@ export class AppComponent implements AfterViewInit {
       this.setBoardSize(boardSize);
       this.setGameScoreSize(window.innerWidth - boardSize - 24);
     });
-    const piece = this.chessEngine.checkPosition('f', 'g');
-    console.log('Piece Color: ' + piece?.color);
-    console.log('Piece Role: ' + piece?.role);
+
     if (this.gameScoreUx) {
       this.gameScoreUx.resizeHandleEvent = this.resizeBoard.bind(this);
     }
@@ -72,15 +70,17 @@ export class AppComponent implements AfterViewInit {
 
   resizeBoard(event: DragEvent): void {
     if (event && event.clientX > 64) {
-      console.log(event);
       if (this.olgaBoard) {
         const gsSize = window.innerWidth - event.clientX;
         const widthAvailable = window.innerWidth - (gsSize + 18);
         if (window.innerHeight - 12 > widthAvailable) {
+          this.doneResizingScore = false;
           this.setBoardSize(widthAvailable);
           this.setGameScoreSize(gsSize);
-        } else {
+        } else if (!this.doneResizingScore) {
           this.setBoardSize(window.innerHeight - 12);
+          this.setGameScoreSize(gsSize);
+          this.doneResizingScore = true;
         }
       }
     }

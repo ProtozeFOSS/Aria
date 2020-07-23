@@ -22,7 +22,8 @@
   </mat-card-content>
 </mat-card>
 <div
-  draggable="true"
+  #resizeHandle
   class="resize-handle"
-  (drag)="resizeHandleEvent($event)"
+  (mouseup)="resetResizeHandle($event)"
+  (mousedown)="setGrabCursor($event)"
 ></div>

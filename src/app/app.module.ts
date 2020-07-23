@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GamescoreSettingsComponent } from './settings/settings-gamescore/settings-gamescore.component';
-import { OlgaTestComponent } from './olga-test/olga-test.component';
 import { GamescoreUxComponent } from './game-score/game-score.ux';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,7 +32,6 @@ import { EngineService } from './services/engine.service';
     AppComponent,
     GamescoreSettingsComponent,
     OlgaBoardComponent,
-    OlgaTestComponent,
     GamescoreUxComponent,
     GameScoreItemComponent,
     PlayermoveComponent,
