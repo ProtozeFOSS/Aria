@@ -12,6 +12,7 @@ import { ColorService } from './services/colors.service';
 import { MatSliderChange } from '@angular/material/slider';
 import { EngineService } from './services/engine.service';
 import { Piece } from 'chessops/types';
+import { LayoutService } from './services/layout.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -23,12 +24,17 @@ export class AppComponent implements AfterViewInit {
   gameScoreUx: GamescoreUxComponent | null = null;
   @ViewChild(OlgaBoardComponent)
   olgaBoard: OlgaBoardComponent | null = null;
+  @ViewChild('olgaContainer')
+  olgaContainer: ElementRef | null = null;
   @Input() gameScore: HTMLElement | null = null;
   @Input() olgaID = '12312321';
   @Output() gameScoreWidth: number | null = 389;
   @Output() oldWidth: number | null = 0;
   protected doneResizingScore = false;
+  width = 600;
+  height = 400;
   constructor(
+    public layoutService: LayoutService,
     public colorService: ColorService,
     public chessEngine: EngineService
   ) {
@@ -39,6 +45,7 @@ export class AppComponent implements AfterViewInit {
 
   // tslint:disable-next-line: typedef
   ngAfterViewInit() {
+    this.layoutService.initializeLayout(this.olgaContainer);
     this.gameScore = document.getElementById('app-gamescore' + this.olgaID);
     console.log('Got Game Score');
     console.log(this.gameScoreUx);
@@ -100,5 +107,9 @@ export class AppComponent implements AfterViewInit {
     console.log('Ignoring ' + event);
     event.preventDefault();
     event.stopPropagation();
+  }
+  onResize(event: Event): void {
+    console.log('Width: ' + this.width);
+    console.log('Height: ' + this.height);
   }
 }

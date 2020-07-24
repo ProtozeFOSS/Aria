@@ -27,6 +27,7 @@ import { MenuGameScoreItemComponent } from './game-score/menu-game-score-item/me
 
 import { GameScoreService } from './services/game-score.service';
 import { EngineService } from './services/engine.service';
+import { LayoutService } from './services/layout.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,7 +57,7 @@ import { EngineService } from './services/engine.service';
     MatSlideToggleModule,
     MatTabsModule,
   ],
-  providers: [ColorService, EngineService, GameScoreService],
+  providers: [LayoutService, ColorService, EngineService, GameScoreService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

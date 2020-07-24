@@ -1,4 +1,11 @@
-<div id="olga-container">
+<div
+  #olgaContainer
+  id="{{ this.olgaID }}-olga-container"
+  class="olga-container"
+  (style.width)="this.width"
+  (style.height)="height"
+  (window:resize)="onResize($event)"
+>
   <app-olga-board [UUID]="this.olgaID"></app-olga-board>
   <app-game-score-ux
     (contextmenu)="ignoreEvent($event)"
