@@ -31,8 +31,6 @@ export class AppComponent implements AfterViewInit {
   @Output() gameScoreWidth: number | null = 389;
   @Output() oldWidth: number | null = 0;
   protected doneResizingScore = false;
-  width = 600;
-  height = 400;
   constructor(
     public layoutService: LayoutService,
     public colorService: ColorService,
@@ -51,8 +49,8 @@ export class AppComponent implements AfterViewInit {
     console.log(this.gameScoreUx);
     this.colorService.initializeColorPalette();
     if (this.olgaBoard && this.gameScoreUx) {
-      this.olgaBoard.setSize(window.innerHeight * 0.9);
-      this.gameScoreWidth = window.innerHeight * 0.9 - window.innerHeight;
+      this.olgaBoard.setBoardSize(window.innerHeight - 12);
+      this.gameScoreWidth = window.innerHeight - 12 - window.innerHeight;
       this.gameScoreUx?.setWidth(this.gameScoreWidth);
     }
     window.addEventListener('resize', (event) => {
@@ -94,7 +92,7 @@ export class AppComponent implements AfterViewInit {
   }
   setBoardSize(size: number): void {
     if (this.olgaBoard) {
-      this.olgaBoard.setSize(size);
+      this.olgaBoard.setBoardSize(size);
     }
   }
   setGameScoreSize(size: number): void {
@@ -107,9 +105,5 @@ export class AppComponent implements AfterViewInit {
     console.log('Ignoring ' + event);
     event.preventDefault();
     event.stopPropagation();
-  }
-  onResize(event: Event): void {
-    console.log('Width: ' + this.width);
-    console.log('Height: ' + this.height);
   }
 }

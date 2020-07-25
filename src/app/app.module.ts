@@ -28,6 +28,7 @@ import { MenuGameScoreItemComponent } from './game-score/menu-game-score-item/me
 import { GameScoreService } from './services/game-score.service';
 import { EngineService } from './services/engine.service';
 import { LayoutService } from './services/layout.service';
+import { BoardCanvasComponent } from './olga-board/board-canvas/board-canvas.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,6 +42,7 @@ import { LayoutService } from './services/layout.service';
     SettingsMenuComponent,
     SettingsBoardComponent,
     MenuGameScoreItemComponent,
+    BoardCanvasComponent,
   ],
   imports: [
     BrowserModule,

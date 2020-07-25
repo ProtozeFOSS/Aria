@@ -1,18 +1,8 @@
-<div
-  #olgaContainer
-  id="{{ this.olgaID }}-olga-container"
-  class="olga-container"
-  (style.width)="this.width"
-  (style.height)="height"
-  (window:resize)="onResize($event)"
->
+<div #olgaContainer id="{{ this.olgaID }}-olga-container" class="olga-container" (style.width)="this.width"
+  (style.height)="height">
   <app-olga-board [UUID]="this.olgaID"></app-olga-board>
-  <app-game-score-ux
-    (contextmenu)="ignoreEvent($event)"
-    #gameScoreItem
-    [style.width.px]="gameScoreWidth"
-    [scoreWidth]="gameScoreWidth"
-  >
+  <app-game-score-ux (contextmenu)="ignoreEvent($event)" #gameScoreItem [style.width.px]="gameScoreWidth"
+    [scoreWidth]="gameScoreWidth">
   </app-game-score-ux>
   <app-gamescore-settings #gameScore></app-gamescore-settings>
 </div>
