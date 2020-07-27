@@ -3,78 +3,126 @@ import { fabric } from 'fabric';
 import { Chess } from 'chessops/chess';
 import { parseFen } from 'chessops/fen';
 import { ColorService } from '../../services/colors.service';
+import { BehaviorSubject } from 'rxjs';
+import { preserveWhitespacesDefault } from '@angular/compiler';
 
 export class BoardTheme {
-  constructor(public tileLight: string = '',
+  constructor(
+    public tileLight: string = '',
     public tileDark: string = '',
     public pieceSet: string = '',
     public isSpriteSheet = false,
-    public fileExtension = '.svg') { }
+    public fileExtension = '.svg'
+  ) {}
   static defaultTheme(cs: ColorService): BoardTheme {
-    return new BoardTheme(cs.boardBGLight.value, cs.boardBGDark.value, cs.boardPieceSet.value);
+    return new BoardTheme(
+      cs.boardBGLight.value,
+      cs.boardBGDark.value,
+      cs.boardPieceSet.value
+    );
   }
 }
 
 export class BoardData {
-  constructor(public fen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1') { }
+  constructor(
+    public fen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+  ) {}
 }
-
-
 
 @Component({
   selector: 'app-board-canvas',
   templateUrl: './board-canvas.component.html',
-  styleUrls: ['./board-canvas.component.scss']
+  styleUrls: ['./board-canvas.component.scss'],
 })
 export class BoardCanvasComponent implements OnInit, AfterViewInit {
   @Input() UUID = '';
   @Input() size = 320;
-  @Output() tileSize = this.size / 8;
+  @Output() tileSize = Math.floor(this.size / 8);
   @Input() @Output() theme: BoardTheme | null = new BoardTheme();
   @Input() @Output() data: BoardData | null = new BoardData();
-  pieceMap: fabric.Object[] = [];
-  tileGroup: fabric.Group | null = null;
-  pieceGroup: fabric.Group | null = null;
+  pieceMap = new Map<string, fabric.Group>();
+  pieces: { tile: number; piece: fabric.Group }[] = [];
+  tiles: fabric.Object[] = [];
   olgaBoard: fabric.Canvas | null = null;
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     this.olgaBoard = new fabric.Canvas(this.UUID + '-board');
-    //this.generatePieces();
-    this.generateBoard();
+    const waitCount = this.loadPieces();
+    waitCount.subscribe((count) => {
+      if (count >= 12) {
+        this.generateBoard();
+        waitCount.unsubscribe();
+      }
+    });
   }
 
-  private generateBoard(): void {
+  private clearBoard(): void {
+    this.pieces.forEach((object) => {
+      this.olgaBoard?.remove(object.piece);
+    });
+    this.pieces = [];
+    this.tiles.forEach((tile) => {
+      this.olgaBoard?.remove(tile);
+    });
+    this.tiles = [];
+  }
+
+  private generateTiles(): void {
     if (this.olgaBoard) {
       if (!this.theme) {
         console.log('Cannot generate board without theme');
         return;
       }
-      this.olgaBoard.remove(this.tileGroup as fabric.Group);
-      this.tileGroup = null;
 
-      const tiles = [];
-      const pieces = [];
-      let tileIndex = 0;
       let chess = null;
 
-      if (this.data && this.data.fen && this.pieceMap.keys.length == 0) {
+      if (this.data && this.data.fen) {
         const setup = parseFen(this.data.fen).unwrap();
         chess = Chess.fromSetup(setup).unwrap();
       }
+      let tileIndex = 0;
+      const padding = Math.floor((this.size - this.tileSize * 8) / 2);
       for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
           // move this to clone feature, only create the tiles once.
           const tile = new fabric.Rect({
             width: this.tileSize,
             height: this.tileSize,
-            left: (row % 8) * this.tileSize,
-            top: (col % 8) * this.tileSize,
+            left: (row % 8) * this.tileSize + padding,
+            top: (col % 8) * this.tileSize + padding,
           });
+          // create piece
+          tile.set('lockMovementX', true);
+          tile.set('lockMovementY', true);
+          tile.set('lockRotation', true);
+          tile.set('selectable', false);
+
+          if (chess) {
+            const squareData = chess.board.get(tileIndex);
+            // get the first and last of the role and color
+            const color = squareData?.color[0].toLowerCase();
+            const role = squareData?.role[0].toUpperCase();
+            if (role && color) {
+              const pieceImage = this.pieceMap.get(color + role);
+              if (pieceImage) {
+                pieceImage.clone((clone: fabric.Group) => {
+                  clone.left = Math.floor((col % 8) * this.tileSize) + padding;
+                  clone.top = Math.floor((row % 8) * this.tileSize) + padding;
+                  clone.set('lockRotation', true);
+                  clone.set('lockScalingX', true);
+                  clone.set('lockScalingY', true);
+                  clone.set('lockUniScaling', true);
+                  clone.set('hasControls', false);
+                  clone.set('hasBorders', false);
+                  clone.scaleToHeight(this.tileSize);
+                  this.pieces.push({ tile: tileIndex, piece: clone });
+                });
+              }
+            }
+          }
           if (row % 2 === 0) {
             // even row 0, 2, 4, 6
             if (col % 2 === 0) {
@@ -90,93 +138,119 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
               tile.setColor(this.theme.tileDark);
             }
           }
-          tiles.push(tile);
-          if (chess) {
-            const squareData = chess.board.get(tileIndex);
-            // get the first and last of the role and color
-            const color = squareData?.color[0].toLowerCase();
-            const role = squareData?.role[0].toUpperCase();
-            if (role && color) {
-              let pieceImage = this.pieceMap[tileIndex];
-              if (!pieceImage) {
-                this.loadPieceImage(tileIndex, color + role, (col % 8) * this.tileSize, (row % 8) * this.tileSize);
-              } else {
-                this.olgaBoard.remove(pieceImage);
-                pieceImage.left = (col % 8) * this.tileSize;
-                pieceImage.top = (row % 8) * this.tileSize;
-                pieceImage.scale(this.tileSize / 177);
-                this.olgaBoard?.add(pieceImage);
-              }
-            }
-          }
+          this.tiles.push(tile);
           ++tileIndex;
         }
       }
-      this.tileGroup = new fabric.Group(tiles, {
-        top: 0,
-        left: 0,
+      this.tiles.forEach((tile) => {
+        this.olgaBoard?.add(tile);
       });
-      this.tileGroup.lockMovementX = true;
-      this.tileGroup.lockMovementY = true;
-      this.olgaBoard.add(this.tileGroup);
+      this.pieces.forEach((pieceObject) => {
+        this.olgaBoard?.add(pieceObject.piece);
+      });
     }
   }
 
-  private generatePieces(): void {
-    if (this.olgaBoard) {
-      this.olgaBoard.remove(this.pieceGroup as fabric.Object);
-      this.pieceGroup = null;
-      const piece = [];
-      // this.loadPieceImage('wK');
-      // this.loadPieceImage('wB');
-      // this.loadPieceImage('wQ');
-      // this.loadPieceImage('wR');
-      // this.loadPieceImage('wP');
-      // this.loadPieceImage('wN');
-      // this.loadPieceImage('bK');
-      // this.loadPieceImage('bB');
-      // this.loadPieceImage('bQ');
-      // this.loadPieceImage('bR');
-      // this.loadPieceImage('bP');
-      // this.loadPieceImage('bN');
-    }
+  private loadPieces(): BehaviorSubject<number> {
+    const count = new BehaviorSubject<number>(0);
+    this.loadPieceImage('wK', count);
+    this.loadPieceImage('wB', count);
+    this.loadPieceImage('wQ', count);
+    this.loadPieceImage('wR', count);
+    this.loadPieceImage('wP', count);
+    this.loadPieceImage('wN', count);
+    this.loadPieceImage('bK', count);
+    this.loadPieceImage('bB', count);
+    this.loadPieceImage('bQ', count);
+    this.loadPieceImage('bR', count);
+    this.loadPieceImage('bP', count);
+    this.loadPieceImage('bN', count);
+    return count;
   }
 
-  private createPiece(pieceImage: fabric.Object, x: number, y: number): void {
-    pieceImage.clone((clone: fabric.Object) => {
-      clone.left = x;
-      clone.top = y;
-      this.olgaBoard?.add(clone);
-      this.olgaBoard?.renderAll();
-    });
+  private generateBoard(): void {
+    this.clearBoard();
+    this.generateTiles();
   }
 
-  private loadPieceImage(index: number, piece: string, x: number, y: number): void {
+  private loadPieceImage(
+    piece: string,
+    subject: BehaviorSubject<number>
+  ): void {
     if (this.theme?.pieceSet) {
       if (this.theme.isSpriteSheet) {
-
-      } else { // load individual images
-        if (this.theme.fileExtension == '.svg') { // load and cache the SVG images
-          console.log('Loading ' + this.theme?.pieceSet + piece);
-          fabric.loadSVGFromURL(this.theme.pieceSet + piece + this.theme.fileExtension,
+      } else {
+        if (this.theme.fileExtension === '.svg') {
+          fabric.loadSVGFromURL(
+            this.theme.pieceSet + piece + this.theme.fileExtension,
             (objects, options) => {
               console.log('loaded ' + this.theme?.pieceSet + piece);
-              var obj = fabric.util.groupSVGElements(objects, options);
-              this.pieceMap[index] = obj;
-              obj.left = x;
-              obj.top = y;
-              obj.scale(this.tileSize / 177);
-              this.olgaBoard?.add(obj);
-            });
+              const obj = fabric.util.groupSVGElements(
+                objects,
+                options
+              ) as fabric.Group;
+              obj.left = -400;
+              obj.top = 0;
+              this.pieceMap.set(piece, obj);
+              subject.next(subject.value + 1);
+            }
+          );
         }
       }
     }
+  }
+
+  private resizeBoardObjects(size: number): void {
+    const padding = Math.floor((this.size - this.tileSize * 8) / 2);
+    if (this.tiles.length > 0) {
+      for (let index = 0; index < 64; index++) {
+        const tile = this.tiles[index];
+        const row = Math.floor(index / 8);
+        const col = index % 8;
+        tile.set('width', this.tileSize);
+        tile.set('height', this.tileSize);
+        tile.set('top', row * this.tileSize + padding);
+        tile.set('left', col * this.tileSize + padding);
+        tile.setCoords();
+      }
+    }
+
+    const difference = Math.floor(size - this.size) / 2;
+    this.pieces.forEach((object) => {
+      const piece = object.piece;
+      if (
+        piece.left !== undefined &&
+        piece.top !== undefined &&
+        this.olgaBoard
+      ) {
+        const row = Math.floor(object.tile / 8);
+        const col = object.tile % 8;
+        piece.scaleToHeight(this.tileSize);
+        piece.set('top', row * this.tileSize + padding);
+        piece.set('left', col * this.tileSize + padding);
+        piece.setCoords();
+      }
+    });
   }
 
   setDarkTile(color: string): void {
     if (this.theme) {
       this.theme.tileDark = color;
-      this.generateBoard();
+      for (let index = 0; index < 64; index++) {
+        const row = Math.floor(index / 8);
+        if (row % 2 === 0) {
+          if (index % 2 === 0) {
+            const tile = this.tiles[index];
+            tile.set('fill', color);
+          }
+        } else {
+          if (index % 2 !== 0) {
+            const tile = this.tiles[index];
+            tile.set('fill', color);
+          }
+        }
+      }
+      this.olgaBoard?.requestRenderAll();
     } else {
       console.log('Cannot set board-canvas tile dark with Null theme');
     }
@@ -185,28 +259,46 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
   setLightTile(color: string): void {
     if (this.theme) {
       this.theme.tileLight = color;
-      this.generateBoard();
+      for (let index = 0; index < 64; index++) {
+        const row = Math.floor(index / 8);
+        if (row % 2 !== 0) {
+          if (index % 2 === 0) {
+            const tile = this.tiles[index];
+            tile.set('fill', color);
+          }
+        } else {
+          if (index % 2 !== 0) {
+            const tile = this.tiles[index];
+            tile.set('fill', color);
+          }
+        }
+      }
+      this.olgaBoard?.requestRenderAll();
     } else {
       console.log('Cannot set board-canvas tile light with Null theme');
     }
   }
 
-  setSize(size: number) {
+  setSize(size: number): void {
     if (this.olgaBoard) {
-      this.size = size;
-      this.tileSize = this.size / 8;
-      this.olgaBoard.width = this.size;
-      this.olgaBoard.height = this.size;
+      this.tileSize = Math.floor(size / 8);
+      this.olgaBoard.width = size;
+      this.olgaBoard.height = size;
       this.olgaBoard.setDimensions({
-        width: this.size,
-        height: this.size,
+        width: size,
+        height: size,
       });
-      // resize elements
-      this.generateBoard();
+      this.resizeBoardObjects(size);
+      this.size = size;
+
+      this.olgaBoard.requestRenderAll();
     }
   }
   setFen(fen: string): void {
-    // Use Chessops to generate an accurate model of the FEN.
-    // generate new piece set from chessops model
+    if (this.data) {
+      this.data.fen = fen;
+      this.clearBoard();
+      this.generateBoard();
+    }
   }
 }

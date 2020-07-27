@@ -68,12 +68,13 @@ mat-divider {
 
 .resize-handle {
   position: absolute;
-  left: -4px;
-  top: calc(50% - 24px);
-  width: 10px;
+  clip: true;
+  left: -0.55em;
+  top: calc(50% - 3em);
+  width: 1.1em;
   border-radius: 5px;
-  border: solid grey 2px;
-  height: 48px;
+  border: solid grey 3px;
+  height: 6em;
   background-color: rgba(0, 0, 10, 255);
   cursor: grab;
 }

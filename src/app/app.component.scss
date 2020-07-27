@@ -10,6 +10,14 @@
   height: 100%;
 }
 
+.fenbutton {
+  width: 200px;
+  height: 80px;
+  position: absolute;
+  right: 10px;
+  bottom: 1%;
+}
+
 app-game-score-ux {
   position: absolute;
   right: 4px;
@@ -21,6 +29,8 @@ app-olga-board {
   position: absolute;
   top: 4px;
   left: 4px;
+  border: 4px black solid;
+  border-radius: 4px;
 }
 
 app-gamescore-settings {
@@ -28,11 +38,4 @@ app-gamescore-settings {
   right: 4px;
   bottom: 4%;
   height: 35%;
-}
-
-.size-slider {
-  position: absolute;
-  width: 50%;
-  bottom: 40px;
-  left: 25%;
 }

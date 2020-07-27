@@ -10,10 +10,12 @@ import {
 import { fabric } from 'fabric';
 import { ColorService } from '../services/colors.service';
 import { EngineService } from '../services/engine.service';
-import { BoardCanvasComponent, BoardTheme, BoardData } from './board-canvas/board-canvas.component';
+import {
+  BoardCanvasComponent,
+  BoardTheme,
+  BoardData,
+} from './board-canvas/board-canvas.component';
 import { Board } from 'chessops/board';
-
-
 
 @Component({
   selector: 'app-olga-board',
@@ -36,8 +38,16 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.colorService.boardBGDark.subscribe((dark) => { if (this.board) { this.board.setDarkTile(dark); } });
-    this.colorService.boardBGLight.subscribe((light) => { if (this.board) { this.board.setLightTile(light); } });
+    this.colorService.boardBGDark.subscribe((dark) => {
+      if (this.board) {
+        this.board.setDarkTile(dark);
+      }
+    });
+    this.colorService.boardBGLight.subscribe((light) => {
+      if (this.board) {
+        this.board.setLightTile(light);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -48,7 +58,9 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
     this.board?.setSize(size);
   }
 
-  updateBoard(): void { }
+  setFen(fen: string): void {
+    this.board?.setFen(fen);
+  }
 
-
+  updateBoard(): void {}
 }

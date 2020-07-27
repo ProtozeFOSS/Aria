@@ -63,30 +63,27 @@ export class AppComponent implements AfterViewInit {
       this.gameScoreUx.resizeHandleEvent = this.resizeBoard.bind(this);
     }
   }
-
-  resizeGameScore(event: MatSliderChange): void {
-    if (event) {
-      this.gameScoreWidth = event.value;
-      if (this.gameScoreUx) {
-        this.gameScoreUx?.setWidth(this.gameScoreWidth);
-      }
+  mouseMoved(event: MouseEvent): void {
+    if (this.gameScoreUx?.resizing) {
+      this.gameScoreUx?.resizeHandleEvent(event);
+    }
+    if (this.gameScoreUx && event.buttons === 0) {
+      this.gameScoreUx.resizing = false;
     }
   }
 
   resizeBoard(event: DragEvent): void {
     if (event && event.clientX > 64) {
       if (this.olgaBoard) {
-        const gsSize = window.innerWidth - event.clientX;
-        const widthAvailable = window.innerWidth - (gsSize + 18);
-        if (window.innerHeight - 12 > widthAvailable) {
-          this.doneResizingScore = false;
-          this.setBoardSize(widthAvailable);
-          this.setGameScoreSize(gsSize);
-        } else if (!this.doneResizingScore) {
-          this.setBoardSize(window.innerHeight - 12);
-          this.setGameScoreSize(gsSize);
-          this.doneResizingScore = true;
+        let gsSize = window.innerWidth - event.clientX;
+        const widthAvailable = window.innerWidth - (gsSize + 28);
+        let boardSize = Math.floor(widthAvailable / 8) * 8;
+        if (boardSize > window.innerHeight) {
+          boardSize = Math.floor((window.innerHeight - 16) / 8) * 8;
+          gsSize = window.innerWidth - boardSize + 28;
         }
+        this.setBoardSize(boardSize);
+        this.setGameScoreSize(gsSize);
       }
     }
   }

@@ -41,6 +41,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   gameScore: Move[] = [];
   rowHeight = '50px';
   maxPlySize = 178;
+  @Output() resizing = false;
   @Input() scoreWidth: number | null = 360;
   protected previousCursor = 'pointer';
   constructor(public gameScoreService: GameScoreService) {
@@ -98,7 +99,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   resetResizeHandle(event: DragEvent | MouseEvent): void {
-    document.removeEventListener('mousemove', this.resizeHandleCore.bind(this));
+    this.resizing = false;
     if (this.resizeHandle && event.buttons === 0) {
       document.body.style.cursor = this.previousCursor;
     }
@@ -108,14 +109,8 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   setGrabCursor(event: DragEvent | MouseEvent): void {
-    event.preventDefault();
-    document.addEventListener('mousemove', this.resizeHandleCore.bind(this));
-    // if (event && event.dataTransfer) {
-    //   event.dataTransfer.effectAllowed = 'none';
-    //   event.dataTransfer.dropEffect = 'move';
-    // }
     this.previousCursor = document.body.style.cursor;
-
+    this.resizing = true;
     document.body.style.cursor = 'grab';
     if (this.resizeHandle) {
       this.resizeHandle.nativeElement.style.cursor = 'grab';
@@ -123,7 +118,10 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   resizeHandleEvent(event: DragEvent | MouseEvent): void {
-    console.log(event);
+    if (this.resizing) {
+      console.log(event);
+      this.resizeScore();
+    }
   }
 
   resizeHandleCore(event: DragEvent | MouseEvent): void {

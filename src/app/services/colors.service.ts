@@ -30,9 +30,15 @@ export class ColorService {
   @Input() @Output() readonly fgItemContrast = '#e25400';
 
   // Board Colors
-  @Input() @Output() readonly boardBGDark = new BehaviorSubject<string>('#CC9966');
-  @Input() @Output() readonly boardBGLight = new BehaviorSubject<string>('#FFCC99');
-  @Input() @Output() readonly boardPieceSet = new BehaviorSubject<string>('../../assets/images/pieces/merida/');
+  @Input() @Output() readonly boardBGDark = new BehaviorSubject<string>(
+    '#81388f'
+  );
+  @Input() @Output() readonly boardBGLight = new BehaviorSubject<string>(
+    '#e0fffb'
+  );
+  @Input() @Output() readonly boardPieceSet = new BehaviorSubject<string>(
+    '../../assets/images/pieces/merida/'
+  );
 
   // Game Score Colors
   @Input() @Output() readonly gsFontColor = new BehaviorSubject<string>(
@@ -79,11 +85,11 @@ export class ColorService {
   // Menu specific Colors
 
   // Title Colors
-  constructor() { }
+  constructor() {}
 
-  setDarkColorPalette(): void { }
+  setDarkColorPalette(): void {}
 
-  setLightColorPalette(): void { }
+  setLightColorPalette(): void {}
 
   setStoredColorPalette(): void {
     // 1.) Read User color palette sent from CG.com
