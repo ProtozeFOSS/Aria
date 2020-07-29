@@ -99,12 +99,20 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
           tile.set('lockMovementY', true);
           tile.set('lockRotation', true);
           tile.set('selectable', false);
+          tile.set('lockScalingX', true);
+          tile.set('lockScalingY', true);
+          tile.set('lockUniScaling', true);
+          tile.set('hasControls', false);
+          tile.set('hasBorders', false);
 
           if (chess) {
             const squareData = chess.board.get(tileIndex);
             // get the first and last of the role and color
             const color = squareData?.color[0].toLowerCase();
-            const role = squareData?.role[0].toUpperCase();
+            let role = squareData?.role[0].toUpperCase();
+            if (squareData?.role === 'knight') {
+              role = 'N';
+            }
             if (role && color) {
               const pieceImage = this.pieceMap.get(color + role);
               if (pieceImage) {

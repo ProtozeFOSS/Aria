@@ -48,16 +48,8 @@ export class AppComponent implements AfterViewInit {
     console.log('Got Game Score');
     console.log(this.gameScoreUx);
     this.colorService.initializeColorPalette();
-    if (this.olgaBoard && this.gameScoreUx) {
-      this.olgaBoard.setBoardSize(window.innerHeight - 12);
-      this.gameScoreWidth = window.innerHeight - 12 - window.innerHeight;
-      this.gameScoreUx?.setWidth(this.gameScoreWidth);
-    }
-    window.addEventListener('resize', (event) => {
-      const boardSize = window.innerHeight - 24;
-      this.setBoardSize(boardSize);
-      this.setGameScoreSize(window.innerWidth - boardSize - 24);
-    });
+    this.resizeToScreen();
+    window.addEventListener('resize', this.resizeToScreen.bind(this));
 
     if (this.gameScoreUx) {
       this.gameScoreUx.resizeHandleEvent = this.resizeBoard.bind(this);
@@ -72,6 +64,24 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
+  resizeToScreen(): void {
+    if (this.olgaBoard && this.gameScoreUx) {
+      if (this.layoutService.landscapeOrientation) {
+        let boardSize = Math.floor(window.innerWidth * 0.075) * 8;
+        if (boardSize >= window.innerHeight) {
+          boardSize = Math.floor((window.innerHeight - 8) / 8) * 8;
+        }
+        let padding = window.innerWidth * 0.05;
+        if (padding >= 42 || padding <= 24) {
+          padding = 38;
+        }
+        const gsSize = Math.floor(window.innerWidth - (boardSize + padding));
+        this.setBoardSize(boardSize);
+        this.setGameScoreSize(gsSize);
+      }
+    }
+  }
+
   resizeBoard(event: DragEvent): void {
     if (event && event.clientX > 64) {
       if (this.olgaBoard) {
@@ -81,6 +91,10 @@ export class AppComponent implements AfterViewInit {
         if (boardSize > window.innerHeight) {
           boardSize = Math.floor((window.innerHeight - 16) / 8) * 8;
           gsSize = window.innerWidth - boardSize + 28;
+        }
+        if (gsSize <= 100) {
+          boardSize -= 100 - gsSize;
+          gsSize = 100;
         }
         this.setBoardSize(boardSize);
         this.setGameScoreSize(gsSize);
@@ -95,7 +109,7 @@ export class AppComponent implements AfterViewInit {
   setGameScoreSize(size: number): void {
     this.gameScoreWidth = size;
     if (this.gameScoreUx) {
-      this.gameScoreUx?.setWidth(this.gameScoreWidth);
+      this.gameScoreUx.setWidth(this.gameScoreWidth);
     }
   }
   ignoreEvent(event: MouseEvent): void {

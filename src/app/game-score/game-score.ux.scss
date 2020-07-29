@@ -69,9 +69,11 @@ mat-divider {
 .resize-handle {
   position: absolute;
   clip: true;
-  left: -0.55em;
+  left: -4px;
   top: calc(50% - 3em);
-  width: 1.1em;
+  max-width: 1.1em;
+  min-width: 0.8em;
+  width: 8%;
   border-radius: 5px;
   border: solid grey 3px;
   height: 6em;
