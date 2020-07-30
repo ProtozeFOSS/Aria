@@ -3,19 +3,41 @@
 .gsi-container {
   display: inline-flex;
 }
+// .{{klass}} relates to the typeName of the game score item
 
-.gsi-ply.GameScoreGroup {
-  color: $text-color;
-  margin: 4px;
-  background-color:  transparent ;
-  border-radius: 2px;
+/************************************ Game Score Group **************************/
+.GameScoreGroup.gsi-container {
+  border: $gsBorder;
+  background: $gsBackground;
+  line-height: $gsTextSize;
   padding: 2px;
-  border: black 1px transparent;
+}
+.GameScoreGroup.gsi-container-hg{
+  background: $gsBackgroundHG;
+  border: $gsBorderHG;
+}
+.GameScoreGroup.gsi-movew {
+  font-size: calc($gsTextSize * .75);
 }
 
+.GameScoreGroup.gsi-moveb {
+  font-size: calc($gsTextSize * .75);
+}
 
-.gsi-ply-highlight.GameScoreGroup {
-  background-color:  $bg-inner ;
+.GameScoreGroup.gsi-ply {
+  color: $gsTextColor;
+  background: $gsBackground;
+  border-radius: 2px;
+  padding: 2px;
+  font-size: $gsTextSize;
+  border: $gsBorderPC;
+}
+.GameScoreGroup.gsi-ply-highlight {
+  background: $gsBackgroundHG;
   color: orange;
   border: black 1px solid;
 }
+
+
+/************************************ Variation Group ***************************/
+

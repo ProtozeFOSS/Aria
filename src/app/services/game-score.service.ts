@@ -4,27 +4,28 @@ import { BehaviorSubject } from 'rxjs';
 
 export class GameScoreMove {
   move = '';
-  constructor(move = '') {this.move = move; }
+  ply = 1;
+  constructor(move = '', ply = 1) { this.move = move; this.ply = ply; }
 }
 
 export class GameScoreVariation {
   variationData: GameScoreItem[];
-  constructor( variationData: GameScoreItem[] = []) {this.variationData = variationData; }
+  constructor(variationData: GameScoreItem[] = []) { this.variationData = variationData; }
 }
 
 export class GameScoreAnnotation {
   annotation = '';
-  constructor(annotation: string = '' ) { this.annotation = annotation; }
+  constructor(annotation: string = '') { this.annotation = annotation; }
 }
 
 
 export class GameScoreItem {
-  type: GameScoreType| null = null;
+  type: GameScoreType | null = null;
   moveData: GameScoreMove | null = null;
-  annotationData: GameScoreAnnotation | null  = null;
+  annotationData: GameScoreAnnotation | null = null;
   variationData: GameScoreVariation | null = null;
-  constructor(type: GameScoreType, moveData: GameScoreMove | null = null ,
-              annotationData: GameScoreAnnotation | null  = null, variationData: GameScoreVariation | null = null ) {
+  constructor(type: GameScoreType, moveData: GameScoreMove | null = null,
+    annotationData: GameScoreAnnotation | null = null, variationData: GameScoreVariation | null = null) {
     this.type = type;
     this.moveData = moveData;
     this.annotationData = annotationData;
@@ -32,7 +33,7 @@ export class GameScoreItem {
   }
 }
 
-export enum GameScoreType{
+export enum GameScoreType {
   GameScoreGroup = 121,
   Variation
 }
@@ -56,7 +57,7 @@ export class GameScoreService {
 
   public loadPGN(pgn: string) {
     const testmove = new GameScoreMove('ex4');
-    const testItem = new GameScoreItem( GameScoreType.GameScoreGroup, testmove);
+    const testItem = new GameScoreItem(GameScoreType.GameScoreGroup, testmove);
     this.items.next([testItem]);
   }
   public clearItems(): void {

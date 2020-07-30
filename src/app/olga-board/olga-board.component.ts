@@ -16,6 +16,7 @@ import {
   BoardData,
 } from './board-canvas/board-canvas.component';
 import { Board } from 'chessops/board';
+import { Role, Move, Piece } from 'chessops/types';
 
 @Component({
   selector: 'app-olga-board',
@@ -32,7 +33,6 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
     public colorService: ColorService,
     public engineService: EngineService
   ) {
-    this.engineService.boardChanged.subscribe(this.updateBoard.bind(this));
     this.theme = BoardTheme.defaultTheme(this.colorService);
     fabric.Object.prototype.objectCaching = true;
   }
@@ -49,10 +49,17 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
-  ngAfterViewInit(): void {
-    // board is legit
+  toRole(role: string): Role {
+    return role as Role;
   }
+  ngAfterViewInit(): void {
+    // board is legit, attach engine
+    if (this.board) {
+      this.board.checkPieceCanMove = this.engineService.makeMove.bind(this.engineService);
+      this.engineService.boardChanged.subscribe(this.updateBoard.bind(this));
+    }
+  }
+
 
   setBoardSize(size: number): void {
     this.board?.setSize(size);
@@ -62,5 +69,9 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
     this.board?.setFen(fen);
   }
 
-  updateBoard(): void {}
+  updateBoard(change: boolean): void {
+    if (this.board) {
+      this.board.setFen(this.engineService.getFen());
+    }
+  }
 }

@@ -40,56 +40,60 @@ export class ColorService {
     '../../assets/images/pieces/merida/'
   );
 
-  // Game Score Colors
-  @Input() @Output() readonly gsFontColor = new BehaviorSubject<string>(
+  // Game Score Variables
+  @Input() @Output() readonly gsTextColor = new BehaviorSubject<string>(
     'white'
   );
   @Input() @Output() readonly gsBackground = new BehaviorSubject<string>(
     '#353535'
   );
-  @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('#353535');
+  @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('white 2px dotted');
+  @Input() @Output() readonly gsTextSize = new BehaviorSubject<string>('24px');
 
   // Game Score Highlight Colors
-  @Input() @Output() readonly gsFontColorHG = new BehaviorSubject<string>(
+  @Input() @Output() readonly gsTextColorHG = new BehaviorSubject<string>(
     'white'
   );
-  @Input() @Output() readonly gsBgColorHG = new BehaviorSubject<string>(
+  @Input() @Output() readonly gsBackgroundHG = new BehaviorSubject<string>(
     '#353535'
   );
   @Input() @Output() readonly gsBorderHG = new BehaviorSubject<string>(
     'black 1px solid'
   );
 
-  // Game Score Item Colors
-  @Input() @Output() readonly gsFontColorItem = new BehaviorSubject<string>(
+  // Game Score Annotation Colors
+
+
+  // Game Score Variation Colors
+  @Input() @Output() readonly gsTextColorVA = new BehaviorSubject<string>(
     'white'
   );
-  @Input() @Output() readonly gsBgColorItem = new BehaviorSubject<string>(
+  @Input() @Output() readonly gsBackgroundVA = new BehaviorSubject<string>(
     '#353535'
   );
-  @Input() @Output() readonly gsBorderItem = new BehaviorSubject<string>(
+  @Input() @Output() readonly gsBorderVA = new BehaviorSubject<string>(
     'black 1px solid'
   );
 
   // Game Score Ply Count
-  @Input() @Output() readonly gsFontColorCount = new BehaviorSubject<string>(
+  @Input() @Output() readonly gsTextColorPC = new BehaviorSubject<string>(
     'white'
   );
-  @Input() @Output() readonly gsBgColorCount = new BehaviorSubject<string>(
+  @Input() @Output() readonly gsBackgroundPC = new BehaviorSubject<string>(
     '#353535'
   );
-  @Input() @Output() readonly gsBorderCount = new BehaviorSubject<string>(
+  @Input() @Output() readonly gsBorderPC = new BehaviorSubject<string>(
     'black 1px solid'
   );
 
   // Menu specific Colors
 
   // Title Colors
-  constructor() {}
+  constructor() { }
 
-  setDarkColorPalette(): void {}
+  setDarkColorPalette(): void { }
 
-  setLightColorPalette(): void {}
+  setLightColorPalette(): void { }
 
   setStoredColorPalette(): void {
     // 1.) Read User color palette sent from CG.com
@@ -143,6 +147,25 @@ export class ColorService {
     document.documentElement.style.setProperty(
       '--borderContext',
       this.borderContext
+    );
+
+    // Game Score
+    document.documentElement.style.setProperty('--gsBackground', this.gsBackground.value);
+    document.documentElement.style.setProperty(
+      '--gsTextColor',
+      this.gsTextColor.value
+    );
+    document.documentElement.style.setProperty(
+      '--gsTextSize',
+      this.gsTextSize.value
+    );
+    document.documentElement.style.setProperty(
+      '--gsBackground',
+      this.gsBackground.value
+    );
+    document.documentElement.style.setProperty(
+      '--gsBorder',
+      this.gsBorder.value
     );
   }
 }

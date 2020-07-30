@@ -1,19 +1,12 @@
-<app-menu-game-score-item
-  class="gs-menu"
-  #scoreItemMenu
-  [style.z-index]="scoreItemMenu.open ? 20 : -1"
-  (click)="scoreItemMenu.open = false;"
-></app-menu-game-score-item>
+<app-menu-game-score-item class="gs-menu" #scoreItemMenu [style.z-index]="scoreItemMenu.open ? 20 : -1"
+  (click)="scoreItemMenu.open = false;"></app-menu-game-score-item>
 <mat-card class="div-background">
   <mat-card-title>
     <h1 class="score-title">Score</h1>
   </mat-card-title>
   <mat-card-content class="score-list">
-    <app-game-score-item
-      *ngFor="let item of (gameScoreService.items | async); index as i;"
-      [data]="item"
-      (contextmenu)="openItemMenu($event, item)"
-    ></app-game-score-item>
+    <app-game-score-item *ngFor="let item of (gameScoreService.items | async); index as i;" [data]="item"
+      (contextmenu)="openItemMenu($event, item)"></app-game-score-item>
     <!-- <mat-grid-list  cols="{{this.columnCount}}" rowHeight="{{this.rowHeight}}">
       <mat-grid-tile class="score-font" *ngFor="let moves of gameScore; index as i;">
         <b class="score-ply">{{i+1}}.</b> <app-playermove [move]="moves.w" [black]="false"></app-plSayermove>  <app-playermove [black]="true" [move]="moves.b"></app-playermove>
@@ -21,9 +14,5 @@
     </mat-grid-list> -->
   </mat-card-content>
 </mat-card>
-<div
-  #resizeHandle
-  class="resize-handle"
-  (mouseup)="resetResizeHandle($event)"
-  (mousedown)="setGrabCursor($event)"
-></div>
+<div #resizeHandle class="resize-handle" (mouseup)="resetResizeHandle($event)" (mousedown)="setGrabCursor($event)">
+</div>

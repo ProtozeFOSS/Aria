@@ -22,7 +22,7 @@ $textColorActive: var(--textColorActive); // Add/Create/Open
 $background: var(--background); // Main background Color
 $bgContainer: var(--bgContainer); // background of Containers
 $bgMenu: var(--bgMenu); // background of Menus
-$bgItem: var(--bgItem); // background of containers
+$bgItem: var(--bgItem); // background of Items
 
 // Context Menu
 $bgContext: var(--bgContext); // background of Context Menu
@@ -38,6 +38,46 @@ $overlayContextBackgroundGradient: var(
 $item: var(--item);
 $item-contrast: var(--item-contrast);
 $item-bg: var(--item-bg);
+
+
+/******************* Game Score Container Variables ***************************/
+$gsTextColor: var(--gsTextColor); // Text color for game score
+$gsBackground: var(--gsBackground); // background of Containers
+$gsBorder: var(--gsBorder); // background of Menus
+$gsTextSize: var(--gsTextSize); // background of Menus
+
+/******************* Game Score Container Variables ***************************/
+$gsTextColorMW: var(--gsTextColorMW); // Text color for game score
+$gsBackgroundMW: var(--gsBackgroundMW); // background of Containers
+$gsBorderMW: var(--gsBorderMW); // background of Menus
+$gsTextSizeMW: var(--gsTextSizeMW); // background of Menus
+
+/******************* Game Score Container Variables ***************************/
+$gsTextColorMB: var(--gsTextColorMB); // Text color for game score
+$gsBackgroundMB: var(--gsBackgroundMB); // background of Containers
+$gsBorderMB: var(--gsBorderMB); // background of Menus
+$gsTextSizeMB: var(--gsTextSizeMB); // background of Menus
+
+/******************* Game Score Highlight Variables ***************************/
+$gsTextColorHG: var(--gsTextColorHG); // Text color for highlight
+$gsBackgroundHG: var(--gsBackgroundHG); // background for highlight
+$gsBorderHG: var(--gsBorderHG); // border for highlight
+
+/******************* Game Score Annotation Variables ***************************/
+
+
+/******************* Game Score Variation Variables ***************************/
+$gsTextColorVA: var(--gsTextColorVA); // Text color for highlight
+$gsBackgroundVA: var(--gsBackgroundVA); // background for highlight
+$gsBorderVA: var(--gsBorderVA); // border for highlight
+
+/******************* Game Score Ply Variables ***************************/
+$gsTextColorPC: var(--gsTextColorPC); // Text color for game score ply
+$gsBackgroundPC: var(--gsBackgroundPC); // background for game score ply
+$gsBorderPC: var(--gsBorderPC); // border for game score ply
+
+
+// General stuff
 $text-color: var(--text-color);
 $bg-outer: var(--bg-outer);
 $bg-inner: var(--bg-inner);

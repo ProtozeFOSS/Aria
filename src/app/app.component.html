@@ -1,27 +1,14 @@
-<div
-  #olgaContainer
-  id="{{ this.olgaID }}-olga-container"
-  class="olga-container"
-  (mousemove)="mouseMoved($event)"
->
+<div #olgaContainer id="{{ this.olgaID }}-olga-container" class="olga-container" (mousemove)="mouseMoved($event)">
   <app-olga-board #olgaBoard [UUID]="this.olgaID"></app-olga-board>
-  <app-game-score-ux
-    (contextmenu)="ignoreEvent($event)"
-    #gameScoreItem
-    [style.width.px]="gameScoreWidth"
-    [scoreWidth]="gameScoreWidth"
-  >
+  <app-game-score-ux (contextmenu)="ignoreEvent($event)" #gameScoreItem [style.width.px]="gameScoreWidth"
+    [scoreWidth]="gameScoreWidth">
   </app-game-score-ux>
   <app-gamescore-settings #gameScore></app-gamescore-settings>
-  <button
-    mat-button
-    class="fenbutton"
-    (click)="
+  <button mat-button class="fenbutton" (click)="
       olgaBoard.setFen(
         'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2'
       )
-    "
-  >
+    ">
     Set Fen
   </button>
 </div>
