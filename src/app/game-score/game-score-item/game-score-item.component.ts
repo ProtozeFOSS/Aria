@@ -10,16 +10,36 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit {
   @Input() data: GameScoreItem | null = null;
   @Input() type = GameScoreType.GameScoreGroup;
   @Input() typeName = '';
-  constructor(public gameScoreService: GameScoreService)
-  {
-    this.typeName = this.gameScoreService.typeToString(this.type);
+  GameScoreType = GameScoreType;
+  constructor(public gameScoreService: GameScoreService) {
+    // use data to actually set type
+
   }
 
   ngOnInit(): void {
+    if (this.data && this.data.type) {
+      this.type = this.data.type;
+      this.typeName = this.gameScoreService.typeToString(this.type) + (this.data.current ? ' current-move' : '');
+    } else {
+      this.typeName = this.gameScoreService.typeToString(this.type);
+    }
   }
 
   ngAfterViewInit(): void {
-
   }
-
+  showPly(): boolean {
+    if (this.data && this.data.moveData) {
+      if (this.data.moveData.ply == Math.ceil(this.data.moveData.ply)) {
+        return this.gameScoreService.showingPly.value;
+      }
+      return this.gameScoreService.showingHalfPly.value;
+    }
+    return false;
+  }
+  isFullPly(): boolean {
+    if (this.data && this.data.moveData) {
+      return this.data.moveData.ply == Math.ceil(this.data.moveData.ply);
+    }
+    return false;
+  }
 }

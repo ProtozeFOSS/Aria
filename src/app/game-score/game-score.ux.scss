@@ -5,6 +5,7 @@ mat-divider {
   margin: 2px;
 }
 
+
 .mat-grid-tile {
   background: $gamescore-highlight;
   color: $gamescore-foreground;
@@ -28,11 +29,16 @@ mat-divider {
   margin: 6px;
 }
 
-.div-background {
+.gamescore-container {
   background: $bgContainer;
   height: 100%;
   border: 2px black solid;
   overflow: hidden;
+  margin-left: 4px;
+  margin-right: 4px;
+  line-height: $gsTextSize;
+  word-break: keep-all;
+  vertical-align: bottom;
 }
 
 .score-font {
@@ -41,6 +47,7 @@ mat-divider {
   margin-left: 2px;
   color: white;
   text-decoration: none;
+  line-height: $gsTextSize;
 }
 
 .gs-menu {
@@ -55,13 +62,12 @@ mat-divider {
 }
 
 .score-move {
-  padding-left: 8x;
   margin-left: 8px;
+  line-height: $gsTextSize;
 }
 
 .score-ply {
   font-family: $gamescore-family;
-  font-size: 32px;
   font-weight: bold;
   margin-right: 6px;
 }
@@ -79,4 +85,14 @@ mat-divider {
   height: 6em;
   background-color: rgba(0, 0, 10, 255);
   cursor: grab;
+
+
+}
+.input-box{
+  position:absolute;
+  right: 2px;
+  width: 100%;
+  height: 300px;
+  border: solid black 4px;
+  
 }

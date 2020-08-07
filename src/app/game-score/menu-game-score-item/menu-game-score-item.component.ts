@@ -8,7 +8,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
   styleUrls: ['./menu-game-score-item.component.scss']
 })
 
-export class MenuGameScoreItemComponent implements OnInit, AfterViewInit{
+export class MenuGameScoreItemComponent implements OnInit, AfterViewInit {
   @Input() data: GameScoreItem | null = null
   @Input() menuTitle = 'Menu Title';
   public open = false;
@@ -20,12 +20,12 @@ export class MenuGameScoreItemComponent implements OnInit, AfterViewInit{
 
   ngAfterViewInit(): void {
     this.matMenuTrigger?.menuClosed.subscribe(() => {
-      console.log('Menu closed');
+      //console.log('Menu closed');
     });
   }
 
   ignoreEvent(event: MouseEvent): void {
-    console.log('Ignoring ' + event);
+    //console.log('Ignoring ' + event);
     event.preventDefault();
     event.stopPropagation();
   }

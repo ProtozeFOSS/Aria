@@ -47,8 +47,8 @@ export class ColorService {
   @Input() @Output() readonly gsBackground = new BehaviorSubject<string>(
     '#353535'
   );
-  @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('white 2px dotted');
-  @Input() @Output() readonly gsTextSize = new BehaviorSubject<string>('24px');
+  @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('');
+  @Input() @Output() readonly gsTextSize = new BehaviorSubject<string>('16px');
 
   // Game Score Highlight Colors
   @Input() @Output() readonly gsTextColorHG = new BehaviorSubject<string>(
@@ -58,10 +58,19 @@ export class ColorService {
     '#353535'
   );
   @Input() @Output() readonly gsBorderHG = new BehaviorSubject<string>(
-    'black 1px solid'
+    ''
   );
 
   // Game Score Annotation Colors
+  @Input() @Output() readonly gsTextColorAN = new BehaviorSubject<string>(
+    '#AED6F1'
+  );
+  @Input() @Output() readonly gsBackgroundAN = new BehaviorSubject<string>(
+    '#333333'
+  );
+  @Input() @Output() readonly gsBorderAN = new BehaviorSubject<string>(
+    ''
+  );
 
 
   // Game Score Variation Colors
@@ -83,13 +92,24 @@ export class ColorService {
     '#353535'
   );
   @Input() @Output() readonly gsBorderPC = new BehaviorSubject<string>(
-    'black 1px solid'
+    ''
   );
 
+  @Output() propertyMap = new Map<BehaviorSubject<string>, string>();
   // Menu specific Colors
 
   // Title Colors
-  constructor() { }
+  constructor() {
+    this.propertyMap.set(this.gsTextColorPC, '--gsTextColorPC');
+    this.propertyMap.set(this.gsBackgroundPC, '--gsBackgroundPC');
+    this.propertyMap.set(this.gsBorderPC, '--gsBorderPC');
+    this.propertyMap.set(this.gsTextColorVA, '--gsTextColorVA');
+    this.propertyMap.set(this.gsBackgroundVA, '--gsBackgroundVA');
+    this.propertyMap.set(this.gsBorderVA, '--gsBorderVA');
+    this.propertyMap.set(this.gsTextColorAN, '--gsTextColorAN');
+    this.propertyMap.set(this.gsBackgroundAN, '--gsBackgroundAN');
+    this.propertyMap.set(this.gsBorderAN, '--gsBorderAN');
+  }
 
   setDarkColorPalette(): void { }
 
@@ -102,7 +122,6 @@ export class ColorService {
   }
 
   initializeColorPalette(): void {
-    console.log('Setting primary color to ' + this.fgItem);
     // Main Elements
     document.documentElement.style.setProperty('--textCoolor', this.textColor);
     document.documentElement.style.setProperty(
@@ -167,5 +186,15 @@ export class ColorService {
       '--gsBorder',
       this.gsBorder.value
     );
+    document.documentElement.style.setProperty(
+      '--boardBGDark',
+      this.boardBGDark.value
+    );
+    this.propertyMap.forEach((value, key) => {
+      document.documentElement.style.setProperty(
+        value,
+        key.value
+      );
+    })
   }
 }

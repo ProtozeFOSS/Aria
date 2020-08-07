@@ -19,10 +19,9 @@
 }
 
 app-game-score-ux {
-  position: absolute;
-  right: 4px;
-  top: 20%;
-  height: 40%;
+   position: absolute;
+   right: 1px;
+  // height: 40%;
 }
 
 app-olga-board {
@@ -36,6 +35,14 @@ app-olga-board {
 app-gamescore-settings {
   position: absolute;
   right: 4px;
-  bottom: 4%;
-  height: 35%;
+  bottom: 2%;
+  height: 10%;
+}
+
+olga-controls {
+  position: absolute;
+  right: 1px;
+  bottom: 8%;
+  height: 84px;
+  width:50%;
 }

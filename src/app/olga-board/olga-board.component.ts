@@ -56,7 +56,7 @@ export class OlgaBoardComponent implements OnInit, AfterViewInit {
     // board is legit, attach engine
     if (this.board) {
       this.board.checkPieceCanMove = this.engineService.makeMove.bind(this.engineService);
-      this.engineService.boardChanged.subscribe(this.updateBoard.bind(this));
+      this.engineService.boardFen.subscribe(this.setFen.bind(this));
     }
   }
 

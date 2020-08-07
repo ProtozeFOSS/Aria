@@ -13,20 +13,24 @@ import { MatSliderChange } from '@angular/material/slider';
 import { EngineService } from './services/engine.service';
 import { Piece } from 'chessops/types';
 import { LayoutService } from './services/layout.service';
+import { GameScoreService } from './services/game-score.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
-  title = 'Olga2';
+export class Olga implements AfterViewInit {
+  title = 'Olga Test Bed';
   @ViewChild(GamescoreUxComponent)
   gameScoreUx: GamescoreUxComponent | null = null;
   @ViewChild(OlgaBoardComponent)
   olgaBoard: OlgaBoardComponent | null = null;
   @ViewChild('olgaContainer')
   olgaContainer: ElementRef | null = null;
-  @Input() gameScore: HTMLElement | null = null;
+  @Output() gameScoreElement: HTMLElement | null = null;
+  @Output() boardElement: HTMLElement | null = null;
+  @Output() controlsElement: HTMLElement | null = null;
+  @Input() pgnString = '';
   @Input() olgaID = '12312321';
   @Output() gameScoreWidth: number | null = 389;
   @Output() oldWidth: number | null = 0;
@@ -34,7 +38,8 @@ export class AppComponent implements AfterViewInit {
   constructor(
     public layoutService: LayoutService,
     public colorService: ColorService,
-    public chessEngine: EngineService
+    public chessEngine: EngineService,
+    public scoreService: GameScoreService
   ) {
     const date = new Date();
     this.olgaID = 'OLGA-' + date.getTime().toString();
@@ -43,16 +48,13 @@ export class AppComponent implements AfterViewInit {
 
   // tslint:disable-next-line: typedef
   ngAfterViewInit() {
-    this.layoutService.initializeLayout(this.olgaContainer);
-    this.gameScore = document.getElementById('app-gamescore' + this.olgaID);
-    console.log('Got Game Score');
-    console.log(this.gameScoreUx);
+    this.gameScoreElement = document.getElementById('app-gamescore' + this.olgaID);
+    this.boardElement = document.getElementById('app-board' + this.olgaID);
+    this.controlsElement = document.getElementById('olga-controls' + this.olgaID);
     this.colorService.initializeColorPalette();
-    this.resizeToScreen();
-    window.addEventListener('resize', this.resizeToScreen.bind(this));
-
+    this.layoutService.initializeLayout(this);
     if (this.gameScoreUx) {
-      this.gameScoreUx.resizeHandleEvent = this.resizeBoard.bind(this);
+      this.gameScoreUx.resizeHandleEvent = this.layoutService.onSliderDrag.bind(this.layoutService);
     }
   }
   mouseMoved(event: MouseEvent): void {
@@ -64,43 +66,10 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  resizeToScreen(): void {
-    if (this.olgaBoard && this.gameScoreUx) {
-      if (this.layoutService.landscapeOrientation) {
-        let boardSize = Math.floor(window.innerWidth * 0.075) * 8;
-        if (boardSize >= window.innerHeight) {
-          boardSize = Math.floor((window.innerHeight - 8) / 8) * 8;
-        }
-        let padding = window.innerWidth * 0.05;
-        if (padding >= 42 || padding <= 24) {
-          padding = 38;
-        }
-        const gsSize = Math.floor(window.innerWidth - (boardSize + padding));
-        this.setBoardSize(boardSize);
-        this.setGameScoreSize(gsSize);
-      }
-    }
+  loadPGN(pgn: string) {
+    this.scoreService.loadPGN(pgn);
   }
 
-  resizeBoard(event: DragEvent): void {
-    if (event && event.clientX > 64) {
-      if (this.olgaBoard) {
-        let gsSize = window.innerWidth - event.clientX;
-        const widthAvailable = window.innerWidth - (gsSize + 28);
-        let boardSize = Math.floor(widthAvailable / 8) * 8;
-        if (boardSize > window.innerHeight) {
-          boardSize = Math.floor((window.innerHeight - 16) / 8) * 8;
-          gsSize = window.innerWidth - boardSize + 28;
-        }
-        if (gsSize <= 100) {
-          boardSize -= 100 - gsSize;
-          gsSize = 100;
-        }
-        this.setBoardSize(boardSize);
-        this.setGameScoreSize(gsSize);
-      }
-    }
-  }
   setBoardSize(size: number): void {
     if (this.olgaBoard) {
       this.olgaBoard.setBoardSize(size);
@@ -113,7 +82,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
   ignoreEvent(event: MouseEvent): void {
-    console.log('Ignoring ' + event);
+    //console.log('Ignoring ' + event);
     event.preventDefault();
     event.stopPropagation();
   }

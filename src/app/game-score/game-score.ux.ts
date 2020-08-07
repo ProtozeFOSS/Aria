@@ -19,12 +19,18 @@ import {
 import {
   GameScoreService,
   GameScoreItem,
+  GameScoreType
 } from '../services/game-score.service';
 import { MenuGameScoreItemComponent } from './menu-game-score-item/menu-game-score-item.component';
 interface Move {
   w: string;
   b: string;
-}
+};
+
+export enum ScoreViewType {
+  Table = 101,
+  Flow = 202
+};
 
 @Component({
   selector: 'app-game-score-ux',
@@ -36,6 +42,9 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   scoreItemMenu: MenuGameScoreItemComponent | null = null;
   @ViewChild('resizeHandle')
   resizeHandle: ElementRef | null = null;
+  @ViewChild('pgnData')
+  pgnData: ElementRef | null = null;
+  @ViewChild('gamescore-container') container: ElementRef | null = null;
   @Input() gameScoreFontSize: number | null = 24;
   columnCount = 3;
   gameScore: Move[] = [];
@@ -43,31 +52,30 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   maxPlySize = 178;
   @Output() resizing = false;
   @Input() scoreWidth: number | null = 360;
+  @Input() viewType: ScoreViewType = ScoreViewType.Flow;
   protected previousCursor = 'pointer';
+  GameScoreType = GameScoreType;
+  ScoreViewType = ScoreViewType;
   constructor(public gameScoreService: GameScoreService) {
-    this.gameScore = [
-      { w: 'd4', b: 'Qd5' },
-      { w: 'Nf3', b: 'Bf6' },
-      { w: 'Rf3', b: 'Qf6' },
-      { w: 'Kf3', b: 'f6' },
-    ];
     this.gameScoreService.figurineNotation.subscribe((figurineNotation) => {
       if (figurineNotation) {
-        console.log('Setting Font to : ' + 'FigurineSymbolT1');
+        //console.log('Setting Font to : ' + 'FigurineSymbolT1');
         this.gameScoreService.scoreFontFamily.next('FigurineSymbolT1');
       } else {
-        console.log('Setting Font to : ' + 'Caveat');
+        //console.log('Setting Font to : ' + 'Caveat');
         this.gameScoreService.scoreFontFamily.next('Cambria');
       }
     });
   }
 
   ngOnInit(): void {
-    console.log(this.gameScore);
+    //console.log(this.gameScore);
   }
 
   ngAfterViewInit(): void {
-    this.gameScoreService.loadPGN('');
+    if (this.pgnData) {
+      this.gameScoreService.loadPGN(this.pgnData.nativeElement.value);
+    }
     this.resizeScore();
   }
 
@@ -82,12 +90,16 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   openItemMenu(event: MouseEvent, item: GameScoreItem): void {
     event.preventDefault();
     event.stopPropagation();
-    console.log('Right clicked on item ' + item?.moveData?.move);
+    //console.log('Right clicked on item ' + item?.moveData?.move);
+    //console.log('Right clicked on Type ' + item?.type?.toString());
+    switch (item.type) { // open different menus
+
+    }
     this.scoreItemMenu?.openAt(item);
   }
 
   ignoreEvent(event: MouseEvent): void {
-    console.log('Ignoring ' + event);
+    //console.log('Ignoring ' + event);
     event.preventDefault();
     event.stopPropagation();
   }
@@ -117,9 +129,16 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     }
   }
 
+  loadPGN(pgn: string) {
+    //console.log('loading new PGN');
+    this.gameScoreService.loadPGN(pgn);
+    //console.log('PGN is loaded');
+    //console.log(this.gameScoreService.items.value);
+    this.ngOnInit();
+  }
+
   resizeHandleEvent(event: DragEvent | MouseEvent): void {
     if (this.resizing) {
-      console.log(event);
       this.resizeScore();
     }
   }

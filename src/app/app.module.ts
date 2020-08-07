@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { Olga } from './app.component';
 import { GamescoreSettingsComponent } from './settings/settings-gamescore/settings-gamescore.component';
 import { GamescoreUxComponent } from './game-score/game-score.ux';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,9 +29,10 @@ import { GameScoreService } from './services/game-score.service';
 import { EngineService } from './services/engine.service';
 import { LayoutService } from './services/layout.service';
 import { BoardCanvasComponent } from './olga-board/board-canvas/board-canvas.component';
+import { OlgaControlsComponent } from './controls/olga-controls/olga-controls.component';
 @NgModule({
   declarations: [
-    AppComponent,
+    Olga,
     GamescoreSettingsComponent,
     OlgaBoardComponent,
     GamescoreUxComponent,
@@ -43,6 +44,7 @@ import { BoardCanvasComponent } from './olga-board/board-canvas/board-canvas.com
     SettingsBoardComponent,
     MenuGameScoreItemComponent,
     BoardCanvasComponent,
+    OlgaControlsComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +62,6 @@ import { BoardCanvasComponent } from './olga-board/board-canvas/board-canvas.com
     MatTabsModule,
   ],
   providers: [LayoutService, ColorService, EngineService, GameScoreService],
-  bootstrap: [AppComponent],
+  bootstrap: [Olga],
 })
-export class AppModule {}
+export class AppModule { }

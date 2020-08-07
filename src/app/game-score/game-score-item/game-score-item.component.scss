@@ -1,43 +1,102 @@
 @import "../../../styles.scss";
 
-.gsi-container {
+.gsi-container {  
   display: inline-flex;
+  line-height: $gsTextSize;
 }
-// .{{klass}} relates to the typeName of the game score item
 
 /************************************ Game Score Group **************************/
 .GameScoreGroup.gsi-container {
   border: $gsBorder;
   background: $gsBackground;
-  line-height: $gsTextSize;
-  padding: 2px;
+  padding-right: 2px;
+  margin-left: 3px;
+  color: $gsTextColor;
 }
 .GameScoreGroup.gsi-container-hg{
   background: $gsBackgroundHG;
   border: $gsBorderHG;
+  line-height: $gsTextSize;
 }
 .GameScoreGroup.gsi-movew {
-  font-size: calc($gsTextSize * .75);
+  padding-left: 2px;
+  line-height: $gsTextSize;
 }
 
 .GameScoreGroup.gsi-moveb {
-  font-size: calc($gsTextSize * .75);
+  padding-left: 2px;
+  line-height: $gsTextSize;
 }
 
 .GameScoreGroup.gsi-ply {
-  color: $gsTextColor;
-  background: $gsBackground;
+  background: $gsBackgroundAN;
   border-radius: 2px;
-  padding: 2px;
+  margin-right: 2px;
+  border: $gsBorderAN;
   font-size: $gsTextSize;
-  border: $gsBorderPC;
+  line-height: $gsTextSize;
 }
+
 .GameScoreGroup.gsi-ply-highlight {
   background: $gsBackgroundHG;
-  color: orange;
-  border: black 1px solid;
+  color: $gsTextColorHG;
+  border:$gsBorderHG;
+  line-height: $gsTextSize;
 }
 
 
 /************************************ Variation Group ***************************/
 
+
+/************************************* Annotation Group **************************/
+.Annotation.gsi-container {
+  border: $gsBorderAN;
+  background: $gsBackgroundAN;
+  padding-left:2px;
+  padding-right: 3px;
+  color: $gsTextColor;
+  line-height: $gsTextSize;
+}
+.Annotation.gsi-container-hg{
+  background: $gsBackgroundHG;
+  border: $gsBorderHG;
+  line-height: $gsTextSize;
+}
+.Annotation.gsi-movew {
+  padding-left: 2px;
+  line-height: $gsTextSize;
+}
+
+.Annotation.gsi-moveb {
+  padding-left: 2px;
+  line-height: $gsTextSize;  
+}
+
+.Annotation.gsi-ply {
+  background: $gsBackgroundAN;
+  border-radius: 2px;
+  border: $gsBorderAN;
+  font-size: $gsTextSize;
+  line-height: $gsTextSize;
+}
+.Annotation.gsi-ply-highlight {
+  background: $gsBackgroundHG;
+  color: $gsTextColorHG;
+  border:$gsBorderHG;
+  line-height: $gsTextSize;
+}
+
+.Annotation.gsi-comment {
+  color: $gsTextColorAN;
+  padding-left:3px;
+  padding-right:2px;
+  margin-left:3px;
+  margin-right:2px;
+  line-height: $gsTextSize;
+}
+
+.current-move {
+  background: $gsBackgroundHG;
+  border: $gsBorderHG;
+  color: orange;
+}

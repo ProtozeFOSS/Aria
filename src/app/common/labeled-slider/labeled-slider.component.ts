@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {  } from '@angular/material/slider';
+import { } from '@angular/material/slider';
 @Component({
   selector: 'app-labeled-slider',
   templateUrl: './labeled-slider.component.html',
@@ -19,7 +19,7 @@ export class LabeledSliderComponent implements OnInit {
   }
 
   inputEventCapture(event: any): void {
-    console.log(event);
+    //console.log(event);
   }
 
 }

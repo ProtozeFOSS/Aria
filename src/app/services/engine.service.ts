@@ -4,7 +4,7 @@ import { makeSan, makeSanAndPlay } from 'chessops/san';
 import { Chess, Position } from 'chessops/chess';
 import { Piece, Move, ROLES } from 'chessops/types';
 import { transformBoard } from 'chessops/transform';
-import { makeSquare } from 'chessops/util';
+import { makeSquare, parseUci } from 'chessops/util';
 //import { Chess, Position } from 'chessops/variant'
 import { BehaviorSubject } from 'rxjs';
 import { SquareSet } from 'chessops/squareSet';
@@ -14,6 +14,8 @@ import { SquareSet } from 'chessops/squareSet';
 })
 export class EngineService {
   chessEngine: Position = Chess.default();
+  readonly startingFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+  readonly boardFen = new BehaviorSubject<string>(this.startingFen);
   readonly boardChanged = new BehaviorSubject<boolean>(false);
   readonly abreviatedSan = new BehaviorSubject<boolean>(false);
   constructor() {
@@ -29,10 +31,10 @@ export class EngineService {
   makeMove(fromData: { tile: number; object: fabric.Group; piece: Piece | undefined }, toData: { tile: number; object: fabric.Group; piece: Piece | undefined }): boolean {
     if (fromData.piece) {
       this.chessEngine.epSquare = fromData.tile;
-      console.log('from: ' + makeSquare(fromData.tile));
-      console.log(this.chessEngine.board.get(fromData.tile));
-      console.log('to: ' + makeSquare(toData.tile));
-      console.log(this.chessEngine.board.get(toData.tile));
+      // console.log('from: ' + makeSquare(fromData.tile));
+      // console.log(this.chessEngine.board.get(fromData.tile));
+      // console.log('to: ' + makeSquare(toData.tile));
+      // console.log(this.chessEngine.board.get(toData.tile));
       const move = { from: fromData.tile, to: toData.tile } as Move;
       if (this.chessEngine.isLegal(move)) {
         if (toData.object) {
@@ -41,21 +43,33 @@ export class EngineService {
         const san = makeSanAndPlay(this.chessEngine, move);
         //const piece = {role:'', color:''} as Piece;
         //this.chessEngine.board.set(fromData.tile, piece);
-        this.boardChanged.next(!this.boardChanged.value);
+        //this.boardChanged.next(!this.boardChanged.value);
         // add san to game score
-        console.log(san);
+        //console.log(san);
         return true;
       }
       const san = makeSan(this.chessEngine, { role: fromData.piece.role, to: toData.tile } as Move);
       if (san.search('@') >= 0) {
 
       }
-      console.log('Attempting to make invalid move ' + san);
-      console.log('board believes tile has:');
-      console.log(this.chessEngine.board.get(toData.tile));
+      // console.log('Attempting to make invalid move ' + san);
+      // console.log('board believes tile has:');
+      // console.log(this.chessEngine.board.get(toData.tile));
     }
     return false;
   };
+
+  public makeMoveFromSAN(san: string): void {
+    console.log('Make Move: ' + san);
+    const move = parseUci(san) as Move;
+    if (this.chessEngine.isLegal(move)) {
+      this.chessEngine.play(move);
+    }
+  }
+
+  setFen(fen: string): void {
+    this.boardFen.next(fen);
+  }
 
   checkPosition(row: string, rank: string): Piece | undefined {
     return this.chessEngine?.board.get(0);

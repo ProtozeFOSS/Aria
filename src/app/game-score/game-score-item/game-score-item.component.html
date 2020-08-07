@@ -1,3 +1,21 @@
-<div class="gsi-container {{typeName}}">
-  <div class="gsi-ply {{typeName}}">{{this.data?.moveData?.ply}}</div>{{this.data?.moveData?.move}}
+<!-- GameScoreGroup -->
+<div *ngIf="type === GameScoreType.GameScoreGroup" class="gsi-container {{typeName}}">
+  <div class="gsi-ply {{typeName}}" *ngIf="showPly()">
+    {{this.data?.moveData?.ply}}</div>
+  <div class="gsi-movew {{typeName}}" *ngIf="isFullPly()">{{this.data?.moveData?.move}}</div>
+  <div class="gsi-moveb {{typeName}}" *ngIf="!isFullPly()">{{this.data?.moveData?.move}}</div>
+</div>
+<!-- Variation -->
+<div *ngIf="type === GameScoreType.Variation" class="gsi-container {{typeName}}">
+  <div class="gsi-ply {{typeName}}" *ngIf="showPly()">{{this.data?.moveData?.ply}}</div>
+  <div class="gsi-movew {{typeName}}" *ngIf="isFullPly()">{{this.data?.moveData?.move}}</div>
+  <div class="gsi-moveb {{typeName}}" *ngIf="!isFullPly()">{{this.data?.moveData?.move}}</div>
+</div>
+<!-- Annotation -->
+<div *ngIf="type === GameScoreType.Annotation" class="gsi-container {{typeName}}">
+  <div class="gsi-ply {{typeName}}" *ngIf="showPly()">{{this.data?.moveData?.ply}}</div>
+  <div class="gsi-movew {{typeName}}" *ngIf="isFullPly()">{{this.data?.moveData?.move}}</div>
+  <div class="gsi-moveb {{typeName}} " *ngIf="!isFullPly()">{{this.data?.moveData?.move}}</div>
+  <div class="gsi-comment {{typeName}} ">{{this.data?.annotationData?.annotation}}
+  </div>
 </div>

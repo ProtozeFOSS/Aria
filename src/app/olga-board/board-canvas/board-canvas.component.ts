@@ -93,7 +93,7 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
           col = 7 - this.selectedPiece.tile % 8;
         }
       } else {
-        if (this.checkPieceCanMove({
+        if (!this.checkPieceCanMove({
           tile: this.selectedPiece.tile,
           object: this.selectedPiece.object,
           piece: this.tiles[this.selectedPiece.tile].piece
@@ -102,12 +102,6 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
           object: pieceToTake?.object,
           piece: this.tiles[tile].piece
         })) {
-          this.pieces.slice(this.selectedPiece.tile, 1);
-          this.tiles[tile].piece = this.tiles[this.selectedPiece.tile].piece;
-          delete this.tiles[this.selectedPiece.tile].piece;
-          this.pieces[tile] = this.selectedPiece;
-          this.selectedPiece.tile = tile;
-        } else {
           row = Math.floor(this.selectedPiece.tile / 8);
           col = this.selectedPiece.tile % 8;
         }
@@ -155,6 +149,7 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
     if (this.olgaBoard) {
       this.olgaBoard.on('object:moved', this.checkValidDrop.bind(this));
       this.olgaBoard.on('mouse:down', this.selectPiece.bind(this));
+      this.olgaBoard.on('touch:drag', this.selectPiece.bind(this));
     }
   }
 
@@ -181,6 +176,7 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
             width: this.tileSize,
             height: this.tileSize
           });
+
           // create piece
           if (this.orientation == 'white') {
             tile.set('left', col * this.tileSize + padding);
@@ -198,6 +194,7 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
           tile.set('lockUniScaling', true);
           tile.set('hasControls', false);
           tile.set('hasBorders', false);
+          tile.set('selectable', false);
           tile.setCoords();
           if (row % 2 === 0) {
             // even row 0, 2, 4, 6
@@ -261,9 +258,11 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
       }
       this.tiles.forEach((tileData) => {
         this.olgaBoard?.add(tileData.tile);
+        this.olgaBoard?.bringToFront(tileData.tile);
       });
       this.pieces.forEach((pieceObject) => {
         this.olgaBoard?.add(pieceObject.object);
+        this.olgaBoard?.bringToFront(pieceObject.object);
       });
     }
   }
@@ -301,7 +300,7 @@ export class BoardCanvasComponent implements OnInit, AfterViewInit {
           fabric.loadSVGFromURL(
             this.theme.pieceSet + piece + this.theme.fileExtension,
             (objects, options) => {
-              console.log('loaded ' + this.theme?.pieceSet + piece);
+              //console.log('loaded ' + this.theme?.pieceSet + piece);
               const obj = fabric.util.groupSVGElements(
                 objects,
                 options
