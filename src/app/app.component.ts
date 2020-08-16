@@ -7,26 +7,25 @@ import {
   Output,
 } from '@angular/core';
 import { GamescoreUxComponent } from './game-score/game-score.ux';
-import { OlgaBoardComponent } from './olga-board/olga-board.component';
+import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.component';
 import { ColorService } from './services/colors.service';
-import { MatSliderChange } from '@angular/material/slider';
-import { EngineService } from './services/engine.service';
-import { Piece } from 'chessops/types';
 import { LayoutService } from './services/layout.service';
-import { GameScoreService } from './services/game-score.service';
+import { GameService, ChessGame } from './services/game.service';
+import { OlgaService } from './services/olga.service';
+
 @Component({
-  selector: 'app-root',
+  selector: 'olga',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class Olga implements AfterViewInit {
-  title = 'Olga Test Bed';
+  title = 'Olga PGN Viewer 2.0';
   @ViewChild(GamescoreUxComponent)
-  gameScoreUx: GamescoreUxComponent | null = null;
-  @ViewChild(OlgaBoardComponent)
-  olgaBoard: OlgaBoardComponent | null = null;
+  gameScoreComponent: GamescoreUxComponent | null = null;
+  @ViewChild(CanvasChessBoard)
+  canvasBoardComponent: CanvasChessBoard | null = null;
   @ViewChild('olgaContainer')
-  olgaContainer: ElementRef | null = null;
+  appContainer: ElementRef | null = null;
   @Output() gameScoreElement: HTMLElement | null = null;
   @Output() boardElement: HTMLElement | null = null;
   @Output() controlsElement: HTMLElement | null = null;
@@ -36,49 +35,67 @@ export class Olga implements AfterViewInit {
   @Output() oldWidth: number | null = 0;
   protected doneResizingScore = false;
   constructor(
-    public layoutService: LayoutService,
+    public olga: OlgaService,
     public colorService: ColorService,
-    public chessEngine: EngineService,
-    public scoreService: GameScoreService
+    public gameService: GameService,
+    public layoutService: LayoutService,
   ) {
     const date = new Date();
     this.olgaID = 'OLGA-' + date.getTime().toString();
     console.log('ID: ' + this.olgaID);
+    // this.gameService..subscribe((game) => {
+    //   this.currentGame = game;
+    //   //this.gameScoreComponent.setGame(game);
+    //   //this.canvasBoarComponent.setGame(game);
+    //   //this.layoutService.updateLayout();
+    // })
   }
 
   // tslint:disable-next-line: typedef
   ngAfterViewInit() {
     this.gameScoreElement = document.getElementById('app-gamescore' + this.olgaID);
-    this.boardElement = document.getElementById('app-board' + this.olgaID);
+    this.boardElement = document.getElementById(this.olgaID + '-ccb');
     this.controlsElement = document.getElementById('olga-controls' + this.olgaID);
     this.colorService.initializeColorPalette();
     this.layoutService.initializeLayout(this);
-    if (this.gameScoreUx) {
-      this.gameScoreUx.resizeHandleEvent = this.layoutService.onSliderDrag.bind(this.layoutService);
+    if (this.canvasBoardComponent) {
+      this.gameService.attachBoard(this.canvasBoardComponent);
+    }
+    if (this.gameScoreComponent) {
+      this.gameService.attachScore(this.gameScoreComponent);
+      this.gameScoreComponent.resizeHandleEvent = this.layoutService.onSliderDrag.bind(this.layoutService);
+      this.gameScoreComponent.resizeTouchEvent = this.layoutService.onSliderTouch.bind(this.layoutService);
     }
   }
   mouseMoved(event: MouseEvent): void {
-    if (this.gameScoreUx?.resizing) {
-      this.gameScoreUx?.resizeHandleEvent(event);
+    if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
+      this.gameScoreComponent.resizeHandleEvent(event);
+      if (event.buttons === 0) {
+        this.gameScoreComponent.resizing = false;
+      }
     }
-    if (this.gameScoreUx && event.buttons === 0) {
-      this.gameScoreUx.resizing = false;
+  }
+
+  touchMoved(event: TouchEvent): void {
+    if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
+      this.gameScoreComponent.resizeTouchEvent(event);
+      this.gameScoreComponent.resizing = false;
     }
   }
 
   loadPGN(pgn: string) {
-    this.scoreService.loadPGN(pgn);
+    this.gameService.loadPGN(pgn);
   }
 
   setBoardSize(size: number): void {
-    if (this.olgaBoard) {
-      this.olgaBoard.setBoardSize(size);
+    if (this.canvasBoardComponent) {
+      this.canvasBoardComponent.setSize(size);
     }
   }
   setGameScoreSize(size: number): void {
     this.gameScoreWidth = size;
-    if (this.gameScoreUx) {
-      this.gameScoreUx.setWidth(this.gameScoreWidth);
+    if (this.canvasBoardComponent) {
+      this.canvasBoardComponent.setSize(this.gameScoreWidth);
     }
   }
   ignoreEvent(event: MouseEvent): void {

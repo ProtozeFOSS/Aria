@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EngineService } from './engine.service';
+import { OlgaService } from './olga.service';
 
-describe('EngineService', () => {
-  let service: EngineService;
+describe('OlgaService', () => {
+  let service: OlgaService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EngineService);
+    service = TestBed.inject(OlgaService);
   });
 
   it('should be created', () => {

@@ -1,5 +1,6 @@
 import { Injectable, Output, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { BoardTheme } from '../canvas-chessboard/canvas-chessboard.component';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +53,7 @@ export class ColorService {
 
   // Game Score Highlight Colors
   @Input() @Output() readonly gsTextColorHG = new BehaviorSubject<string>(
-    'white'
+    'orange'
   );
   @Input() @Output() readonly gsBackgroundHG = new BehaviorSubject<string>(
     '#353535'
@@ -71,7 +72,7 @@ export class ColorService {
   @Input() @Output() readonly gsBorderAN = new BehaviorSubject<string>(
     ''
   );
-
+  @Input() @Output() readonly gsTextSizeAN = new BehaviorSubject<string>('16px');
 
   // Game Score Variation Colors
   @Input() @Output() readonly gsTextColorVA = new BehaviorSubject<string>(
@@ -109,6 +110,21 @@ export class ColorService {
     this.propertyMap.set(this.gsTextColorAN, '--gsTextColorAN');
     this.propertyMap.set(this.gsBackgroundAN, '--gsBackgroundAN');
     this.propertyMap.set(this.gsBorderAN, '--gsBorderAN');
+    this.propertyMap.set(this.gsTextColorHG, '--gsTextColorHG');
+    this.propertyMap.set(this.gsBackgroundHG, '--gsBackgroundHG');
+    this.propertyMap.set(this.gsBorderHG, '--gsBorderHG');
+    this.propertyMap.set(this.gsTextColorHG, '--gsTextColorHG');
+    this.propertyMap.set(this.gsBackgroundHG, '--gsBackgroundHG');
+    this.propertyMap.set(this.gsBorderHG, '--gsBorderHG');
+  }
+
+
+  boardTheme(): BoardTheme {
+    return new BoardTheme(
+      this.boardBGLight.value,
+      this.boardBGDark.value,
+      this.boardPieceSet.value
+    );
   }
 
   setDarkColorPalette(): void { }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PlayermoveComponent } from './playermove.component';
+import { OlgaControlsComponent } from './olga-controls.component';
 
-describe('PlayermoveComponent', () => {
-  let component: PlayermoveComponent;
-  let fixture: ComponentFixture<PlayermoveComponent>;
+describe('OlgaControlsComponent', () => {
+  let component: OlgaControlsComponent;
+  let fixture: ComponentFixture<OlgaControlsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PlayermoveComponent ]
+      declarations: [ OlgaControlsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PlayermoveComponent);
+    fixture = TestBed.createComponent(OlgaControlsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

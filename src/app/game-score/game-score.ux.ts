@@ -1,12 +1,13 @@
 import {
   Component,
   OnInit,
-  ChangeDetectionStrategy,
   Input,
   Output,
   AfterViewInit,
   ViewChild,
   ElementRef,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import {
   trigger,
@@ -17,11 +18,17 @@ import {
   // ...
 } from '@angular/animations';
 import {
-  GameScoreService,
+  GameService,
   GameScoreItem,
-  GameScoreType
-} from '../services/game-score.service';
+  GameScoreType,
+  GameScoreAnnotation,
+  GameScoreVariation
+} from '../services/game.service';
 import { MenuGameScoreItemComponent } from './menu-game-score-item/menu-game-score-item.component';
+import { GameScoreItemComponent } from './game-score-item/game-score-item.component';
+import { BehaviorSubject } from 'rxjs';
+import { OlgaService } from '../services/olga.service';
+import { LayoutService } from '../services/layout.service';
 interface Move {
   w: string;
   b: string;
@@ -38,6 +45,8 @@ export enum ScoreViewType {
   styleUrls: ['./game-score.ux.scss'],
 })
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
+  @Output() readonly scoreFontFamily = new BehaviorSubject<string>('Caveat');
+  @Output() readonly scoreFontSize = new BehaviorSubject<number>(18);
   @ViewChild(MenuGameScoreItemComponent)
   scoreItemMenu: MenuGameScoreItemComponent | null = null;
   @ViewChild('resizeHandle')
@@ -46,6 +55,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   pgnData: ElementRef | null = null;
   @ViewChild('gamescore-container') container: ElementRef | null = null;
   @Input() gameScoreFontSize: number | null = 24;
+  @Input() UUID = '';
   columnCount = 3;
   gameScore: Move[] = [];
   rowHeight = '50px';
@@ -56,16 +66,34 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   protected previousCursor = 'pointer';
   GameScoreType = GameScoreType;
   ScoreViewType = ScoreViewType;
-  constructor(public gameScoreService: GameScoreService) {
-    this.gameScoreService.figurineNotation.subscribe((figurineNotation) => {
+
+  // Settings
+  @Output() readonly currentItem = new BehaviorSubject<GameScoreItem | null>(null);
+
+  @ViewChildren(GameScoreItemComponent) scoreItems: QueryList<GameScoreItemComponent> | null = null;
+  @Output() currentScoreItem: GameScoreItemComponent | null = null;
+  constructor(public olga: OlgaService, public gameService: GameService, public layoutService: LayoutService) {
+    this.gameService.figurineNotation.subscribe((figurineNotation) => {
       if (figurineNotation) {
-        //console.log('Setting Font to : ' + 'FigurineSymbolT1');
-        this.gameScoreService.scoreFontFamily.next('FigurineSymbolT1');
+        this.scoreFontFamily.next('FigurineSymbolT1');
       } else {
-        //console.log('Setting Font to : ' + 'Caveat');
-        this.gameScoreService.scoreFontFamily.next('Cambria');
+        this.scoreFontFamily.next('Cambria');
       }
     });
+    // this.gameService.currentItem.subscribe((item) => {
+    //   if (this.currentScoreItem) {
+    //     this.currentScoreItem.setCurrent(false);
+    //   }
+    //   if (this.scoreItems) {
+    //     this.scoreItems.forEach((scoreItem) => {
+    //       if (scoreItem.data === item) {
+    //         scoreItem.setCurrent(true);
+    //         this.currentScoreItem = scoreItem;
+    //       }
+    //     });
+    //   }
+    //   // move to manually updating the elements
+    // })
   }
 
   ngOnInit(): void {
@@ -74,7 +102,14 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.pgnData) {
-      this.gameScoreService.loadPGN(this.pgnData.nativeElement.value);
+      this.gameService.loadPGN(this.pgnData.nativeElement.value);
+      this.layoutService.resizeElement = document.getElementById('resize-handle-' + this.UUID);
+      //console.log(this.scoreItems);
+      window.setTimeout(() => {
+        if (this.scoreItems) {
+          this.currentScoreItem = this.scoreItems.first;
+        }
+      }, 300);
     }
     this.resizeScore();
   }
@@ -87,19 +122,20 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openItemMenu(event: MouseEvent, item: GameScoreItem): void {
+  openItemMenu(event: MouseEvent, item: GameScoreItemComponent): void {
     event.preventDefault();
     event.stopPropagation();
-    //console.log('Right clicked on item ' + item?.moveData?.move);
-    //console.log('Right clicked on Type ' + item?.type?.toString());
+    console.log(item);
+    if (item.data) {
+      item.setCurrent(!item.data.current);
+    }
     switch (item.type) { // open different menus
 
     }
-    this.scoreItemMenu?.openAt(item);
+    //this.scoreItemMenu?.openAt(item);
   }
 
   ignoreEvent(event: MouseEvent): void {
-    //console.log('Ignoring ' + event);
     event.preventDefault();
     event.stopPropagation();
   }
@@ -129,15 +165,32 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     }
   }
 
+  startTouch(event: TouchEvent): void {
+    this.previousCursor = document.body.style.cursor;
+    const touchPoint = event.touches[0];
+    if (touchPoint) {
+      if (this.layoutService.resizeElement) {
+        this.resizing = true;
+      }
+    }
+  }
+
+  stopTouch(event: TouchEvent) {
+    this.resizing = false;
+  }
+
   loadPGN(pgn: string) {
-    //console.log('loading new PGN');
-    this.gameScoreService.loadPGN(pgn);
-    //console.log('PGN is loaded');
-    //console.log(this.gameScoreService.items.value);
+    this.gameService.loadPGN(pgn);
     this.ngOnInit();
   }
 
   resizeHandleEvent(event: DragEvent | MouseEvent): void {
+    if (this.resizing) {
+      this.resizeScore();
+    }
+  }
+
+  resizeTouchEvent(event: TouchEvent): void {
     if (this.resizing) {
       this.resizeScore();
     }

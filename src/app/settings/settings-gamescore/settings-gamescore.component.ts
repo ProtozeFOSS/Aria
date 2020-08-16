@@ -6,9 +6,9 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
-import { GameScoreService } from '../../services/game-score.service';
+import { GameService } from '../../services/game.service';
 import { ColorService } from '../../services/colors.service';
-import { MatSliderChange } from '@angular/material/slider';
+import { OlgaService } from 'src/app/services/olga.service';
 
 @Component({
   selector: 'app-gamescore-settings',
@@ -17,15 +17,16 @@ import { MatSliderChange } from '@angular/material/slider';
 })
 export class GamescoreSettingsComponent implements OnInit, AfterViewInit {
   constructor(
-    public gameScoreService: GameScoreService,
+    public olga: OlgaService,
+    public gameService: GameService,
     public colorService: ColorService
-  ) {}
+  ) { }
   @ViewChild('lightBGHandle', { static: true })
   lightBGHandle: ElementRef | null = null;
-   @ViewChild('darkBGHandle', { static: true })
+  @ViewChild('darkBGHandle', { static: true })
   darkBGHandle: ElementRef | null = null;
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   ngAfterViewInit(): void {
     if (this.lightBGHandle) {
       this.lightBGHandle.nativeElement.value = this.colorService.boardBGLight.value;

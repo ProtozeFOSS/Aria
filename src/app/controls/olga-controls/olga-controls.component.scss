@@ -1,0 +1,48 @@
+@import "../../../styles.scss";
+
+.button {
+    position: absolute;
+    border: black 2px solid;
+    background: $gsBackground;
+    text-align: center;
+    border-radius: 2px;
+}
+
+
+.start {
+    left: 4px;
+    width: calc(14% - 4px);
+    top: 6px;
+    bottom: 6px;
+}
+.previous {
+    left: calc(14% - 2px);
+    width: calc(22% - 2px);
+    top: 6px;
+    bottom: 6px;
+}
+.next {
+    width: calc(50% + 3px);
+    left: calc(36% - 6px);
+    top:6px;
+    bottom:6px;
+}
+.end {
+    width: calc(14% + 2px);
+    right: 4px;
+    top:6px;
+    bottom:6px;
+}
+svg{
+    height: 98%;
+    width:height;
+}
+.feather  {
+  width: 100%;
+  height: 100%;
+  stroke: $boardBGDark;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}

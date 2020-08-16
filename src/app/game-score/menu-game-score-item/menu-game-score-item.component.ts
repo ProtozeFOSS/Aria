@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
-import { GameScoreItem } from 'src/app/services/game-score.service';
+import { GameScoreItem } from 'src/app/services/game.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({

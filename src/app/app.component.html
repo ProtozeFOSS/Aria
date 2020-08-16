@@ -1,6 +1,9 @@
-<div #olgaContainer id="{{ this.olgaID }}-olga-container" class="olga-container" (mousemove)="mouseMoved($event)">
-  <app-olga-board #olgaBoard id="app-board{{this.olgaID}}" [UUID]="this.olgaID"></app-olga-board>
-  <app-game-score-ux id="app-gamescore{{this.olgaID}}" (contextmenu)="ignoreEvent($event)">
+<div #olgaContainer id="{{ this.olgaID }}-olga-container" class="olga-container" (touchmove)="touchMoved($event)"
+  (mousemove)="mouseMoved($event)">
+  <canvas-chessboard (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent
+    id="{{this.olgaID}}-ccb" [UUID]="this.olgaID" [theme]="this.colorService.boardTheme()">
+  </canvas-chessboard>
+  <app-game-score-ux id="app-gamescore{{this.olgaID}}" (contextmenu)="ignoreEvent($event)" [UUID]="this.olgaID">
   </app-game-score-ux>
   <olga-controls id="olga-controls{{this.olgaID}}"></olga-controls>
   <!-- <app-gamescore-settings #gameScore></app-gamescore-settings>
