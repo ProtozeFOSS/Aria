@@ -56,6 +56,7 @@ export class ChessGame {
   protected position: KPosition | null = null;
   protected currentNode: KNode | null = null;
   protected gameScore: GameScoreItem[] = [];
+  readonly score = new BehaviorSubject<GameScoreItem[] | null>(null);
   protected gameVariations: KVariation[] = [];
   protected variation: KVariation | null = null;
   protected startNode: KNode | null = null;
@@ -190,6 +191,7 @@ export class ChessGame {
     }
     items[0].current = true;
     this.gameScore = items;
+    this.score.next(this.gameScore);
   }
 
 
@@ -296,7 +298,7 @@ export enum GameScoreType {
 })
 export class GameService {
   @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(false);
-  private _items = new BehaviorSubject<GameScoreItem[]>([]);
+  public _items = new BehaviorSubject<GameScoreItem[]>([]);
   private scoreData: { items: GameScoreItem[] } = { items: [] };
   readonly currentScore = this._items.asObservable();
 
@@ -334,6 +336,9 @@ export class GameService {
       this._game = game;
       this.game.next(game);
       this._game.setGame(first);
+      if (this._game.score.value !== null) {
+        this._items.next(this._game.score.value);
+      }
     }
   }
 
