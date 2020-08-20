@@ -212,7 +212,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       group.push(bg);
       let pieceImage = null;
       // Create the title text "Promotion" - white, subtle
-      const title = new fabric.Text('Promotion', { fontWeight: '100', fontSize: 64, fontFamily: 'Courier New' })
+      const title = new fabric.Text('Promotion', { fontWeight: '100', fontSize: this.size * .07, fontFamily: 'Courier New' })
       title.set('lockMovementX', true);
       title.set('lockMovementY', true);
       title.set('lockRotation', true);
@@ -266,7 +266,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       if (move.color === 'b') {
         color = 'Black';
       }
-      const prompt = new fabric.Text(color + ' has triggered promotion at', { fontSize: 36 })
+      const prompt = new fabric.Text(color + ' has triggered promotion at', { fontSize: this.size * .04 })
       prompt.set('lockMovementX', true);
       prompt.set('lockMovementY', true);
       prompt.set('lockRotation', true);
@@ -279,13 +279,13 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       prompt.setColor('white');
       prompt.set('originX', 'center');
       prompt.set('originY', 'center');
-      prompt.set('left', (this.size * .5) - 48);
+      prompt.set('left', (this.size * .5) - 24);
       prompt.set('top', this.size * .53);
       prompt.setCoords();
       group.push(prompt);
 
       // Create text to right of triggered text with move
-      const atText = new fabric.Text(SquareNames[tileIndex], { fontWeight: 'bold', fontSize: 44 })
+      const atText = new fabric.Text(SquareNames[tileIndex], { fontSize: this.size * .055 })
       atText.set('lockMovementX', true);
       atText.set('lockMovementY', true);
       atText.set('lockRotation', true);
@@ -302,7 +302,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       const promptWidth = prompt.get('width');
       const promptLeft = prompt.get('left');
 
-      atText.set('left', (promptLeft ? promptLeft : this.size * .2) + ((promptWidth !== undefined ? promptWidth : 20) / 2) + 38);
+      atText.set('left', (promptLeft ? promptLeft : this.size * .2) + ((promptWidth !== undefined ? promptWidth : 20) / 2) + 18);
       atText.set('top', this.size * .53);
       atText.setCoords();
       group.push(atText);
@@ -519,6 +519,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.promotionDialog.set('hasControls', false);
       this.promotionDialog.set('hasBorders', false);
       this.promotionDialog.set('selectable', false);
+      this.promotionDialog.scaleToHeight(this.size);
+      this.promotionDialog.scaleToWidth(this.size);
       this.canvas?.add(this.promotionDialog);
       this.promotionDialog.moveTo(500);
       if (this.knightButton) {
