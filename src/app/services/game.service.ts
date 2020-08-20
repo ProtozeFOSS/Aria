@@ -398,18 +398,9 @@ export class GameService {
     }
   }
   public moveToEnd(): void {
-    const move = new ChessMove();
-    move.to = 61;
-    move.from = 53;
-    move.color = 'w';
-    move.role = 'P';
-    if (this._board) {
-      this._board.showPromotionDialog(move);
+    if (this._game && !this._game.isFinalPosition()) {
+      this._game.moveToEnd();
     }
-
-    // if (this._game && !this._game.isFinalPosition()) {
-    //   this._game.moveToEnd();
-    // }
   }
   public loadPGN(pgn: string) {
     // parse potential multiple games

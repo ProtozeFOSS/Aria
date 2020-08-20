@@ -302,7 +302,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       const promptWidth = prompt.get('width');
       const promptLeft = prompt.get('left');
 
-      atText.set('left', (promptLeft ? promptLeft : this.size * .2) + ((promptWidth !== undefined ? promptWidth : 20) / 2) + 18);
+      atText.set('left', (promptLeft ? promptLeft : this.size * .2) + ((promptWidth !== undefined ? promptWidth : 20) / 2) + this.size * .035);
       atText.set('top', this.size * .53);
       atText.setCoords();
       group.push(atText);
