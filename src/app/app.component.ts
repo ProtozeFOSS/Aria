@@ -79,7 +79,6 @@ export class Olga implements AfterViewInit {
   touchMoved(event: TouchEvent): void {
     if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
       this.gameScoreComponent.resizeTouchEvent(event);
-      this.gameScoreComponent.resizing = false;
     }
   }
 

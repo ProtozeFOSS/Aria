@@ -8,7 +8,7 @@ import { GameScoreAnnotation, GameScoreVariation } from './game.service';
 export class OlgaService {
   @Output() readonly annotations = new BehaviorSubject<GameScoreAnnotation[]>([]);
   @Output() readonly showingPly = new BehaviorSubject<boolean>(true);
-  @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(true);
+  @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
   @Output() readonly variation = new BehaviorSubject<GameScoreVariation[]>([]);
   constructor() { }
 }

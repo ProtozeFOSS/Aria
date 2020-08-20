@@ -4,7 +4,7 @@ import { Injectable, Input, Output } from '@angular/core';
 import { isMoveDescriptor, Game as KGame, pgnRead, Database as KDatabase, Variation as KVariation, Node as KNode, Position as KPosition } from 'kokopu';
 import { BehaviorSubject, onErrorResumeNext } from 'rxjs';
 import { OlgaService } from './olga.service';
-import { CanvasChessBoard, SquareNames } from '../canvas-chessboard/canvas-chessboard.component';
+import { CanvasChessBoard, SquareNames, Piece } from '../canvas-chessboard/canvas-chessboard.component';
 import { GamescoreUxComponent } from '../game-score/game-score.ux';
 
 // Game Score
@@ -45,6 +45,8 @@ export class ChessMove {
   role: string = '';
   color: string = '';
   capture?: { role: string, color: string };
+  promotion?: { role: string };
+  promoteFunction?: any;
 }
 
 export class ScoreMarker {
@@ -75,6 +77,24 @@ export class ChessGame {
 
   public onVariant(): boolean {
     return this.isVariation;
+  }
+  public performPromotion(move: ChessMove) {
+    if (move.promotion && move.promoteFunction) {
+      //const moveDesc = 1
+      const moveDesc = move.promoteFunction(move.promotion.role.toLowerCase());
+      console.log(this.position.notation(moveDesc));
+      if (this.position.play(moveDesc)) {
+        const node = this.variation.play(moveDesc);
+        if (!this.lastNode || this.lastNode == this.currentNode) {
+          this.lastNode = node;
+        }
+        if (!this.startNode) {
+          this.startNode = node;
+        }
+        this.currentNode = node;
+        this.currentNode._info.moveDescriptor = moveDesc;
+      }
+    }
   }
   public makeMove(move: ChessMove, fromPGN = false): void {
     if (this.currentNode) {
@@ -122,17 +142,22 @@ export class ChessGame {
             } else {
               console.log('Variant Continued: ' + fromSquare + ' -> ' + toSquare);
             }
-            const legalMove = legal();
-            if (this.position.play(legalMove)) {
-              const node = this.variation.play(legalMove);
-              if (!this.lastNode || this.lastNode == this.currentNode) {
-                this.lastNode = node;
+            if (legal.status === 'promotion') {
+              move.promoteFunction = legal;
+              this.gameService.board.value?.showPromotionDialog(move);
+            } else {
+              const legalMove = legal();
+              if (this.position.play(legalMove)) {
+                const node = this.variation.play(legalMove);
+                if (!this.lastNode || this.lastNode == this.currentNode) {
+                  this.lastNode = node;
+                }
+                if (!this.startNode) {
+                  this.startNode = node;
+                }
+                this.currentNode = node;
+                this.currentNode._info.moveDescriptor = legalMove;
               }
-              if (!this.startNode) {
-                this.startNode = node;
-              }
-              this.currentNode = node;
-              this.currentNode._info.moveDescriptor = legalMove;
             }
           }
         }
@@ -140,7 +165,6 @@ export class ChessGame {
       console.log('Game is on a variant -> ' + (this.onVariant() ? 'Yes' : 'No'));
     }
   }
-
   constructor(protected gameService: GameService, public game?: KGame) {
     if (game) {
       this.setGame(this.game)
@@ -235,15 +259,7 @@ export class ChessGame {
     return false;
   }
   public moveToStart(): void {
-    if (!this.isStartingPosition()) {
-      this.position.reset();
-      if (this.gameService.board.value) {
-        this.variation = this.game.mainVariation();
-        this.currentNode = this.variation.first();
-        this.startNode = this.currentNode;
-        this.lastNode = this.position.__last;
-        this.gameService.board.value.setBoardToGamePosition();
-      }
+    while (this.previous()) {
     }
   }
   public moveToEnd(): void {
@@ -252,24 +268,35 @@ export class ChessGame {
     }
   }
 
-  public previous(): void {
+  public previous(): boolean {
     if (!this.isStartingPosition() && this.gameService.board.value) {
       if (!ChessGame.compareKNode(this.startNode, this.currentNode)) {
         let currentNode = this.startNode;
         while (currentNode.next() && !ChessGame.compareKNode(currentNode.next(), this.currentNode)) {
           currentNode = currentNode.next();
         }
-        if (ChessGame.compareKNode(currentNode, this.startNode)) {
-          this.moveToStart();
-        } else {
-          this.position = currentNode.positionBefore();
-          this.lastNode = this.position._last;
-          this.fen = this.position.fen();
-          this.currentNode = currentNode;
+        if (this.gameService.board.value) {
+          const move = currentNode._info.moveDescriptor;
+          const unmove = new ChessMove();
+          unmove.to = SquareNames.indexOf(move.to());
+          unmove.from = SquareNames.indexOf(move.from());
+          if (move.isCapture()) {
+            const piece = move.capturedPiece();
+            const color = move.color();
+            if (piece && color) {
+              unmove.capture = { role: piece.toUpperCase(), color: color === 'w' ? 'b' : 'w' };
+            }
+          }
+          this.gameService.board.value.unMakeMove(unmove);
         }
+        this.position = currentNode.positionBefore();
+        this.lastNode = this.position._last;
+        this.fen = this.position.fen();
+        this.currentNode = currentNode;
+        return true;
       }
-      this.gameService.board.value?.setBoardToGamePosition();
     }
+    return false;
   }
   public isStartingPosition(): boolean {
     return ChessGame.compareKNode(this.variation.first(), this.currentNode);
@@ -342,6 +369,8 @@ export class GameService {
     }
   }
 
+
+
   public makeMove(move: ChessMove, fromPGN = false): void {
     // if (!fromPGN) {
     //   this._game?.moveOrCreateVariant(move, fromPGN);
@@ -369,9 +398,18 @@ export class GameService {
     }
   }
   public moveToEnd(): void {
-    if (this._game && !this._game.isFinalPosition()) {
-      this._game.moveToEnd();
+    const move = new ChessMove();
+    move.to = 61;
+    move.from = 53;
+    move.color = 'w';
+    move.role = 'P';
+    if (this._board) {
+      this._board.showPromotionDialog(move);
     }
+
+    // if (this._game && !this._game.isFinalPosition()) {
+    //   this._game.moveToEnd();
+    // }
   }
   public loadPGN(pgn: string) {
     // parse potential multiple games

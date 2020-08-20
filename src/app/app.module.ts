@@ -41,7 +41,7 @@ import { OlgaControlsComponent } from './controls/olga-controls/olga-controls.co
     SettingsBoardComponent,
     MenuGameScoreItemComponent,
     CanvasChessBoard,
-    OlgaControlsComponent,
+    OlgaControlsComponent
   ],
   imports: [
     BrowserModule,
