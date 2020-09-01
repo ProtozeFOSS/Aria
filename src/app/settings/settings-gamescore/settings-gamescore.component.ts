@@ -21,18 +21,9 @@ export class GamescoreSettingsComponent implements OnInit, AfterViewInit {
     public gameService: GameService,
     public colorService: ColorService
   ) { }
-  @ViewChild('lightBGHandle', { static: true })
-  lightBGHandle: ElementRef | null = null;
-  @ViewChild('darkBGHandle', { static: true })
-  darkBGHandle: ElementRef | null = null;
 
   ngOnInit(): void { }
   ngAfterViewInit(): void {
-    if (this.lightBGHandle) {
-      this.lightBGHandle.nativeElement.value = this.colorService.boardBGLight.value;
-    }
-    if (this.darkBGHandle) {
-      this.darkBGHandle.nativeElement.value = this.colorService.boardBGDark.value;
-    }
+
   }
 }

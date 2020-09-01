@@ -1,0 +1,22 @@
+<div class="quick-actions-container">
+        <div (click)="gameService.togglePlay()" class="button play">
+                <svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#play" />
+                </svg>
+        </div>
+        <div (click)="gameService.openEngine()" class="button engine">
+                <svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#cpu" />
+                </svg>
+        </div>
+</div>
+<div class="navigation-container">
+        <div (click)="gameService.moveToStart();" class="button start"><svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#chevrons-left" /></svg></div>
+        <div (click)="gameService.previous();" class="button previous"><svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#chevron-left" /></svg></div>
+        <div (click)="gameService.advance();" class="button next"><svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#chevron-right" /></svg></div>
+        <div (click)="gameService.moveToEnd();" class="button end"><svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#chevrons-right" /></svg></div>
+</div>

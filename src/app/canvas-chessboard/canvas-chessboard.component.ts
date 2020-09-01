@@ -37,7 +37,7 @@ export class BoardSettings {
 export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Input() UUID = '';
   @Input() size = 320;
-  @Output() tileSize = Math.floor(this.size / 8);
+  @Input() @Output() tileSize = Math.floor(this.size / 8);
   @Input() interactive = true;
   protected promotionDialog: fabric.Group | null = null;
   protected knightButton: fabric.Group | null = null;
@@ -55,7 +55,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Output() touching = false;
   @Output() midPromotion = false;
   constructor(public gameService: GameService, public colorService: ColorService) {
-    this.gameService.attachBoard(this);
     if (this.gameService.game.value !== null) {
       this.setBoardToGamePosition();
     }
@@ -74,6 +73,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         this.connectMouseInput();
         this.setBoardToGamePosition();
         waitCount.unsubscribe();
+        this.resizeBoardObjects(this.size);
       }
     });
     this.canvas.hoverCursor = 'arrow';
@@ -914,6 +914,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   private resizeBoardObjects(size: number): void {
+    this.tileSize = Math.floor(this.size / 8);
     const padding = Math.floor((this.size - (this.tileSize * 8)) / 2);
     if (this.tileGroup) {
       const border = padding / 2;
@@ -1005,7 +1006,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   setDarkTile(color: string): void {
-    if (this.theme) {
+    if (this.theme && this.tiles.length != 0) {
       this.theme.tileDark = color;
       for (let index = 0; index < 64; index++) {
         const row = Math.floor(index / 8);
@@ -1028,7 +1029,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   setLightTile(color: string): void {
-    if (this.theme) {
+    if (this.theme && this.tiles.length != 0) {
       this.theme.tileLight = color;
       for (let index = 0; index < 64; index++) {
         const row = Math.floor(index / 8);

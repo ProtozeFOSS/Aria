@@ -127,9 +127,9 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     console.log(item);
     if (item.data) {
-      item.setCurrent(!item.data.current);
+      //item.setCurrent(!item.data.current);
     }
-    switch (item.type) { // open different menus
+    switch (item.data.type) { // open different menus
 
     }
     //this.scoreItemMenu?.openAt(item);

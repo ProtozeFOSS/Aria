@@ -27,7 +27,8 @@ import { OlgaService } from './services/olga.service';
 import { GameService } from './services/game.service';
 import { LayoutService } from './services/layout.service';
 import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.component';
-import { OlgaControlsComponent } from './controls/olga-controls/olga-controls.component';
+import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
+import { OlgaStatusComponent } from './olga-status/olga-status.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { OlgaControlsComponent } from './controls/olga-controls/olga-controls.co
     SettingsBoardComponent,
     MenuGameScoreItemComponent,
     CanvasChessBoard,
-    OlgaControlsComponent
+    OlgaControlsComponent,
+    OlgaStatusComponent
   ],
   imports: [
     BrowserModule,

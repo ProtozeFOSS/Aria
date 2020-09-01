@@ -43,6 +43,27 @@ olga-controls {
   position: absolute;
   right: 1px;
   bottom: 8%;
-  height: 84px;
+  height: 128px;
   width:50%;
+  background-color: $gsBackground;
+  border: black solid 1px;
+  border-radius: 2px;
+}
+
+olga-status {
+  position: absolute;
+  widows: 45%;
+  right: 1px;
+
+ 
+}
+settings-menu{
+  position: absolute;
+  top: height;
+  bottom:0px;
+  left:0px;
+  right:0px;
+  background: #100c0ce3;
+  z-index: 1000;
+  visibility: hidden;
 }

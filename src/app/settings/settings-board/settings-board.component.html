@@ -1,1 +1,4 @@
-<p>settings-board works!</p>
+<input #lightBGHandle type="color" id="lightColor" class="color-input" (input)="updateLight(lightBGHandle.value)"
+    (blur)="updateLight(lightBGHandle.value)" />
+<input #darkBGHandle type="color" id="darkColor" class="color-input" (input)="updateDark(darkBGHandle.value)"
+    (blur)="updateDark(darkBGHandle.value)" />

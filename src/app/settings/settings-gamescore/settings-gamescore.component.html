@@ -40,25 +40,7 @@
     Settings
   </mat-card-subtitle>
   <mat-card-content>
-    <div>Light Background</div>
-    <input
-      #lightBGHandle
-      matInput
-      type="color"
-      id="lightColor"
-      class="color-input"
-      (input)="colorService.boardBGLight.next(lightBGHandle.value)"
-    />
-    <div>Dark Background</div>
-    <input
-      #darkBGHandle
-      matInput
-      type="color"
-      id="darkColor"
-      class="color-input"
-      (input)="colorService.boardBGDark.next(darkBGHandle.value)"
-    />
-    <br />
+
     <!-- <div>Font Size</div>
     <mat-slider #scoreFontSize thumbLabel class="small-slider" (input)="gameScoreService.scoreFontSize.next(($event.value ? $event.value : 18))" value="18" min="14" max="24" step="1" color="primary" ></mat-slider>
     <br/>

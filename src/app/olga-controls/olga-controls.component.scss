@@ -1,0 +1,81 @@
+@import "../../styles.scss";
+
+.button {
+    position: absolute;
+    border: black 2px solid;
+    background: $gsBackground;
+    text-align: center;
+    border-radius: 2px;
+}
+
+.quick-actions-container{
+    background-color: transparent;
+    border: none;
+    border-radius: 2px;
+    position:absolute;
+    height:48px;
+    width: 100%;
+}
+.navigation-container{
+    position:absolute;
+    top: 42px;
+    width: 100%;
+    left:0px;
+    height:64px;
+}
+
+.start {
+    left: -1px;
+    width: 14%;
+    top: 6px;
+    bottom: 6px;
+}
+.previous {
+    left: calc(14% - 2px);
+    width: calc(22% - 2px);
+    top: 6px;
+    bottom: 6px;
+}
+.next {
+    width: calc(50% + 3px);
+    left: calc(36% - 5px);
+    top:6px;
+    bottom:6px;
+}
+.end {
+    width: calc(14% + 2px);
+    right: -1px;
+    top:6px;
+    bottom:6px;
+}
+
+.play{
+    position:absolute;
+    width: 56px;
+    left: 50%;
+    top: 10%;
+    bottom:14%;
+    border: $boardBGDark solid 2px;
+    border-radius: 32px;
+}
+.engine{
+    position:absolute;
+    width: 48px;
+    left: calc(50% + 68px);
+    top: 10%;
+    bottom:14%;
+    border: $boardBGDark solid 2px;
+}
+
+.feather  {
+  position: absolute;
+  left:10%;
+  width: 80%;
+  height: 80%;
+  top:10%;
+  stroke: $boardBGDark;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}

@@ -3,32 +3,39 @@
 .gsi-container {  
   display: inline-flex;
   line-height: $gsTextSize;
+  margin: 2px;
+}
+
+.gsi-move{
+  white-space: nowrap;
+  color: $gsTextColor;
+}
+
+.gsi-ply{
+  color: $gsTextColor;
+}
+
+.gsi-comment{
+  color: $gsTextColorAN;
+  margin-left: 4px;
+
 }
 
 /************************************ Game Score Group **************************/
-.GameScoreGroup.gsi-container {
-  border: $gsBorder;
-  background: $gsBackground;
-  padding-right: 2px;
-  margin-left: 3px;
+.Group.gsi-container {
   color: $gsTextColor;
 }
-.GameScoreGroup.gsi-container-hg{
+.Group.gsi-container-hg{
   background: $gsBackgroundHG;
   border: $gsBorderHG;
   line-height: $gsTextSize;
 }
-.GameScoreGroup.gsi-movew {
+.Group.gsi-move {
   padding-left: 2px;
   line-height: $gsTextSize;
 }
 
-.GameScoreGroup.gsi-moveb {
-  padding-left: 2px;
-  line-height: $gsTextSize;
-}
-
-.GameScoreGroup.gsi-ply {
+.Group.gsi-ply {
   background: $gsBackgroundAN;
   border-radius: 2px;
   margin-right: 2px;
@@ -37,7 +44,7 @@
   line-height: $gsTextSize;
 }
 
-.GameScoreGroup.gsi-ply-highlight {
+.Group.gsi-ply-highlight {
   background: $gsBackgroundHG;
   color: $gsTextColorHG;
   border:$gsBorderHG;
@@ -45,15 +52,10 @@
 }
 
 
-/************************************ Variation Group ***************************/
 
 
 /************************************* Annotation Group **************************/
 .Annotation.gsi-container {
-  border: $gsBorderAN;
-  background: $gsBackgroundAN;
-  padding-left:2px;
-  padding-right: 3px;
   color: $gsTextColor;
   line-height: $gsTextSize;
 }
@@ -62,14 +64,9 @@
   border: $gsBorderHG;
   line-height: $gsTextSize;
 }
-.Annotation.gsi-movew {
+.Annotation.gsi-move {
   padding-left: 2px;
   line-height: $gsTextSize;
-}
-
-.Annotation.gsi-moveb {
-  padding-left: 2px;
-  line-height: $gsTextSize;  
 }
 
 .Annotation.gsi-ply {
@@ -87,7 +84,6 @@
 }
 
 .Annotation.gsi-comment {
-  color: $gsTextColorAN;
   padding-left:3px;
   padding-right:2px;
   margin-left:3px;
@@ -95,8 +91,17 @@
   line-height: $gsTextSize;
 }
 
-.current-move {
-  background: $gsBackgroundHG;
-  border: $gsBorderHG;
-  color: $gsTextColorHG;
+
+/************************************ Variation Group ***************************/
+
+.Variation.gsi-container {
+  border: white dashed 2px;
+  background: $gsBackground;
+  color: $gsTextColor;
+  padding: 2px;
+}
+
+.Variation.gsi-move {
+  padding-left: 2px;
+  line-height: $gsTextSize;
 }

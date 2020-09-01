@@ -12,6 +12,7 @@ import { ColorService } from './services/colors.service';
 import { LayoutService } from './services/layout.service';
 import { GameService, ChessGame } from './services/game.service';
 import { OlgaService } from './services/olga.service';
+import { SettingsMenuComponent } from './settings/settings-menu/settings-menu.component';
 
 @Component({
   selector: 'olga',
@@ -26,9 +27,12 @@ export class Olga implements AfterViewInit {
   canvasBoardComponent: CanvasChessBoard | null = null;
   @ViewChild('olgaContainer')
   appContainer: ElementRef | null = null;
+  @ViewChild(SettingsMenuComponent)
+  settingsMenuComponent: SettingsMenuComponent | null = null;
   @Output() gameScoreElement: HTMLElement | null = null;
   @Output() boardElement: HTMLElement | null = null;
   @Output() controlsElement: HTMLElement | null = null;
+  @Output() statusElement: HTMLElement | null = null;
   @Input() pgnString = '';
   @Input() olgaID = '12312321';
   @Output() gameScoreWidth: number | null = 389;
@@ -56,7 +60,11 @@ export class Olga implements AfterViewInit {
     this.gameScoreElement = document.getElementById('app-gamescore' + this.olgaID);
     this.boardElement = document.getElementById(this.olgaID + '-ccb');
     this.controlsElement = document.getElementById('olga-controls' + this.olgaID);
+    this.statusElement = document.getElementById('olga-status' + this.olgaID);
     this.colorService.initializeColorPalette();
+    this.colorService.boardBGDark.subscribe((bgDark) => {
+      this.canvasBoardComponent?.setDarkTile(bgDark);
+    })
     this.layoutService.initializeLayout(this);
     if (this.canvasBoardComponent) {
       this.gameService.attachBoard(this.canvasBoardComponent);
@@ -66,6 +74,23 @@ export class Olga implements AfterViewInit {
       this.gameScoreComponent.resizeHandleEvent = this.layoutService.onSliderDrag.bind(this.layoutService);
       this.gameScoreComponent.resizeTouchEvent = this.layoutService.onSliderTouch.bind(this.layoutService);
     }
+
+    if (this.canvasBoardComponent) {
+      this.gameService.attachBoard(this.canvasBoardComponent);
+    }
+
+    this.colorService.boardBGLight.subscribe((light) => {
+      if (this.canvasBoardComponent) {
+        console.log('setting light board tile');
+        this.canvasBoardComponent.setLightTile(light);
+      }
+    });
+    this.colorService.boardBGDark.subscribe((dark) => {
+      if (this.canvasBoardComponent) {
+        console.log('setting Dark board tile');
+        this.canvasBoardComponent.setDarkTile(dark);
+      }
+    });
   }
   mouseMoved(event: MouseEvent): void {
     if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
@@ -97,6 +122,11 @@ export class Olga implements AfterViewInit {
       this.canvasBoardComponent.setSize(this.gameScoreWidth);
     }
   }
+
+  setMenuSize(size: number): void {
+    this.settingsMenuComponent?.resize(size, size);
+  }
+
   ignoreEvent(event: MouseEvent): void {
     //console.log('Ignoring ' + event);
     event.preventDefault();

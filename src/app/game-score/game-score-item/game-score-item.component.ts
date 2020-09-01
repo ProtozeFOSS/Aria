@@ -8,9 +8,12 @@ import { OlgaService } from 'src/app/services/olga.service';
   styleUrls: ['./game-score-item.component.scss']
 })
 export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges {
-  @Input() @Output() data: GameScoreItem | null = null;
-  @Output() type = GameScoreType.GameScoreGroup;
+  @Input() @Output() data: GameScoreItem = new GameScoreItem(null, -1);
   @Output() typeName = '';
+
+  // visual nodes
+  public plyOn = false;
+  public ply = '';
   GameScoreType = GameScoreType;
   constructor(public olga: OlgaService, public gameService: GameService) {
     // use data to actually set type
@@ -18,29 +21,32 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   ngOnInit(): void {
-    if (this.data && this.data.type) {
-      this.type = this.data.type;
-      this.typeName = this.gameService.typeToString(this.type) + (this.data.current ? ' current-move' : '');
-    } else {
-      this.typeName = this.gameService.typeToString(this.type);
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data) {
       let newData = changes.data.currentValue as GameScoreItem;
       this.data = newData;
+      if (this.data) {
+        if (this.isFullPly()) {
+          this.plyOn = this.olga.showingPly.value;
+        } else {
+          this.plyOn = this.olga.showingHalfPly.value;
+        }
+      }
+      this.ply = this.data.move.fullMoveNumber().toString() + '.';
+      this.data.getType();
+      this.updateTypeName();
     }
-    this.updateTypeName();
   }
 
   ngAfterViewInit(): void {
-
+    this.updateTypeName();
   }
 
   showPly(): boolean {
-    if (this.data && this.data.moveData) {
-      if (this.data.moveData.ply == Math.ceil(this.data.moveData.ply)) {
+    if (this.data) {
+      if (this.isFullPly()) {
         return this.olga.showingPly.value;
       }
       return this.olga.showingHalfPly.value;
@@ -48,23 +54,61 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
     return false;
   }
   isFullPly(): boolean {
-    if (this.data && this.data.moveData) {
-      return this.data.moveData.ply == Math.ceil(this.data.moveData.ply);
+    if (this.data) {
+      return (this.data.type & GameScoreType.HalfPly) == 0;
     }
     return false;
   }
   setCurrent(current: boolean): void {
     if (this.data) {
-      this.data.current = current;
-      this.updateTypeName();
+      this.updateTypeName(current);
     }
   }
-  protected updateTypeName(): void {
-    if (this.data && this.data.type) {
-      this.type = this.data.type;
-      this.typeName = this.gameService.typeToString(this.type) + (this.data.current ? ' current-move' : '');
-    } else {
-      this.typeName = this.gameService.typeToString(this.type);
+  getPly(): number {
+    if (this.data && this.data.move) {
+      return this.data.move.fullMoveNumber();
+    }
+    return -1;
+  }
+
+  isGroup(): boolean {
+    if (this.data) {
+      return (this.data.type & GameScoreType.Group) == 1;
+    }
+    return false;
+  }
+
+  isAnnotation(): boolean {
+    if (this.data) {
+      return (this.data.type & GameScoreType.Annotation) == 1;
+    }
+    return false;
+  }
+
+  clickMove(): void {
+    if (this.data.move.variations().length > 0) {
+      this.gameService.displayVariations(this.data);
+    }
+  }
+
+  protected updateTypeName(current = false): void {
+    //this.typeName = '';
+    if (this.data) {
+      if ((this.data.type & GameScoreType.Annotation) == 1) {
+        this.typeName += 'Annotation ';
+      }
+      if ((this.data.type & GameScoreType.Group) == 1) {
+        this.typeName += 'Group ';
+      }
+      if ((this.data.type & GameScoreType.HalfPly) == 1) {
+        this.typeName += 'HalfPly ';
+      }
+      const variations = this.data.move.variations();
+      if (variations && variations.length > 0) {
+        this.typeName += 'Variation ';
+      } else {
+        console.log('No Variations found -> ' + this.data.move.notation())
+      }
     }
   }
 }

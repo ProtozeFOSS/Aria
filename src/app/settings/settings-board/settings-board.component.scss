@@ -1,0 +1,27 @@
+@import "../../../styles.scss";
+
+
+.color-input{
+  width:80px;
+  height:80px;
+  background-color:$gsBackground;
+  border:none;
+  text-align: left;
+  font-size:2vmin;
+  margin: 20px;
+}
+
+::ng-deep{
+  .small-slider.mat-slider.mat-slider-horizontal .mat-slider-thumb {
+    height: 32px;
+    width: 32px;
+    border: solid 3px $item-bg;
+    bottom: -20px;
+    right: -20px;
+  }
+
+  .small-slider.mat-slider.mat-slider-horizontal .mat-slider-thumb-label-text {
+    font-size: 24px;
+  }
+
+}

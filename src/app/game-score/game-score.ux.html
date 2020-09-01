@@ -3,16 +3,11 @@
 <mat-card class="gamescore-container">
   <h1 class="score-title">Score</h1>
   <mat-card-content *ngIf="viewType === ScoreViewType.Flow" class="score-list">
-    <app-game-score-item #scoreItem *ngFor="let item of (gameService._items | async); index as i;" [data]="item"
-      (contextmenu)="openItemMenu($event, scoreItem)"></app-game-score-item>
-    <!-- <mat-grid-list  cols="{{this.columnCount}}" rowHeight="{{this.rowHeight}}">
-      <mat-grid-tile class="score-font" *ngFor="let moves of gameScore; index as i;">
-        <b class="score-ply">{{i+1}}.</b> <app-playermove [move]="moves.w" [black]="false"></app-plSayermove>  <app-playermove [black]="true" [move]="moves.b"></app-playermove>
-      </mat-grid-tile>
-    </mat-grid-list> -->
+    <app-game-score-item #scoreItem *ngFor="let item of (gameService._items | async); index as i;" [data]="item">
+    </app-game-score-item>
   </mat-card-content>
 </mat-card>
-<div><br />PGN:<br /><input #pgnData value='[Event "GMA, Wijk aan Zee NED"]
+<div><input style="visibility:hidden;display: none;" #pgnData value='[Event "GMA, Wijk aan Zee NED"]
 [Site "?"]
 [Date "2003.??.??"]
 [Round "1"]
