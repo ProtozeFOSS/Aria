@@ -46,7 +46,9 @@ export class GameScoreItem {
     this.move = move;
     this.getType();
   }
-
+  getIndex(): number {
+    return this.index;
+  }
   getType(): number {
     this.type = 0;
     if (this.move) {
@@ -384,6 +386,7 @@ export class ChessGame {
             if (this.position.play(node.move._info.moveDescriptor)) {
               this.gameService.board.value?.makeMove(cmove);
               this.currentNode = node.move;
+              this.gameService.status.value?.updateStatus(this.position.turn(), node.move);
             }
           }
         }
@@ -391,15 +394,27 @@ export class ChessGame {
       return;
     }
     if (this.currentIndex > index) {
-      while (this.currentIndex > index && this.currentIndex >= -1) {
-        const node = this.nodeMap[this.currentIndex--];
-        if (node) {
+      while (this.currentIndex > index && --this.currentIndex >= -1) {
+        const node = this.nodeMap[this.currentIndex + 1];
+        const previous = this.nodeMap[this.currentIndex];
+        if (previous) {
           const cmove = ChessMove.fromNode(node.move);
           if (cmove) {
-            this.position = node.move.position();
+            this.position = previous.move.position();
             this.gameService.board.value?.unMakeMove(cmove);
-            this.currentNode = node.move;
+            this.currentNode = previous;
+            this.gameService.status.value?.updateStatus(this.position.turn(), previous.move);
           }
+        } else {
+          this.position.reset();
+          this.currentIndex = -1;
+          this.currentNode = null;
+          if (!this.currentNode) {
+            this.currentNode = this.lastNode;
+          }
+          this.fen = this.position.fen();
+          this.gameService.board.value?.setBoardToGamePosition();
+          this.gameService.status.value?.updateStatus(this.position.turn());
         }
       }
       return;
@@ -512,7 +527,7 @@ export class GameService {
   }
 
   public navigateToItem(item: GameScoreItem, isBlack = false) {
-    //this._game?.navigateToNode(isBlack ? item.blackMove : item.whiteMove, item.variation);
+    this._game?.navigateToNode(item.getIndex());
     console.log('Navigating to item -> ' + item.move.notation());
   }
 

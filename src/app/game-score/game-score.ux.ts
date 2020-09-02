@@ -63,7 +63,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   @Output() resizing = false;
   @Input() scoreWidth: number | null = 360;
   @Input() viewType: ScoreViewType = ScoreViewType.Flow;
-  protected previousCursor = 'pointer';
   GameScoreType = GameScoreType;
   ScoreViewType = ScoreViewType;
 
@@ -73,6 +72,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   @ViewChildren(GameScoreItemComponent) scoreItems: QueryList<GameScoreItemComponent> | null = null;
   @Output() currentScoreItem: GameScoreItemComponent | null = null;
   constructor(public olga: OlgaService, public gameService: GameService, public layoutService: LayoutService) {
+    this.resetCursor();
     this.gameService.figurineNotation.subscribe((figurineNotation) => {
       if (figurineNotation) {
         this.scoreFontFamily.next('FigurineSymbolT1');
@@ -149,7 +149,8 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   resetResizeHandle(event: DragEvent | MouseEvent): void {
     this.resizing = false;
     if (this.resizeHandle && event.buttons === 0) {
-      document.body.style.cursor = this.previousCursor;
+      document.body.style.cursor = 'pointer';
+      this.resizeHandle.nativeElement.style.cursor = 'pointer';
     }
     if (this.resizeHandleEvent) {
       this.resizeHandleEvent(event);
@@ -157,7 +158,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   setGrabCursor(event: DragEvent | MouseEvent): void {
-    this.previousCursor = document.body.style.cursor;
     this.resizing = true;
     document.body.style.cursor = 'grab';
     if (this.resizeHandle) {
@@ -165,8 +165,14 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     }
   }
 
+  resetCursor(): void {
+    document.body.style.cursor = 'pointer';
+    if (this.resizeHandle) {
+      this.resizeHandle.nativeElement.style.cursor = 'pointer';
+    }
+  }
+
   startTouch(event: TouchEvent): void {
-    this.previousCursor = document.body.style.cursor;
     const touchPoint = event.touches[0];
     if (touchPoint) {
       if (this.layoutService.resizeElement) {
@@ -199,9 +205,9 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   resizeHandleCore(event: DragEvent | MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    document.body.style.cursor = 'grab';
+    //document.body.style.cursor = 'grab';
     if (this.resizeHandle) {
-      this.resizeHandle.nativeElement.style.cursor = 'grab';
+      //this.resizeHandle.nativeElement.style.cursor = 'grab';
     }
     if (event.buttons > 0 && this.resizeHandleEvent) {
       this.resizeHandleEvent(event);

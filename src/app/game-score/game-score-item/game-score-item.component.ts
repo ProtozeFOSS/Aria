@@ -88,6 +88,8 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
   clickMove(): void {
     if (this.data.move.variations().length > 0) {
       this.gameService.displayVariations(this.data);
+    } else {
+      this.gameService.navigateToItem(this.data);
     }
   }
 

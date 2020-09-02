@@ -12,6 +12,11 @@
   vertical-align: bottom;
   margin-top: 20px;
   margin-left: 4px;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 .button {

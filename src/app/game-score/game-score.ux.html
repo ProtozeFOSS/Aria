@@ -1,25 +1,14 @@
-<app-menu-game-score-item
-  class="gs-menu"
-  #scoreItemMenu
-  [style.z-index]="scoreItemMenu.open ? 20 : -1"
-  (click)="scoreItemMenu.open = false;"
-></app-menu-game-score-item>
+<app-menu-game-score-item class="gs-menu" #scoreItemMenu [style.z-index]="scoreItemMenu.open ? 20 : -1"
+  (click)="scoreItemMenu.open = false;"></app-menu-game-score-item>
 <mat-card class="gamescore-container">
   <h1 class="score-title">Score</h1>
   <mat-card-content *ngIf="viewType === ScoreViewType.Flow" class="score-list">
-    <app-game-score-item
-      #scoreItem
-      *ngFor="let item of (gameService._items | async); index as i;"
-      [data]="item"
-    >
+    <app-game-score-item #scoreItem *ngFor="let item of (gameService._items | async); index as i;" [data]="item">
     </app-game-score-item>
   </mat-card-content>
 </mat-card>
 <div>
-  <input
-    style="visibility: hidden; display: none;"
-    #pgnData
-    value='[Event "GMA, Wijk aan Zee NED"]
+  <input style="visibility: hidden; display: none;" #pgnData value='[Event "GMA, Wijk aan Zee NED"]
 [Site "?"]
 [Date "2003.??.??"]
 [Round "1"]
@@ -101,21 +90,9 @@
 { possibly preparing ...b5 }) 27...Qb6 (27...Qc4 28. Nxa5 Qxh4 $14
 { Fritz7 }) 28. Nd4
 { Black created the weakness (Pa5) and cant quite defend it, so Anand forces a draw. }
-1/2-1/2'
-    class="input-box"
-    #pgnBox
-    type="text"
-    (click)="loadPGN(pgnBox.value)"
-    (change)="loadPGN(pgnBox.value)"
-  />
+1/2-1/2' class="input-box" #pgnBox type="text" (click)="loadPGN(pgnBox.value)" (change)="loadPGN(pgnBox.value)" />
 </div>
 
-<div
-  #resizeHandle
-  id="resize-handle-{{UUID}}"
-  class="resize-handle"
-  (touchstart)="startTouch($event)"
-  (touchend)="stopTouch($event)"
-  (mouseup)="resetResizeHandle($event)"
-  (mousedown)="setGrabCursor($event)"
-></div>
+<div #resizeHandle id="resize-handle-{{UUID}}" class="resize-handle" (touchstart)="startTouch($event)"
+  (touchend)="stopTouch($event)" (mouseup)="resetResizeHandle($event)" (mousedown)="setGrabCursor($event)"
+  (mouseleave)="resetCursor()"></div>

@@ -11,12 +11,12 @@
         </div>
 </div>
 <div class="navigation-container">
-        <div (click)="gameService.moveToStart();" class="button start"><svg class="feather">
+        <div (click)="moveToStart($event);" class="button start"><svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#chevrons-left" /></svg></div>
-        <div (click)="gameService.previous();" class="button previous"><svg class="feather">
+        <div (click)="previous($event);" class="button previous"><svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#chevron-left" /></svg></div>
-        <div (click)="gameService.advance();" class="button next"><svg class="feather">
+        <div (click)="advance($event);" class="button next"><svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#chevron-right" /></svg></div>
-        <div (click)="gameService.moveToEnd();" class="button end"><svg class="feather">
+        <div (click)="moveToEnd($event);" class="button end"><svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#chevrons-right" /></svg></div>
 </div>

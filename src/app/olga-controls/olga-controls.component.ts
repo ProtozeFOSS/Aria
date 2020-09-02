@@ -13,4 +13,27 @@ export class OlgaControlsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  advance(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.gameService.advance();
+  }
+
+  moveToStart(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.gameService.moveToStart();
+  }
+
+  previous(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.gameService.previous();
+  }
+
+  moveToEnd(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.gameService.moveToEnd();
+  }
 }

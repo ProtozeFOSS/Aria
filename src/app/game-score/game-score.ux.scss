@@ -30,6 +30,12 @@ mat-divider {
   top: 32px;
   height: calc(99% - 30px);
   overflow: auto;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 .gamescore-container {
   background: $bgContainer;
