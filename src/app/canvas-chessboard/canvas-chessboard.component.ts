@@ -4,7 +4,72 @@ import { BehaviorSubject } from 'rxjs';
 import { ChessMove, GameService } from '../services/game.service';
 import { ColorService } from '../services/colors.service';
 
-export const SquareNames = ['a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1', 'a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2', 'a3', 'b3', 'c3', 'd3', 'e3', 'f3', 'g3', 'h3', 'a4', 'b4', 'c4', 'd4', 'e4', 'f4', 'g4', 'h4', 'a5', 'b5', 'c5', 'd5', 'e5', 'f5', 'g5', 'h5', 'a6', 'b6', 'c6', 'd6', 'e6', 'f6', 'g6', 'h6', 'a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7', 'a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8'];
+export const SquareNames = [
+  'a1',
+  'b1',
+  'c1',
+  'd1',
+  'e1',
+  'f1',
+  'g1',
+  'h1',
+  'a2',
+  'b2',
+  'c2',
+  'd2',
+  'e2',
+  'f2',
+  'g2',
+  'h2',
+  'a3',
+  'b3',
+  'c3',
+  'd3',
+  'e3',
+  'f3',
+  'g3',
+  'h3',
+  'a4',
+  'b4',
+  'c4',
+  'd4',
+  'e4',
+  'f4',
+  'g4',
+  'h4',
+  'a5',
+  'b5',
+  'c5',
+  'd5',
+  'e5',
+  'f5',
+  'g5',
+  'h5',
+  'a6',
+  'b6',
+  'c6',
+  'd6',
+  'e6',
+  'f6',
+  'g6',
+  'h6',
+  'a7',
+  'b7',
+  'c7',
+  'd7',
+  'e7',
+  'f7',
+  'g7',
+  'h7',
+  'a8',
+  'b8',
+  'c8',
+  'd8',
+  'e8',
+  'f8',
+  'g8',
+  'h8',
+];
 
 export interface Piece {
   role: string;
@@ -19,15 +84,14 @@ export class BoardTheme {
     public pieceSet: string = '',
     public isSpriteSheet = false,
     public fileExtension = '.svg'
-  ) { }
+  ) {}
 }
 
 export type Color = 'white' | 'black';
 
 export class BoardSettings {
   orientation: Color = 'white';
-};
-
+}
 
 @Component({
   selector: 'canvas-chessboard',
@@ -49,18 +113,24 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Output() pieceMap = new Map<string, fabric.Group>();
   @Output() pieces: { tile: number; object: fabric.Group }[] = [];
   @Output() tileGroup: fabric.Group | null = null;
-  @Output() tiles: { tile: fabric.Object, piece?: Piece }[] = [];
+  @Output() tiles: { tile: fabric.Object; piece?: Piece }[] = [];
   @Output() canvas: fabric.Canvas | null = null;
-  @Input() @Output() selectedPiece: { tile: number; object: fabric.Group } | null = null;
+  @Input() @Output() selectedPiece: {
+    tile: number;
+    object: fabric.Group;
+  } | null = null;
   @Output() touching = false;
   @Output() midPromotion = false;
-  constructor(public gameService: GameService, public colorService: ColorService) {
+  constructor(
+    public gameService: GameService,
+    public colorService: ColorService
+  ) {
     if (this.gameService.game.value !== null) {
       this.setBoardToGamePosition();
     }
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     fabric.Object.prototype.transparentCorners = false;
@@ -103,9 +173,15 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           }
           if (this.settings.orientation == 'white') {
             pieceObject.set('left', Math.floor(col * this.tileSize) + padding);
-            pieceObject.set('top', Math.floor((7 - row) * this.tileSize) + padding);
+            pieceObject.set(
+              'top',
+              Math.floor((7 - row) * this.tileSize) + padding
+            );
           } else {
-            pieceObject.set('left', Math.floor((7 - col) * this.tileSize) + padding);
+            pieceObject.set(
+              'left',
+              Math.floor((7 - col) * this.tileSize) + padding
+            );
             pieceObject.set('top', Math.floor(row * this.tileSize) + padding);
           }
           pieceObject.scaleToHeight(this.tileSize);
@@ -173,7 +249,12 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         // translate tileIndex
       }
       // Create the background overlay (semi-transparent square)
-      const overlay = new fabric.Rect({ width: this.size, height: this.size, left: 0, top: 0 });
+      const overlay = new fabric.Rect({
+        width: this.size,
+        height: this.size,
+        left: 0,
+        top: 0,
+      });
       overlay.set('lockMovementX', true);
       overlay.set('lockMovementY', true);
       overlay.set('lockRotation', true);
@@ -183,18 +264,23 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       overlay.set('hasControls', false);
       overlay.set('hasBorders', false);
       overlay.set('selectable', false);
-      overlay.set('opacity', .65);
+      overlay.set('opacity', 0.65);
       overlay.setCoords();
       overlay.setColor('#0a0a0a');
       group.push(overlay);
 
       // Create the background square (rounded rectangle 80% width 64% height vertically and horizontally centered)
-      const height = .60 * this.size;
-      const width = .8 * this.size;
+      const height = 0.6 * this.size;
+      const width = 0.8 * this.size;
 
       const bg = new fabric.Rect({
-        height: height, width: width, fill: this.colorService.bgMenu, left: (this.size - width) / 2, top: (this.size - height) / 2,
-        rx: width * .02, ry: width * .02
+        height: height,
+        width: width,
+        fill: this.colorService.bgMenu,
+        left: (this.size - width) / 2,
+        top: (this.size - height) / 2,
+        rx: width * 0.02,
+        ry: width * 0.02,
       });
       bg.setColor(this.colorService.bgMenu);
       bg.set('lockMovementX', true);
@@ -212,7 +298,11 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       group.push(bg);
       let pieceImage = null;
       // Create the title text "Promotion" - white, subtle
-      const title = new fabric.Text('Promotion', { fontWeight: '100', fontSize: this.size * .07, fontFamily: 'Courier New' })
+      const title = new fabric.Text('Promotion', {
+        fontWeight: '100',
+        fontSize: this.size * 0.07,
+        fontFamily: 'Courier New',
+      });
       title.set('lockMovementX', true);
       title.set('lockMovementY', true);
       title.set('lockRotation', true);
@@ -225,18 +315,18 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       title.setColor('white');
       title.set('originX', 'center');
       title.set('originY', 'center');
-      title.set('left', this.size * .5);
-      title.set('top', this.size * .235);
+      title.set('left', this.size * 0.5);
+      title.set('top', this.size * 0.235);
       title.setCoords();
       group.push(title);
       // Clone the promoted piece and tile and display them horizontally centered below title
       let x = this.size / 2;
-      let y = (this.size * .38) + 4;
-      const tileSize = this.size * .2;
+      let y = this.size * 0.38 + 4;
+      const tileSize = this.size * 0.2;
       // Tile Clone
       const tileToClone = this.tiles[tileIndex];
       if (tileToClone) {
-        tileToClone.tile.clone(((promotionTile: fabric.Object) => {
+        tileToClone.tile.clone((promotionTile: fabric.Object) => {
           promotionTile.set('top', y);
           promotionTile.set('left', x);
           promotionTile.set('originX', 'center');
@@ -244,7 +334,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           promotionTile.scaleToHeight(tileSize);
           promotionTile.setCoords();
           group.push(promotionTile);
-        }));
+        });
         pieceImage = this.pieceMap.get(move.color + move.role);
         if (pieceImage) {
           pieceImage.clone((pieceObject: fabric.Group) => {
@@ -257,7 +347,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
             group.push(pieceObject);
           });
         }
-
       }
       pieceImage = null;
       // Create text "{Color} has triggered at " below tile and piece clone
@@ -266,7 +355,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       if (move.color === 'b') {
         color = 'Black';
       }
-      const prompt = new fabric.Text(color + ' has triggered promotion at', { fontSize: this.size * .04 })
+      const prompt = new fabric.Text(color + ' has triggered promotion at', {
+        fontSize: this.size * 0.04,
+      });
       prompt.set('lockMovementX', true);
       prompt.set('lockMovementY', true);
       prompt.set('lockRotation', true);
@@ -279,13 +370,15 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       prompt.setColor('white');
       prompt.set('originX', 'center');
       prompt.set('originY', 'center');
-      prompt.set('left', (this.size * .5) - 24);
-      prompt.set('top', this.size * .53);
+      prompt.set('left', this.size * 0.5 - 24);
+      prompt.set('top', this.size * 0.53);
       prompt.setCoords();
       group.push(prompt);
 
       // Create text to right of triggered text with move
-      const atText = new fabric.Text(SquareNames[tileIndex], { fontSize: this.size * .055 })
+      const atText = new fabric.Text(SquareNames[tileIndex], {
+        fontSize: this.size * 0.055,
+      });
       atText.set('lockMovementX', true);
       atText.set('lockMovementY', true);
       atText.set('lockRotation', true);
@@ -302,19 +395,24 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       const promptWidth = prompt.get('width');
       const promptLeft = prompt.get('left');
 
-      atText.set('left', (promptLeft ? promptLeft : this.size * .2) + ((promptWidth !== undefined ? promptWidth : 20) / 2) + this.size * .035);
-      atText.set('top', this.size * .53);
+      atText.set(
+        'left',
+        (promptLeft ? promptLeft : this.size * 0.2) +
+          (promptWidth !== undefined ? promptWidth : 20) / 2 +
+          this.size * 0.035
+      );
+      atText.set('top', this.size * 0.53);
       atText.setCoords();
       group.push(atText);
       // Create 4 clones of tiles, 4 clones of pieces (Knight, Bishop, Rook, And King)
 
       // Create the four tiles
-      y = (this.size * .67) + 4
-      x = (this.size * .205);
-      const choiceSize = tileSize * .75;
+      y = this.size * 0.67 + 4;
+      x = this.size * 0.205;
+      const choiceSize = tileSize * 0.75;
       if (tileToClone) {
         let buttonGroup: fabric.Object[] = [];
-        tileToClone.tile.clone(((tile: fabric.Object) => {
+        tileToClone.tile.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
           tile.set('stroke', this.colorService.gsTextColorHG.value);
@@ -324,7 +422,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           tile.scaleToHeight(choiceSize);
           tile.setCoords();
           buttonGroup.push(tile);
-        }));
+        });
 
         // Knight button
         pieceImage = this.pieceMap.get(move.color + 'N');
@@ -363,8 +461,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         }
         let buttonGroup2: fabric.Object[] = [];
         // Bishop Button
-        x = (this.size * .4);
-        tileToClone.tile.clone(((tile: fabric.Object) => {
+        x = this.size * 0.4;
+        tileToClone.tile.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
           tile.set('stroke', this.colorService.gsTextColorHG.value);
@@ -374,7 +472,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           tile.scaleToHeight(choiceSize);
           tile.setCoords();
           buttonGroup2.push(tile);
-        }));
+        });
         pieceImage = this.pieceMap.get(move.color + 'B');
         if (pieceImage) {
           pieceImage.clone((piece: fabric.Group) => {
@@ -384,7 +482,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
             piece.set('left', 0);
             piece.scaleToHeight(choiceSize);
             piece.setCoords();
-            buttonGroup2.push(piece)
+            buttonGroup2.push(piece);
           });
         }
         if (buttonGroup2.length >= 2) {
@@ -411,9 +509,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         }
 
         // Rook Button
-        x = (this.size * .595);
+        x = this.size * 0.595;
         let buttonGroup3: fabric.Object[] = [];
-        tileToClone.tile.clone(((tile: fabric.Object) => {
+        tileToClone.tile.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
           tile.set('stroke', this.colorService.gsTextColorHG.value);
@@ -423,7 +521,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           tile.scaleToHeight(choiceSize);
           tile.setCoords();
           buttonGroup3.push(tile);
-        }));
+        });
         pieceImage = this.pieceMap.get(move.color + 'R');
         if (pieceImage) {
           pieceImage.clone((piece: fabric.Group) => {
@@ -433,7 +531,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
             piece.set('left', 0);
             piece.scaleToHeight(choiceSize);
             piece.setCoords();
-            buttonGroup3.push(piece)
+            buttonGroup3.push(piece);
           });
         }
         if (buttonGroup3.length >= 2) {
@@ -459,9 +557,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           });
         }
         // Queen
-        x = (this.size * .79);
+        x = this.size * 0.79;
         let buttonGroup4: fabric.Object[] = [];
-        tileToClone.tile.clone(((tile: fabric.Object) => {
+        tileToClone.tile.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
           tile.set('stroke', this.colorService.gsTextColorHG.value);
@@ -471,7 +569,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           tile.scaleToHeight(choiceSize);
           tile.setCoords();
           buttonGroup4.push(tile);
-        }));
+        });
         pieceImage = this.pieceMap.get(move.color + 'Q');
         if (pieceImage) {
           pieceImage.clone((piece: fabric.Group) => {
@@ -481,7 +579,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
             piece.set('left', 0);
             piece.scaleToHeight(choiceSize);
             piece.setCoords();
-            buttonGroup4.push(piece)
+            buttonGroup4.push(piece);
           });
         }
         if (buttonGroup4.length >= 2) {
@@ -508,7 +606,12 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         }
       }
 
-      this.promotionDialog = new fabric.Group(group, { left: 0, top: 0, width: this.size, height: this.size });
+      this.promotionDialog = new fabric.Group(group, {
+        left: 0,
+        top: 0,
+        width: this.size,
+        height: this.size,
+      });
 
       this.promotionDialog.set('lockMovementX', true);
       this.promotionDialog.set('lockMovementY', true);
@@ -565,14 +668,14 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       if (piece.object) {
         const row = Math.floor(move.to / 8);
         const col = move.to % 8;
-        if (this.settings.orientation == 'white') {
+        if (this.settings.orientation === 'white') {
           piece.object.set('left', col * this.tileSize);
           piece.object.set('top', (7 - row) * this.tileSize);
         } else {
           piece.object.set('left', (7 - col) * this.tileSize);
           piece.object.set('top', row * this.tileSize);
         }
-        const to = (row * 8) + col;
+        const to = row * 8 + col;
         const capture = this.pieces[to];
         if (capture) {
           this.canvas?.remove(capture.object);
@@ -602,10 +705,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           piece.object.set('left', (7 - col) * this.tileSize);
           piece.object.set('top', row * this.tileSize);
         }
-        const from = (row * 8) + col;
+        const from = row * 8 + col;
         const capture = move.capture;
         if (capture) {
-
           this.addPiece(move.to, capture.color, capture.role);
         }
         piece.tile = from;
@@ -641,9 +743,14 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   // removePiece(tile);
   // addPiece(tile, piece);
   // clearPieces();
-  // 
+  //
 
-  checkPieceCanMove(fromData: { tile: number; object: fabric.Group; piece: Piece | undefined }, toData: { tile: number; object: fabric.Group; piece: Piece | undefined }): boolean { return true; }
+  checkPieceCanMove(
+    fromData: { tile: number; object: fabric.Group; piece: Piece | undefined },
+    toData: { tile: number; object: fabric.Group; piece: Piece | undefined }
+  ): boolean {
+    return true;
+  }
 
   public isValidDrop(from: number, to: number): boolean {
     if (this.gameService.game.value !== null) {
@@ -677,7 +784,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       } else {
         col = Math.ceil((this.size - x) / this.tileSize) - 1;
       }
-      const tile = ((row * 8) + col);
+      const tile = row * 8 + col;
       const move = new ChessMove();
       move.from = this.selectedPiece.tile;
       move.to = tile;
@@ -689,7 +796,10 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       if (x < 0 || x > this.size || y > this.size || y < 0) {
         this.resetMove(move);
       } else {
-        if (this.isValidDrop(this.selectedPiece.tile, tile) && this.gameService.game.value !== null) {
+        if (
+          this.isValidDrop(this.selectedPiece.tile, tile) &&
+          this.gameService.game.value !== null
+        ) {
           this.gameService.game.value.makeMove(move);
           this.makeMove(move);
         } else {
@@ -699,8 +809,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.selectedPiece = null;
     }
   }
-
-
 
   touchStart(event: TouchEvent): void {
     if (event.touches.length) {
@@ -712,7 +820,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       } else {
         col = Math.ceil((this.size - point.clientX) / this.tileSize) - 1;
       }
-      const tileIndex = ((row * 8) + col);
+      const tileIndex = row * 8 + col;
       if (tileIndex >= 0 && tileIndex < 64) {
         this.touching = true;
         this.selectedPiece = this.pieces[tileIndex];
@@ -720,7 +828,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       }
     }
   }
-
 
   private selectPiece(e: fabric.IEvent): void {
     let x = 0;
@@ -742,7 +849,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     } else {
       col = Math.ceil((this.size - x) / this.tileSize) - 1;
     }
-    const tileIndex = ((row * 8) + col);
+    const tileIndex = row * 8 + col;
     if (tileIndex >= 0 && tileIndex < 64) {
       this.selectedPiece = this.pieces[tileIndex];
       //this.highlightTile(tileIndex);
@@ -750,7 +857,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.canvas?.discardActiveObject();
       this.selectedPiece = null;
     }
-
   }
 
   private clearBoard(): void {
@@ -792,7 +898,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
           const tile = new fabric.Rect({
             width: this.tileSize,
-            height: this.tileSize
+            height: this.tileSize,
           });
 
           // create piece
@@ -834,7 +940,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         }
       }
       const tileGroup = new fabric.Group(tiles, {
-        left: 0, top: 0
+        left: 0,
+        top: 0,
       });
       tileGroup.set('left', 0);
       tileGroup.set('top', 0);
@@ -845,7 +952,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       tileGroup.set('lockScalingY', true);
       tileGroup.set('hasControls', false);
       tileGroup.set('hasBorders', false);
-      tileGroup.set('lock')
+      tileGroup.set('lock');
       tileGroup.set('selectable', false);
       tileGroup.set('originX', 'left');
       tileGroup.set('originY', 'top');
@@ -856,7 +963,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     }
   }
 
-  private addTile(tileData: { tile: fabric.Object, piece?: Piece }) {
+  private addTile(tileData: { tile: fabric.Object; piece?: Piece }) {
     if (this.canvas) {
       this.canvas.add(tileData.tile);
       tileData.tile.moveTo(-100);
@@ -915,13 +1022,13 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   private resizeBoardObjects(size: number): void {
     this.tileSize = Math.floor(this.size / 8);
-    const padding = Math.floor((this.size - (this.tileSize * 8)) / 2);
+    const padding = Math.floor((this.size - this.tileSize * 8) / 2);
     if (this.tileGroup) {
       const border = padding / 2;
       this.tileGroup.set('top', border);
       this.tileGroup.set('left', border);
-      this.tileGroup.scaleToHeight((this.tileSize * 8) + border);
-      this.tileGroup.scaleToWidth((this.tileSize * 8) + border);
+      this.tileGroup.scaleToHeight(this.tileSize * 8 + border);
+      this.tileGroup.scaleToWidth(this.tileSize * 8 + border);
       this.tileGroup.moveTo(-300);
       this.tileGroup.setCoords();
     }
@@ -942,11 +1049,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
     this.pieces.forEach((pieceData) => {
       const piece = pieceData.object;
-      if (
-        piece.left !== undefined &&
-        piece.top !== undefined &&
-        this.canvas
-      ) {
+      if (piece.left !== undefined && piece.top !== undefined && this.canvas) {
         const row = Math.floor(pieceData.tile / 8);
         const col = pieceData.tile % 8;
         piece.scaleToHeight(this.tileSize);
@@ -967,41 +1070,41 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.promotionDialog?.moveTo(500);
 
       // knight
-      let y = (this.size * .67) + 4
-      let x = (this.size * .205);
-      this.knightButton?.scaleToHeight(this.size * .15);
-      this.knightButton?.scaleToWidth(this.size * .15);
+      let y = this.size * 0.67 + 4;
+      let x = this.size * 0.205;
+      this.knightButton?.scaleToHeight(this.size * 0.15);
+      this.knightButton?.scaleToWidth(this.size * 0.15);
       this.knightButton?.set('left', x);
       this.knightButton?.set('top', y);
       this.knightButton?.moveTo(510);
-      this.knightButton?.setCoords()
+      this.knightButton?.setCoords();
       // bishop
 
-      x = (this.size * .4);
-      this.bishopButton?.scaleToHeight(this.size * .15);
-      this.bishopButton?.scaleToWidth(this.size * .15);
+      x = this.size * 0.4;
+      this.bishopButton?.scaleToHeight(this.size * 0.15);
+      this.bishopButton?.scaleToWidth(this.size * 0.15);
       this.bishopButton?.set('left', x);
       this.bishopButton?.set('top', y);
       this.bishopButton?.moveTo(510);
-      this.bishopButton?.setCoords()
+      this.bishopButton?.setCoords();
       // rook
 
-      x = (this.size * .595);
-      this.rookButton?.scaleToHeight(this.size * .15);
-      this.rookButton?.scaleToWidth(this.size * .15);
+      x = this.size * 0.595;
+      this.rookButton?.scaleToHeight(this.size * 0.15);
+      this.rookButton?.scaleToWidth(this.size * 0.15);
       this.rookButton?.set('left', x);
       this.rookButton?.set('top', y);
       this.rookButton?.moveTo(510);
-      this.rookButton?.setCoords()
+      this.rookButton?.setCoords();
       // queen
 
-      x = (this.size * .79);
-      this.queenButton?.scaleToHeight(this.size * .15);
-      this.queenButton?.scaleToWidth(this.size * .15);
+      x = this.size * 0.79;
+      this.queenButton?.scaleToHeight(this.size * 0.15);
+      this.queenButton?.scaleToWidth(this.size * 0.15);
       this.queenButton?.set('left', x);
       this.queenButton?.set('top', y);
       this.queenButton?.moveTo(510);
-      this.queenButton?.setCoords()
+      this.queenButton?.setCoords();
     }
   }
 

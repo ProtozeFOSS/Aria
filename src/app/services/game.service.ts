@@ -1,10 +1,22 @@
 import { Injectable, Input, Output, APP_INITIALIZER } from '@angular/core';
 
 //@ts-ignore
-import { Game as KGame, pgnRead, Database as KDatabase, Variation as KVariation, Node as KNode, Position as KPosition } from 'kokopu';
+import {
+  Game as KGame,
+  pgnRead,
+  Database as KDatabase,
+  Variation as KVariation,
+  Node as KNode,
+  Position as KPosition,
+  MoveDescriptor as KMove,
+} from 'kokopu';
 import { BehaviorSubject, onErrorResumeNext } from 'rxjs';
 import { OlgaService } from './olga.service';
-import { CanvasChessBoard, SquareNames, Piece } from '../canvas-chessboard/canvas-chessboard.component';
+import {
+  CanvasChessBoard,
+  SquareNames,
+  Piece,
+} from '../canvas-chessboard/canvas-chessboard.component';
 import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 import { getSupportedInputTypes } from '@angular/cdk/platform';
@@ -12,15 +24,18 @@ import { ɵallowPreviousPlayerStylesMerge } from '@angular/animations/browser';
 
 // Game Score
 
-
 export class GameScoreVariation {
   variationData: GameScoreItem[];
-  constructor(variationData: GameScoreItem[] = []) { this.variationData = variationData; }
+  constructor(variationData: GameScoreItem[] = []) {
+    this.variationData = variationData;
+  }
 }
 
 export class GameScoreAnnotation {
   annotation = '';
-  constructor(annotation: string = '') { this.annotation = annotation; }
+  constructor(annotation: string = '') {
+    this.annotation = annotation;
+  }
 }
 
 export class GameScoreItem {
@@ -31,7 +46,11 @@ export class GameScoreItem {
 
   // flatten the variables
 
-  constructor(protected game: ChessGame | null = null, protected index: number, move?: KNode) {
+  constructor(
+    protected game: ChessGame | null = null,
+    protected index: number,
+    move?: KNode
+  ) {
     this.move = move;
     this.getType();
   }
@@ -79,9 +98,7 @@ export class GameScoreItem {
     }
     return null;
   }
-  select(): void {
-
-  }
+  select(): void {}
 }
 
 export class ChessMove {
@@ -89,11 +106,13 @@ export class ChessMove {
   from: number = 0;
   role: string = '';
   color: string = '';
-  capture?: { role: string, color: string };
+  capture?: { role: string; color: string };
   promotion?: { role: string };
   promoteFunction?: any;
+  fromKMove(move: KMove): ChessMove {
+    return new ChessMove();
+  }
 }
-
 
 export class ChessGame {
   protected position: KPosition | null = null;
@@ -111,18 +130,36 @@ export class ChessGame {
   public fen = '';
 
   protected static compareKNode(left: KNode, right: KNode): boolean {
-    if (left !== null && right !== null && left !== undefined && right !== undefined) {
+    if (
+      left !== null &&
+      right !== null &&
+      left !== undefined &&
+      right !== undefined
+    ) {
       const leftMove = left._info.moveDescriptor;
       const rightMove = right._info.moveDescriptor;
-      return (leftMove.from() === rightMove.from() && leftMove.to() === rightMove.to());
+      return (
+        leftMove.from() === rightMove.from() && leftMove.to() === rightMove.to()
+      );
     }
     return false;
   }
 
-  protected static compareVariation(left: KVariation, right: KVariation): boolean {
-    if (left !== null && right !== null && left !== undefined && right !== undefined) {
+  protected static compareVariation(
+    left: KVariation,
+    right: KVariation
+  ): boolean {
+    if (
+      left !== null &&
+      right !== null &&
+      left !== undefined &&
+      right !== undefined
+    ) {
       if (ChessGame.compareKNode(left.first(), right.first())) {
-        return (left.comment() === right.comment() && left.initialFullMoveNumber() === right.initialFullMoveNumber());
+        return (
+          left.comment() === right.comment() &&
+          left.initialFullMoveNumber() === right.initialFullMoveNumber()
+        );
       }
     }
     return false;
@@ -193,7 +230,8 @@ export class ChessGame {
       const fromSquare = SquareNames[move.from];
       const next = this.currentNode.next();
       const legal = this.position.isMoveLegal(fromSquare, toSquare);
-      if (pgnMove && pgnMove.from() == fromSquare && pgnMove.to() == toSquare) { // not a variant
+      if (pgnMove && pgnMove.from() == fromSquare && pgnMove.to() == toSquare) {
+        // not a variant
         this.position.play(pgnMove);
         if (fromPGN) {
           if (pgnMove.isPromotion()) {
@@ -206,10 +244,6 @@ export class ChessGame {
           this.gameService.board.value?.makeMove(move);
         }
         this.currentNode = next;
-
-
-
-
 
         // const move = new ChessMove();
         // move.from = SquareNames.indexOf(this.currentNode._info.moveDescriptor.from());
@@ -234,7 +268,9 @@ export class ChessGame {
         // this.gameService.status.value?.updateStatus(this.position.turn(), this.currentNode);
       } else {
         // look for an existing variant
-        console.log('Check Variants= ' + pgnMove.from() + ' -> ' + pgnMove.to());
+        console.log(
+          'Check Variants= ' + pgnMove.from() + ' -> ' + pgnMove.to()
+        );
         const variations = this.currentNode.variations();
         this.isVariation = true;
         this.gameService.isVariant.next(this.isVariation);
@@ -265,20 +301,25 @@ export class ChessGame {
                 }
               }
             } else {
-              console.log('Variation checked: ' + test.from() + ' -> ' + test.to());
+              console.log(
+                'Variation checked: ' + test.from() + ' -> ' + test.to()
+              );
             }
           }
         });
       }
     }
     if (!ChessGame.compareKNode(lastNode, this.currentNode)) {
-      this.gameService.status.value?.updateStatus(this.position.turn(), lastNode);
+      this.gameService.status.value?.updateStatus(
+        this.position.turn(),
+        lastNode
+      );
     }
   }
 
   constructor(protected gameService: GameService, public game?: KGame) {
     if (game) {
-      this.setGame(this.game)
+      this.setGame(this.game);
     }
   }
 
@@ -286,48 +327,50 @@ export class ChessGame {
     return this.position;
   }
 
-  setGame(game: KGame): void {
-    this.game = game;
-    this.variation = this.game.mainVariation() as KVariation;
-    this.gameVariations = [];
-    this.gameVariations.push(this.variation);
-    this.position = this.variation.initialPosition() as KPosition;
-    this.fen = this.position.fen();
-    this.currentNode = this.startNode = this.variation.first() as KNode;
-    if (this.gameService.board.value) {
-      this.gameService.board.value.setBoardToGamePosition();
-    }
+  protected generateGameScore(): void {
     const items = [];
     this.nodeMap = [];
-    let nextScore = this.startNode as KNode;
+    let nextScore = this.variation.first() as KNode;
     let index = 0;
     let previous: GameScoreItem | null = null;
+    this.score.next([]);
     while (nextScore) {
       if (nextScore) {
         const gItem = new GameScoreItem(this, index, nextScore);
         this.nodeMap[index] = gItem;
         previous = gItem;
-        //this.insertVariation(index, gItem);
         nextScore = nextScore.next();
         items.push(gItem);
         ++index;
       }
     }
     this.score.next(items);
+    this.gameService._items.next(items);
     console.log(this.nodeMap);
   }
 
+  setGame(game: KGame): void {
+    this.game = game;
+    this.variation = this.game.mainVariation() as KVariation;
+    this.position = this.variation.initialPosition() as KPosition;
+    this.currentIndex = -1;
+    this.fen = this.position.fen();
+    this.currentNode = null;
+    if (this.gameService.board.value) {
+      this.gameService.board.value.setBoardToGamePosition();
+    }
+    window.setTimeout(this.generateGameScore.bind(this), 10);
+  }
 
   // navigation
   public advance(updateBoard = true): boolean {
     if (!this.isFinalPosition()) {
       const next = this.currentIndex + 1;
-      const node = this.nodeMap[next]
-      if (node) { // next exists
-        this.navigateToNode(node);
+      if (next < this.nodeMap.length && next >= 0) {
+        // next exists
+        this.navigateToNode(next);
         return true;
       }
-
     }
     // if (this.position) {
     //   if (this.currentNode && (this.position.isMoveLegal(this.currentNode._info.moveDescriptor.from(), this.currentNode._info.moveDescriptor.to()) !== false)) {
@@ -353,20 +396,31 @@ export class ChessGame {
     return false;
   }
 
-  public navigateToNode(node: GameScoreItem, variation?: KVariation) {
-    if (variation == null || ChessGame.compareVariation(this.variation, variation)) {
-      let searchNode = this.startNode;
-      let notFound = true;
-      while (searchNode && notFound) {
-        if (ChessGame.compareKNode(node, searchNode)) {
-          notFound = false;
-        } else {
-          searchNode = searchNode.next();
-        }
-      }
-      if (!notFound) {
-        this.setNode(searchNode);
-      }
+  public navigateToNode(index: number) {
+    let currentNode: KNode | null = this.startNode;
+    if (this.currentIndex === -1) {
+      currentNode = this.nodeMap[0];
+    }
+    if (this.currentIndex === -2) {
+      currentNode = this.nodeMap[this.nodeMap.length - 1];
+    }
+    // figure this out, node should be index?
+    if (currentNode.index === index) {
+      // found it make the move
+      const node = this.nodeMap[index];
+      const move = currentNode.moveDescriptor();
+      this.position.makeMove(move);
+      const cmove = new ChessMove.fromKMove(move);
+      this.gameService.board.value?.makeMove(cmove);
+      return;
+    }
+
+    if (currentNode.index < index) {
+      return;
+    }
+
+    if (currentNode.index > index) {
+      return;
     }
   }
 
@@ -394,7 +448,10 @@ export class ChessGame {
       if (!ChessGame.compareKNode(this.startNode, this.currentNode)) {
         let currentNode = this.startNode;
         let previous = null;
-        while (currentNode.next() && !ChessGame.compareKNode(currentNode.next(), this.currentNode)) {
+        while (
+          currentNode.next() &&
+          !ChessGame.compareKNode(currentNode.next(), this.currentNode)
+        ) {
           previous = currentNode;
           currentNode = currentNode.next();
         }
@@ -407,13 +464,19 @@ export class ChessGame {
             const piece = move.capturedPiece();
             const color = move.color();
             if (piece && color) {
-              unmove.capture = { role: piece.toUpperCase(), color: color === 'w' ? 'b' : 'w' };
+              unmove.capture = {
+                role: piece.toUpperCase(),
+                color: color === 'w' ? 'b' : 'w',
+              };
             }
           }
           this.gameService.board.value.unMakeMove(unmove);
         }
         this.position = currentNode.positionBefore();
-        this.gameService.status.value?.updateStatus(this.position.turn(), previous);
+        this.gameService.status.value?.updateStatus(
+          this.position.turn(),
+          previous
+        );
         this.fen = this.position.fen();
         this.currentNode = currentNode;
         if (move.isCastling()) {
@@ -425,17 +488,16 @@ export class ChessGame {
     return false;
   }
   public isStartingPosition(): boolean {
-    return ChessGame.compareKNode(this.variation.first(), this.currentNode);
+    return this.currentIndex === -1;
   }
 
   public isFinalPosition(): boolean {
-    return (!this.currentNode || this.currentNode.next() === null);
+    return this.currentIndex === -2;
   }
 
   public createScoreItems(): GameScoreItem[] {
     return [];
   }
-
 }
 
 export enum GameScoreType {
@@ -443,15 +505,16 @@ export enum GameScoreType {
   Group = 2,
   Variation = 4,
   Annotation = 8,
-  Selected = 16
+  Selected = 16,
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GameService {
-  @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(false);
+  @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(
+    false
+  );
   public _items = new BehaviorSubject<GameScoreItem[]>([]);
   private scoreData: { items: GameScoreItem[] } = { items: [] };
   readonly currentScore = this._items.asObservable();
@@ -469,14 +532,11 @@ export class GameService {
   private _game: ChessGame | null = null;
   readonly game = new BehaviorSubject<ChessGame | null>(null);
 
-
   private _board: CanvasChessBoard | null = null;
   readonly board = new BehaviorSubject<CanvasChessBoard | null>(null);
 
-
   private _score: GamescoreUxComponent | null = null;
   readonly score = new BehaviorSubject<GamescoreUxComponent | null>(null);
-
 
   private _status: OlgaStatusComponent | null = null;
   readonly status = new BehaviorSubject<OlgaStatusComponent | null>(null);
@@ -490,7 +550,7 @@ export class GameService {
       const first = this.state.game(0) as KGame;
       const game = new ChessGame(this);
       this.gamesData.games.push(game);
-      this._games.next(Object.assign({}, this.gamesData).games)
+      this._games.next(Object.assign({}, this.gamesData).games);
       this._game = game;
       this.game.next(game);
       this._game.setGame(first);
@@ -500,21 +560,20 @@ export class GameService {
     }
   }
 
-
   public navigateToItem(item: GameScoreItem, isBlack = false) {
     //this._game?.navigateToNode(isBlack ? item.blackMove : item.whiteMove, item.variation);
     console.log('Navigating to item -> ' + item.move.notation());
   }
 
   // Visual Settings
-  constructor(public olga: OlgaService) { }
+  constructor(public olga: OlgaService) {}
   public moveToStart(): void {
     if (this._game) {
       this._game.moveToStart();
     }
   }
   public advance(): void {
-    if (this._game && !this._game.isFinalPosition()) {
+    if (this._game) {
       this._game.advance();
     }
   }
@@ -529,13 +588,9 @@ export class GameService {
     }
   }
 
-  public togglePlay(): void {
+  public togglePlay(): void {}
 
-  }
-
-  public openEngine(): void {
-
-  }
+  public openEngine(): void {}
 
   public loadPGN(pgn: string) {
     // parse potential multiple games
@@ -578,7 +633,6 @@ export class GameService {
     this.status.next(status);
   }
 
-
   public editComment(data: GameScoreItem): void {
     console.log('Editing Comment -> ' + data.move.comment());
   }
@@ -589,7 +643,4 @@ export class GameService {
     const variations = data.move.variations();
     console.log(variations);
   }
-
-
-
 }
