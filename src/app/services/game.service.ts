@@ -1,15 +1,7 @@
 import { Injectable, Input, Output, APP_INITIALIZER } from '@angular/core';
 
 //@ts-ignore
-import {
-  Game as KGame,
-  pgnRead,
-  Database as KDatabase,
-  Variation as KVariation,
-  Node as KNode,
-  Position as KPosition,
-  MoveDescriptor as KMove,
-} from 'kokopu';
+import { Game as KGame, pgnRead, Database as KDatabase, Variation as KVariation, Node as KNode, Position as KPosition, MoveDescriptor as KMove } from 'kokopu';
 import { BehaviorSubject, onErrorResumeNext } from 'rxjs';
 import { OlgaService } from './olga.service';
 import {
@@ -98,7 +90,7 @@ export class GameScoreItem {
     }
     return null;
   }
-  select(): void {}
+  select(): void { }
 }
 
 export class ChessMove {
@@ -109,8 +101,24 @@ export class ChessMove {
   capture?: { role: string; color: string };
   promotion?: { role: string };
   promoteFunction?: any;
-  fromKMove(move: KMove): ChessMove {
-    return new ChessMove();
+  static fromNode(node: KNode): ChessMove | null {
+    const move = new ChessMove();
+    const mDescriptor = node._info.moveDescriptor;
+    if (mDescriptor) {
+      move.from = SquareNames.indexOf(mDescriptor.from());
+      move.to = SquareNames.indexOf(mDescriptor.to());
+      if (mDescriptor.isCapture()) {
+        move.capture = { role: mDescriptor.capturedPiece().toUpperCase(), color: mDescriptor.capturedColoredPiece()[0] };
+      }
+      if (mDescriptor.isCastling()) {
+        // input castling data
+      }
+      if (mDescriptor.isPromotion()) {
+        move.promotion = { role: mDescriptor.promotion() };
+      }
+      return move;
+    }
+    return null;
   }
 }
 
@@ -119,7 +127,7 @@ export class ChessGame {
   protected currentNode: KNode | null = null;
   protected currentVariation: KVariation | null = null;
   protected currentIndex = -1;
-  protected nodeMap: Array<KNode | KVariation> = [];
+  protected nodeMap: Array<KNode> = [];
   readonly score = new BehaviorSubject<GameScoreItem[] | null>(null);
   protected moveMap: KNode | KVariation[] = [];
   protected gameVariations: KVariation[] = [];
@@ -344,6 +352,7 @@ export class ChessGame {
         ++index;
       }
     }
+    this.lastNode = this.nodeMap[this.nodeMap.length - 1];
     this.score.next(items);
     this.gameService._items.next(items);
     console.log(this.nodeMap);
@@ -352,6 +361,7 @@ export class ChessGame {
   setGame(game: KGame): void {
     this.game = game;
     this.variation = this.game.mainVariation() as KVariation;
+    this.startNode = this.variation.first();
     this.position = this.variation.initialPosition() as KPosition;
     this.currentIndex = -1;
     this.fen = this.position.fen();
@@ -362,137 +372,78 @@ export class ChessGame {
     window.setTimeout(this.generateGameScore.bind(this), 10);
   }
 
+
+
+  public navigateToNode(index: number) {
+    if (this.currentIndex < index) {
+      while (this.currentIndex < index) {
+        const node = this.nodeMap[++this.currentIndex];
+        if (node) {
+          const cmove = ChessMove.fromNode(node.move);
+          if (cmove) {
+            if (this.position.play(node.move._info.moveDescriptor)) {
+              this.gameService.board.value?.makeMove(cmove);
+              this.currentNode = node.move;
+            }
+          }
+        }
+      }
+      return;
+    }
+    if (this.currentIndex > index) {
+      while (this.currentIndex > index && this.currentIndex >= -1) {
+        const node = this.nodeMap[this.currentIndex--];
+        if (node) {
+          const cmove = ChessMove.fromNode(node.move);
+          if (cmove) {
+            this.position = node.move.position();
+            this.gameService.board.value?.unMakeMove(cmove);
+            this.currentNode = node.move;
+          }
+        }
+      }
+      return;
+    }
+  }
+
   // navigation
   public advance(updateBoard = true): boolean {
     if (!this.isFinalPosition()) {
       const next = this.currentIndex + 1;
       if (next < this.nodeMap.length && next >= 0) {
-        // next exists
         this.navigateToNode(next);
         return true;
       }
     }
-    // if (this.position) {
-    //   if (this.currentNode && (this.position.isMoveLegal(this.currentNode._info.moveDescriptor.from(), this.currentNode._info.moveDescriptor.to()) !== false)) {
-    //     const move = new ChessMove();
-    //     move.from = SquareNames.indexOf(this.currentNode._info.moveDescriptor.from());
-    //     move.to = SquareNames.indexOf(this.currentNode._info.moveDescriptor.to());
-    //     let newTo = move.to;
-    //     let newFrom = move.from;
-    //     if (this.currentNode._info.moveDescriptor._to >= 64) {
-    //       let rowFrom = Math.ceil(newFrom / 8);
-    //       let colFrom = newFrom % 8;
-    //       newFrom = (rowFrom * 8) - colFrom;
-
-    //       let rowTo = Math.floor(newTo / 8);
-    //       let colTo = newTo % 8;
-
-    //       newTo = (rowTo * 8) - colTo;
-    //     }
-    //     this.makeMove(move, true);
-    //     return true;
-    //   }
-    // }
     return false;
   }
 
-  public navigateToNode(index: number) {
-    let currentNode: KNode | null = this.startNode;
-    if (this.currentIndex === -1) {
-      currentNode = this.nodeMap[0];
-    }
-    if (this.currentIndex === -2) {
-      currentNode = this.nodeMap[this.nodeMap.length - 1];
-    }
-    // figure this out, node should be index?
-    if (currentNode.index === index) {
-      // found it make the move
-      const node = this.nodeMap[index];
-      const move = currentNode.moveDescriptor();
-      this.position.makeMove(move);
-      const cmove = new ChessMove.fromKMove(move);
-      this.gameService.board.value?.makeMove(cmove);
-      return;
-    }
-
-    if (currentNode.index < index) {
-      return;
-    }
-
-    if (currentNode.index > index) {
-      return;
-    }
-  }
-
   public moveToStart(): void {
-    this.position = this.game.initialPosition();
-    this.variation = this.game.mainVariation();
-    this.startNode = this.currentNode = this.variation.first();
-    this.lastNode = this.getLastNode();
-    if (!this.currentNode) {
-      this.currentNode = this.lastNode;
+    while (this.previous()) {
+
     }
-    this.fen = this.position.fen();
-    this.gameService.board.value?.setBoardToGamePosition();
-    this.gameService.status.value?.updateStatus(this.position.turn());
   }
   public moveToEnd(): void {
-    this.setNode(this.lastNode);
-    // if (this.currentNode && this.position && this.currentNode.next() && this.gameService.board.value) {
-    //   while (this.advance()) { }
-    // }
+    this.navigateToNode(this.nodeMap.length - 1);
   }
 
   public previous(): boolean {
-    if (!this.isStartingPosition() && this.gameService.board.value) {
-      if (!ChessGame.compareKNode(this.startNode, this.currentNode)) {
-        let currentNode = this.startNode;
-        let previous = null;
-        while (
-          currentNode.next() &&
-          !ChessGame.compareKNode(currentNode.next(), this.currentNode)
-        ) {
-          previous = currentNode;
-          currentNode = currentNode.next();
-        }
-        const move = currentNode._info.moveDescriptor;
-        if (this.gameService.board.value) {
-          const unmove = new ChessMove();
-          unmove.to = SquareNames.indexOf(move.to());
-          unmove.from = SquareNames.indexOf(move.from());
-          if (move.isCapture()) {
-            const piece = move.capturedPiece();
-            const color = move.color();
-            if (piece && color) {
-              unmove.capture = {
-                role: piece.toUpperCase(),
-                color: color === 'w' ? 'b' : 'w',
-              };
-            }
-          }
-          this.gameService.board.value.unMakeMove(unmove);
-        }
-        this.position = currentNode.positionBefore();
-        this.gameService.status.value?.updateStatus(
-          this.position.turn(),
-          previous
-        );
-        this.fen = this.position.fen();
-        this.currentNode = currentNode;
-        if (move.isCastling()) {
-          this.gameService.board.value.setBoardToGamePosition();
-        }
+    if (!this.isStartingPosition()) {
+      const prev = this.currentIndex - 1;
+      if (prev < this.nodeMap.length && prev >= -1) {
+        this.navigateToNode(prev);
         return true;
       }
     }
     return false;
   }
+
   public isStartingPosition(): boolean {
     return this.currentIndex === -1;
   }
 
   public isFinalPosition(): boolean {
-    return this.currentIndex === -2;
+    return this.currentIndex === this.nodeMap.length;
   }
 
   public createScoreItems(): GameScoreItem[] {
@@ -566,7 +517,7 @@ export class GameService {
   }
 
   // Visual Settings
-  constructor(public olga: OlgaService) {}
+  constructor(public olga: OlgaService) { }
   public moveToStart(): void {
     if (this._game) {
       this._game.moveToStart();
@@ -588,9 +539,9 @@ export class GameService {
     }
   }
 
-  public togglePlay(): void {}
+  public togglePlay(): void { }
 
-  public openEngine(): void {}
+  public openEngine(): void { }
 
   public loadPGN(pgn: string) {
     // parse potential multiple games
