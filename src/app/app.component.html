@@ -3,6 +3,7 @@
   <canvas-chessboard (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent
     id="{{this.olgaID}}-ccb" [UUID]="this.olgaID" [theme]="this.colorService.boardTheme()">
   </canvas-chessboard>
+  <olga-title></olga-title>
   <app-game-score-ux id="app-gamescore{{this.olgaID}}" (contextmenu)="ignoreEvent($event)" [UUID]="this.olgaID">
   </app-game-score-ux>
   <olga-controls id="olga-controls{{this.olgaID}}"></olga-controls>

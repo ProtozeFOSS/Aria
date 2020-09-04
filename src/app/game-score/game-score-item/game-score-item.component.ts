@@ -59,11 +59,28 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
     }
     return false;
   }
-  setCurrent(current: boolean): void {
+  setSelected(select: boolean): void {
     if (this.data) {
-      this.updateTypeName(current);
+      if (select) {
+        this.data.type = (this.data.type | GameScoreType.Selected);
+        this.updateTypeName();
+        return;
+      }
+      if (this.data.type >= GameScoreType.Selected) {
+        this.data.type = this.data.type ^ GameScoreType.Selected;
+      }
+      this.updateTypeName();
     }
   }
+
+
+  isSelected(): boolean {
+    if (this.data) {
+      return (this.data.type & GameScoreType.Selected) == GameScoreType.Selected;
+    }
+    return false;
+  }
+
   getPly(): number {
     if (this.data && this.data.move) {
       return this.data.move.fullMoveNumber();
@@ -73,14 +90,14 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
 
   isGroup(): boolean {
     if (this.data) {
-      return (this.data.type & GameScoreType.Group) == 1;
+      return (this.data.type & GameScoreType.Group) == GameScoreType.Group;
     }
     return false;
   }
 
   isAnnotation(): boolean {
     if (this.data) {
-      return (this.data.type & GameScoreType.Annotation) == 1;
+      return (this.data.type & GameScoreType.Annotation) == GameScoreType.Annotation;
     }
     return false;
   }
@@ -88,28 +105,35 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
   clickMove(): void {
     if (this.data.move.variations().length > 0) {
       this.gameService.displayVariations(this.data);
+      this.gameService.navigateToItem(this.data);
     } else {
       this.gameService.navigateToItem(this.data);
     }
   }
 
-  protected updateTypeName(current = false): void {
-    //this.typeName = '';
+  protected updateTypeName(): void {
+    this.typeName = '';
     if (this.data) {
-      if ((this.data.type & GameScoreType.Annotation) == 1) {
-        this.typeName += 'Annotation ';
+      const value = this.data.type & GameScoreType.Selected;
+      if ((this.data.type & GameScoreType.Selected) == GameScoreType.Selected) {
+        this.typeName += ' Current';
       }
-      if ((this.data.type & GameScoreType.Group) == 1) {
-        this.typeName += 'Group ';
+      if ((this.data.type & GameScoreType.Annotation) == GameScoreType.Annotation) {
+        this.typeName += ' Annotation ';
       }
-      if ((this.data.type & GameScoreType.HalfPly) == 1) {
-        this.typeName += 'HalfPly ';
+      if ((this.data.type & GameScoreType.Group) == GameScoreType.Group) {
+        this.typeName += ' Group ';
+      }
+      if ((this.data.type & GameScoreType.HalfPly) == GameScoreType.HalfPly) {
+        this.typeName += ' HalfPly ';
       }
       const variations = this.data.move.variations();
       if (variations && variations.length > 0) {
-        this.typeName += 'Variation ';
-      } else {
-        console.log('No Variations found -> ' + this.data.move.notation())
+        if ((this.data.type & GameScoreType.Branched) == GameScoreType.Branched) { // must have a variation to be branched
+          this.typeName += ' Branched ';
+        } else {
+          this.typeName += ' Variation ';
+        }
       }
     }
   }

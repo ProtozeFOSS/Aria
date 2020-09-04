@@ -23,24 +23,26 @@ export class LayoutService {
   preferredRatioLandscape = 0.3;
   preferredRatioPortrait = 0.4;
   boardRatio = 1;
-  constructor() {}
+  constructor() { }
 
   private rtl(width: number, height: number, gsSize?: number) {
-    const isMobile = this.mobileView.value;
-    if (isMobile) {
+    if (this.mobileView.value) {
       // perform mobile setup
+      //this.olga.rtlComponentsMobile(width, height, gsSize)
     } else {
       // prepare desktop view
       // determine the size of Olga and preferred ratio (unless we have already )
+      //this.olga.rtlComponents(width, height, gsSize)
     }
   }
 
   private rtp(width: number, height: number, gsSize?: number) {
-    const isMobile = this.mobileView.value;
-    if (isMobile) {
+    if (this.mobileView.value) {
       // perform mobile setup
+      //this.olga.rtpComponentsMobile(width, height, gsSize)
     } else {
       // prepare desktop view
+      //this.olga.rtpComponents(width, height, gsSize)
     }
   }
 
@@ -114,6 +116,7 @@ export class LayoutService {
         this.olga.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
         this.olga.gameScoreElement.style.width = gsSize + 'px';
         this.olga.gameScoreElement.style.height = gsHeight + 'px';
+        this.olga.gameScoreElement.style.overflow = 'visible';
         // controls
         this.olga.controlsElement.style.left = '';
         this.olga.controlsElement.style.top =
@@ -149,8 +152,10 @@ export class LayoutService {
         this.olga.gameScoreElement.style.top = boardSize + 129 + 'px'; // 64 represents the controls ux
         this.olga.gameScoreElement.style.left = 'calc(1% - 1px)';
         this.olga.gameScoreElement.style.width = 'calc(98%  + 2px)';
-        this.olga.gameScoreElement.style.height =
-          (boardSize / 3 > 425 ? 425 : boardSize / 3).toString() + 'px';
+        // MUST MOVE TO DYNAMICALLY RESIZING TO GAME SCORE
+        this.olga.gameScoreElement.style.height = height * .55 + 'px';
+        this.olga.gameScoreElement.style.overflow = 'visible ';
+        //  (boardSize / 3 > 425 ? 425 : boardSize / 3).toString() + 'px';
       }
       if (this.olga.controlsElement) {
         this.olga.controlsElement.style.top =
@@ -229,7 +234,6 @@ export class LayoutService {
               if (width > height) {
                 this.resizeToLandscape(width, height, gsSize);
               } else {
-                console.log('GSSize vertical slider: ' + gsSize);
                 this.resizeToPortrait(width, height, gsSize);
               }
               break;
@@ -285,7 +289,6 @@ export class LayoutService {
               if (width > height) {
                 this.resizeToLandscape(width, height, gsSize);
               } else {
-                console.log('GSSize vertical slider: ' + gsSize);
                 this.resizeToPortrait(width, height, gsSize);
               }
               break;

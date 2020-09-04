@@ -51,19 +51,36 @@
 
 .play{
     position:absolute;
-    width: 56px;
-    left: 50%;
-    top: 10%;
-    bottom:14%;
+    width: 14%;
+    left: 28%;
+    top: 5%;
+    bottom:5%;
     border: $boardBGDark solid 2px;
     border-radius: 32px;
 }
 .engine{
     position:absolute;
-    width: 48px;
-    left: calc(50% + 68px);
-    top: 10%;
-    bottom:14%;
+    width: 14% ;
+    left: 2%;
+    top: 5%;
+    bottom:5%;
+    border: $boardBGDark solid 2px;
+}
+.settings{
+    position:absolute;
+    width: 14%;
+    right: 2%;
+    top: 5%;
+    bottom:5%;
+    border: $boardBGDark solid 2px;
+}
+
+.view{
+    position:absolute;
+    width: 14%;
+    left: 56%;
+    top: 5%;
+    bottom:5%;
     border: $boardBGDark solid 2px;
 }
 

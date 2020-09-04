@@ -213,4 +213,14 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
       this.resizeHandleEvent(event);
     }
   }
+  selectGameScoreItem(index: number) {
+    const item = this.scoreItems?.toArray()[index];
+    if (this.currentScoreItem) {
+      this.currentScoreItem.setSelected(!this.currentScoreItem.isSelected());
+    }
+    if (item && item != this.currentScoreItem) {
+      item.setSelected(!item.isSelected());
+      this.currentScoreItem = item;
+    }
+  }
 }

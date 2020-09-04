@@ -13,6 +13,7 @@ import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 import { getSupportedInputTypes } from '@angular/cdk/platform';
 import { ɵallowPreviousPlayerStylesMerge } from '@angular/animations/browser';
+import { GameScoreItemComponent } from '../game-score/game-score-item/game-score-item.component';
 
 // Game Score
 
@@ -49,6 +50,7 @@ export class GameScoreItem {
   getIndex(): number {
     return this.index;
   }
+
   getType(): number {
     this.type = 0;
     if (this.move) {
@@ -92,7 +94,13 @@ export class GameScoreItem {
     }
     return null;
   }
-  select(): void { }
+  setSelected(select = true): void {
+    if (select) {
+      this.type = this.type | GameScoreType.Selected;
+    } else {
+      this.type = this.type ^ GameScoreType.Selected;
+    }
+  }
 }
 
 export class ChessMove {
@@ -129,7 +137,7 @@ export class ChessGame {
   protected currentNode: KNode | null = null;
   protected currentVariation: KVariation | null = null;
   protected currentIndex = -1;
-  protected nodeMap: Array<KNode> = [];
+  protected nodeMap: Array<GameScoreItem> = [];
   readonly score = new BehaviorSubject<GameScoreItem[] | null>(null);
   protected moveMap: KNode | KVariation[] = [];
   protected gameVariations: KVariation[] = [];
@@ -357,7 +365,6 @@ export class ChessGame {
     this.lastNode = this.nodeMap[this.nodeMap.length - 1];
     this.score.next(items);
     this.gameService._items.next(items);
-    console.log(this.nodeMap);
   }
 
   setGame(game: KGame): void {
@@ -379,14 +386,16 @@ export class ChessGame {
   public navigateToNode(index: number) {
     if (this.currentIndex < index) {
       while (this.currentIndex < index) {
-        const node = this.nodeMap[++this.currentIndex];
-        if (node) {
-          const cmove = ChessMove.fromNode(node.move);
+        const next = this.nodeMap[++this.currentIndex] as GameScoreItem;
+        if (next) {
+          const cmove = ChessMove.fromNode(next.move);
           if (cmove) {
-            if (this.position.play(node.move._info.moveDescriptor)) {
+            if (this.position.play(next.move._info.moveDescriptor)) {
               this.gameService.board.value?.makeMove(cmove);
-              this.currentNode = node.move;
-              this.gameService.status.value?.updateStatus(this.position.turn(), node.move);
+              this.currentNode = next.move;
+              this.gameService.selectScoreItem(this.currentIndex);
+              this.nodeMap[this.currentIndex] = next;
+              this.gameService.status.value?.updateStatus(this.position.turn(), next.move);
             }
           }
         }
@@ -403,6 +412,7 @@ export class ChessGame {
             this.position = previous.move.position();
             this.gameService.board.value?.unMakeMove(cmove);
             this.currentNode = previous;
+            this.gameService.selectScoreItem(this.currentIndex);
             this.gameService.status.value?.updateStatus(this.position.turn(), previous.move);
           }
         } else {
@@ -415,6 +425,7 @@ export class ChessGame {
           this.fen = this.position.fen();
           this.gameService.board.value?.setBoardToGamePosition();
           this.gameService.status.value?.updateStatus(this.position.turn());
+          this.gameService.selectScoreItem(-1);
         }
       }
       return;
@@ -472,6 +483,7 @@ export enum GameScoreType {
   Variation = 4,
   Annotation = 8,
   Selected = 16,
+  Branched = 32
 }
 
 @Injectable({
@@ -528,7 +540,6 @@ export class GameService {
 
   public navigateToItem(item: GameScoreItem, isBlack = false) {
     this._game?.navigateToNode(item.getIndex());
-    console.log('Navigating to item -> ' + item.move.notation());
   }
 
   // Visual Settings
@@ -554,14 +565,15 @@ export class GameService {
     }
   }
 
+  public selectScoreItem(index: number): void {
+    this._score?.selectGameScoreItem(index);
+  }
+
   public togglePlay(): void { }
 
   public openEngine(): void { }
 
   public loadPGN(pgn: string) {
-    // parse potential multiple games
-    console.log('Loading PGN: ');
-    console.log(pgn);
     this.gamesData.games = [];
     this._games.next([]);
     this.parsePGN(pgn);

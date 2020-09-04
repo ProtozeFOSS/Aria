@@ -9,17 +9,36 @@
 .gsi-move{
   white-space: nowrap;
   color: $gsTextColor;
+  font-size:16px;
 }
 
 .gsi-ply{
   color: $gsTextColor;
+  font-size:18px;
+  font-weight: bold;
 }
 
 .gsi-comment{
   color: $gsTextColorAN;
   margin-left: 4px;
-
+  font-size: 13px;
 }
+
+.Current{
+  background: $gsBackgroundHG;
+  color: $gsTextColorHG;
+  border:$gsBorderHG;
+  line-height: $gsTextSize;
+}
+
+.Current.gsi-comment{
+  color: lightcoral;
+}
+
+.Current.gsi-ply{
+  color: rgb(0, 212, 250);
+}
+
 
 /************************************ Game Score Group **************************/
 .Group.gsi-container {

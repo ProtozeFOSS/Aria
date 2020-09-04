@@ -28,8 +28,17 @@ canvas-chessboard {
   position: absolute;
   top: 1px;
   left: 1px;
-  border: 2px black solid;
+  border: none;
   border-radius: 1px;
+}
+
+olga-title{
+  position: absolute;
+  right: 4px;
+  top: 0px;
+  height: 5%;
+  width: calc(50% -10px);
+  text-align: center;
 }
 
 app-gamescore-settings {
