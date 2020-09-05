@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output } from '@angular/core';
 import { fabric } from 'fabric';
 import { BehaviorSubject } from 'rxjs';
-import { ChessMove, GameService } from '../services/game.service';
+import { ChessMove, OlgaService } from '../services/game.service';
 import { ColorService } from '../services/colors.service';
 
 export const SquareNames = [
@@ -137,10 +137,10 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Output() touching = false;
   @Output() midPromotion = false;
   constructor(
-    public gameService: GameService,
+    public olga: OlgaService,
     public colorService: ColorService
   ) {
-    if (this.gameService.game.value !== null) {
+    if (this.olga.game.value !== null) {
       this.setBoardToGamePosition();
     }
   }
@@ -273,8 +273,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       // remove old piece
       this.removePiece(move.to);
       this.addPiece(move.to, move.color, move.promotion.role);
-      if (this.gameService.game.value) {
-        this.gameService.game.value.performPromotion(move);
+      if (this.olga.game.value) {
+        this.olga.game.value.performPromotion(move);
         this.closePromotionDialog();
       }
     }
@@ -827,8 +827,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   public isValidDrop(from: number, to: number): boolean {
-    if (this.gameService.game.value !== null) {
-      const position = this.gameService.game.value.getPosition();
+    if (this.olga.game.value !== null) {
+      const position = this.olga.game.value.getPosition();
       const legal = position.isMoveLegal(SquareNames[from], SquareNames[to]);
       return legal !== false;
     }
@@ -872,9 +872,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       } else {
         if (
           this.isValidDrop(this.selectedPiece.tile, tile) &&
-          this.gameService.game.value !== null
+          this.olga.game.value !== null
         ) {
-          this.gameService.game.value.makeMove(move);
+          this.olga.game.value.makeMove(move);
           this.makeMove(move);
         } else {
           this.resetMove(move);
@@ -1322,8 +1322,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   setBoardToGamePosition(): void {
     this.clearMaterial();
-    if (this.gameService.game.value !== null) {
-      const position = this.gameService.game.value.getPosition();
+    if (this.olga.game.value !== null) {
+      const position = this.olga.game.value.getPosition();
       if (position) {
         for (let index = 0; index < 64; ++index) {
           const squareData = position.square(SquareNames[index]);

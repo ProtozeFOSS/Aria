@@ -1,22 +1,32 @@
 <div class="quick-actions-container">
-        <div (click)="gameService.togglePlay()" class="button play">
+        <div (click)="olga.openEngine()" class="engine">
+                <svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#cpu" />
+                </svg>
+        </div>
+        <div (click)="olga.togglePlay()" class="play">
                 <svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#play" />
                 </svg>
         </div>
-        <div (click)="gameService.openEngine()" class="button engine">
+        <div (click)="olga.toggleGameScoreViewType()" class="view">
                 <svg class="feather">
-                        <use xlink:href="/assets/images/feather-sprite.svg#cpu" />
+                        <use xlink:href="/assets/images/feather-sprite.svg#columns" />
+                </svg>
+        </div>
+        <div (click)="olga.openSettings()" class="settings">
+                <svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#sliders" />
                 </svg>
         </div>
 </div>
 <div class="navigation-container">
         <div (click)="moveToStart($event);" class="button start"><svg class="feather">
-                        <use xlink:href="/assets/images/feather-sprite.svg#chevrons-left" /></svg></div>
+                        <use xlink:href="/assets/images/feather-sprite.svg#rewind" /></svg></div>
         <div (click)="previous($event);" class="button previous"><svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#chevron-left" /></svg></div>
         <div (click)="advance($event);" class="button next"><svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#chevron-right" /></svg></div>
         <div (click)="moveToEnd($event);" class="button end"><svg class="feather">
-                        <use xlink:href="/assets/images/feather-sprite.svg#chevrons-right" /></svg></div>
+                        <use xlink:href="/assets/images/feather-sprite.svg#fast-forward" /></svg></div>
 </div>

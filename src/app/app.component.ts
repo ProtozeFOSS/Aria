@@ -10,7 +10,7 @@ import { GamescoreUxComponent } from './game-score/game-score.ux';
 import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.component';
 import { ColorService } from './services/colors.service';
 import { LayoutService } from './services/layout.service';
-import { GameService, ChessGame } from './services/game.service';
+import { OlgaService, ChessGame } from './services/game.service';
 import { OlgaService } from './services/olga.service';
 import { SettingsMenuComponent } from './settings/settings-menu/settings-menu.component';
 
@@ -41,13 +41,12 @@ export class Olga implements AfterViewInit {
   constructor(
     public olga: OlgaService,
     public colorService: ColorService,
-    public gameService: GameService,
     public layoutService: LayoutService,
   ) {
     const date = new Date();
     this.olgaID = 'OLGA-' + date.getTime().toString();
     console.log('ID: ' + this.olgaID);
-    // this.gameService..subscribe((game) => {
+    // this.olga..subscribe((game) => {
     //   this.currentGame = game;
     //   //this.gameScoreComponent.setGame(game);
     //   //this.canvasBoarComponent.setGame(game);
@@ -67,27 +66,25 @@ export class Olga implements AfterViewInit {
     })
     this.layoutService.initializeLayout(this);
     if (this.canvasBoardComponent) {
-      this.gameService.attachBoard(this.canvasBoardComponent);
+      this.olga.attachBoard(this.canvasBoardComponent);
     }
     if (this.gameScoreComponent) {
-      this.gameService.attachScore(this.gameScoreComponent);
+      this.olga.attachScore(this.gameScoreComponent);
       this.gameScoreComponent.resizeHandleEvent = this.layoutService.onSliderDrag.bind(this.layoutService);
       this.gameScoreComponent.resizeTouchEvent = this.layoutService.onSliderTouch.bind(this.layoutService);
     }
 
     if (this.canvasBoardComponent) {
-      this.gameService.attachBoard(this.canvasBoardComponent);
+      this.olga.attachBoard(this.canvasBoardComponent);
     }
 
     this.colorService.boardBGLight.subscribe((light) => {
       if (this.canvasBoardComponent) {
-        console.log('setting light board tile');
         this.canvasBoardComponent.setLightTile(light);
       }
     });
     this.colorService.boardBGDark.subscribe((dark) => {
       if (this.canvasBoardComponent) {
-        console.log('setting Dark board tile');
         this.canvasBoardComponent.setDarkTile(dark);
       }
     });
@@ -108,7 +105,7 @@ export class Olga implements AfterViewInit {
   }
 
   loadPGN(pgn: string) {
-    this.gameService.loadPGN(pgn);
+    this.olga.loadPGN(pgn);
   }
 
   setBoardSize(size: number): void {

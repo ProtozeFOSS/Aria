@@ -18,7 +18,7 @@ import {
   // ...
 } from '@angular/animations';
 import {
-  GameService,
+  OlgaService,
   GameScoreItem,
   GameScoreType,
   GameScoreAnnotation,
@@ -71,29 +71,15 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(GameScoreItemComponent) scoreItems: QueryList<GameScoreItemComponent> | null = null;
   @Output() currentScoreItem: GameScoreItemComponent | null = null;
-  constructor(public olga: OlgaService, public gameService: GameService, public layoutService: LayoutService) {
+  constructor(public olga: OlgaService, public layoutService: LayoutService) {
     this.resetCursor();
-    this.gameService.figurineNotation.subscribe((figurineNotation) => {
+    this.olga.figurineNotation.subscribe((figurineNotation: boolean) => {
       if (figurineNotation) {
         this.scoreFontFamily.next('FigurineSymbolT1');
       } else {
         this.scoreFontFamily.next('Cambria');
       }
     });
-    // this.gameService.currentItem.subscribe((item) => {
-    //   if (this.currentScoreItem) {
-    //     this.currentScoreItem.setCurrent(false);
-    //   }
-    //   if (this.scoreItems) {
-    //     this.scoreItems.forEach((scoreItem) => {
-    //       if (scoreItem.data === item) {
-    //         scoreItem.setCurrent(true);
-    //         this.currentScoreItem = scoreItem;
-    //       }
-    //     });
-    //   }
-    //   // move to manually updating the elements
-    // })
   }
 
   ngOnInit(): void {
@@ -102,7 +88,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.pgnData) {
-      this.gameService.loadPGN(this.pgnData.nativeElement.value);
+      this.olga.loadPGN(this.pgnData.nativeElement.value);
       this.layoutService.resizeElement = document.getElementById('resize-handle-' + this.UUID);
       //console.log(this.scoreItems);
       window.setTimeout(() => {
@@ -186,7 +172,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   loadPGN(pgn: string) {
-    this.gameService.loadPGN(pgn);
+    this.olga.loadPGN(pgn);
     this.ngOnInit();
   }
 

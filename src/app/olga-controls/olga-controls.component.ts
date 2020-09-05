@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GameService } from 'src/app/services/game.service';
+import { OlgaService } from '../services/olga.service';
 
 @Component({
   selector: 'olga-controls',
@@ -8,7 +8,7 @@ import { GameService } from 'src/app/services/game.service';
 })
 export class OlgaControlsComponent implements OnInit {
 
-  constructor(public gameService: GameService) { }
+  constructor(public olga: OlgaService) { }
 
   ngOnInit(): void {
   }
@@ -16,24 +16,24 @@ export class OlgaControlsComponent implements OnInit {
   advance(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.gameService.advance();
+    this.olga.advance();
   }
 
   moveToStart(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.gameService.moveToStart();
+    this.olga.moveToStart();
   }
 
   previous(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.gameService.previous();
+    this.olga.previous();
   }
 
   moveToEnd(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.gameService.moveToEnd();
+    this.olga.moveToEnd();
   }
 }

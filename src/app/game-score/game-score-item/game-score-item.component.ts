@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, Output } from '@angular/core';
-import { GameScoreType, GameService, GameScoreItem } from '../../services/game.service';
+import { GameScoreType, GameScoreItem } from '../../common/kokopu-engine';
 import { OlgaService } from 'src/app/services/olga.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
   public plyOn = false;
   public ply = '';
   GameScoreType = GameScoreType;
-  constructor(public olga: OlgaService, public gameService: GameService) {
+  constructor(public olga: OlgaService) {
     // use data to actually set type
 
   }
@@ -104,10 +104,10 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
 
   clickMove(): void {
     if (this.data.move.variations().length > 0) {
-      this.gameService.displayVariations(this.data);
-      this.gameService.navigateToItem(this.data);
+      this.olga.displayVariations(this.data);
+      this.olga.navigateToItem(this.data);
     } else {
-      this.gameService.navigateToItem(this.data);
+      this.olga.navigateToItem(this.data);
     }
   }
 

@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { OlgaService } from 'src/app/services/olga.service';
-import { GameService } from 'src/app/services/game.service';
 import { ColorService } from 'src/app/services/colors.service';
 
 @Component({
@@ -11,7 +10,6 @@ import { ColorService } from 'src/app/services/colors.service';
 export class SettingsBoardComponent implements OnInit, AfterViewInit {
   constructor(
     public olga: OlgaService,
-    public gameService: GameService,
     public colorService: ColorService
   ) { }
   @ViewChild('lightBGHandle', { static: true })
@@ -32,15 +30,15 @@ export class SettingsBoardComponent implements OnInit, AfterViewInit {
   }
 
   updateLight(color: string) {
-    if (this.gameService.board.value) {
-      this.gameService.board.value.setLightTile(color);
+    if (this.olga.board.value) {
+      this.olga.board.value.setLightTile(color);
       this.colorService.boardBGLight.next(color);
     }
   }
 
   updateDark(color: string) {
-    if (this.gameService.board.value) {
-      this.gameService.board.value.setDarkTile(color);
+    if (this.olga.board.value) {
+      this.olga.board.value.setDarkTile(color);
       this.colorService.boardBGDark.next(color);
     }
   }
