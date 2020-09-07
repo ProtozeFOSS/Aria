@@ -1,19 +1,10 @@
-import { Injectable, Input, Output, APP_INITIALIZER } from '@angular/core';
 
 //@ts-ignore
-import { Game as KGame, pgnRead, Database as KDatabase, Variation as KVariation, Node as KNode, Position as KPosition, MoveDescriptor as KMove } from 'kokopu';
+import { Game as KGame, Variation as KVariation, Node as KNode, Position as KPosition } from 'kokopu';
 import { BehaviorSubject } from 'rxjs';
-import { OlgaService } from '../services/olga.service';
 import {
-    CanvasChessBoard,
     SquareNames,
-    Piece,
 } from '../canvas-chessboard/canvas-chessboard.component';
-import { GamescoreUxComponent } from '../game-score/game-score.ux';
-import { OlgaStatusComponent } from '../olga-status/olga-status.component';
-import { getSupportedInputTypes } from '@angular/cdk/platform';
-import { ɵallowPreviousPlayerStylesMerge } from '@angular/animations/browser';
-import { GameScoreItemComponent } from '../game-score/game-score-item/game-score-item.component';
 
 // Game Score
 
@@ -199,8 +190,8 @@ export class ChessGame {
             this.currentNode = this.lastNode;
         }
         this.fen = this.position.fen();
-        this.olga.board.value?.setBoardToGamePosition();
-        this.olga.status.value?.updateStatus(this.position.turn(), node);
+        this.olga.redrawBoard();
+        this.olga.updateStatus(this.position.turn(), node);
     }
 
     public onVariant(): boolean {
@@ -254,12 +245,12 @@ export class ChessGame {
                 if (fromPGN) {
                     if (pgnMove.isPromotion()) {
                         move.promoteFunction = legal;
-                        this.olga.board.value?.showPromotionDialog(move);
+                        this.olga.showPromotionDialog(move);
                     }
                     if (pgnMove.isCastling()) {
-                        this.olga.board.value?.setBoardToGamePosition();
+                        this.olga.redrawBoard();
                     }
-                    this.olga.board.value?.makeMove(move);
+                    this.olga.makeBoardMove(move);
                 }
                 this.currentNode = next;
 
@@ -291,7 +282,7 @@ export class ChessGame {
                 );
                 const variations = this.currentNode.variations();
                 this.isVariation = true;
-                this.olga.isVariant.next(this.isVariation);
+                this.olga.isVariantChanged(this.isVariation);
                 variations.forEach((variation: KVariation) => {
                     const firstMove = variation.first();
                     if (firstMove && firstMove._info.moveDescriptor) {
@@ -315,7 +306,7 @@ export class ChessGame {
                                     }
                                     this.currentNode = node;
                                     this.currentNode._info.moveDescriptor = this.currentNode.notation();
-                                    this.olga.board.value?.setBoardToGamePosition();
+                                    this.olga.redrawBoard();
                                 }
                             }
                         } else {
@@ -328,14 +319,41 @@ export class ChessGame {
             }
         }
         if (!ChessGame.compareKNode(lastNode, this.currentNode)) {
-            this.olga.status.value?.updateStatus(
+            this.olga.updateStatus(
                 this.position.turn(),
                 lastNode
             );
         }
     }
 
-    constructor(protected olga: OlgaService, public game?: KGame) {
+    // // make all olga calls a callback
+    // // @ts-ignore
+    // public updateStatus: (turn: string, last?: KNode) => void;
+
+    // // @ts-ignore
+    // public redrawBoard: () => void;
+
+    // // @ts-ignore
+    // public isVariantChanged: (isVariant: boolean) => void;
+
+    // // @ts-ignore
+    // public makeBoardMove: (move: ChessMove) => void;
+
+    // // @ts-ignore
+    // public showPromotionDialog: (move: ChessMove) => void;
+
+    // // @ts-ignore
+    // public gameScoreItemsChanged: (items: GameScoreItem[]) => void;
+
+    // // @ts-ignore
+    // public selectScoreItem: (index: number) => void;
+
+    // // @ts-ignore
+    // public unmakeBoardMove: (move: ChessMove) => void;
+
+
+
+    constructor(protected olga: any, public game?: KGame) {
         if (game) {
             this.setGame(this.game);
         }
@@ -345,7 +363,7 @@ export class ChessGame {
         return this.position;
     }
 
-    protected generateGameScore(): void {
+    public generateGameScore(): GameScoreItem[] {
         const items = [];
         this.nodeMap = [];
         let nextScore = this.variation.first() as KNode;
@@ -364,7 +382,7 @@ export class ChessGame {
         }
         this.lastNode = this.nodeMap[this.nodeMap.length - 1];
         this.score.next(items);
-        this.olga._items.next(items);
+        return items;
     }
 
     setGame(game: KGame): void {
@@ -375,9 +393,7 @@ export class ChessGame {
         this.currentIndex = -1;
         this.fen = this.position.fen();
         this.currentNode = null;
-        if (this.olga.board.value) {
-            this.olga.board.value.setBoardToGamePosition();
-        }
+        this.olga.redrawBoard();
         window.setTimeout(this.generateGameScore.bind(this), 10);
     }
 
@@ -391,11 +407,11 @@ export class ChessGame {
                     const cmove = ChessMove.fromNode(next.move);
                     if (cmove) {
                         if (this.position.play(next.move._info.moveDescriptor)) {
-                            this.olga.board.value?.makeMove(cmove);
+                            this.olga.makeBoardMove(cmove);
                             this.currentNode = next.move;
                             this.olga.selectScoreItem(this.currentIndex);
                             this.nodeMap[this.currentIndex] = next;
-                            this.olga.status.value?.updateStatus(this.position.turn(), next.move);
+                            this.olga.updateStatus(this.position.turn(), next.move);
                         }
                     }
                 }
@@ -410,10 +426,10 @@ export class ChessGame {
                     const cmove = ChessMove.fromNode(node.move);
                     if (cmove) {
                         this.position = previous.move.position();
-                        this.olga.board.value?.unMakeMove(cmove);
+                        this.olga.unmakeBoardMove(cmove);
                         this.currentNode = previous;
                         this.olga.selectScoreItem(this.currentIndex);
-                        this.olga.status.value?.updateStatus(this.position.turn(), previous.move);
+                        this.olga.updateStatus(this.position.turn(), previous.move);
                     }
                 } else {
                     this.position.reset();
@@ -423,8 +439,8 @@ export class ChessGame {
                         this.currentNode = this.lastNode;
                     }
                     this.fen = this.position.fen();
-                    this.olga.board.value?.setBoardToGamePosition();
-                    this.olga.status.value?.updateStatus(this.position.turn());
+                    this.olga.redrawBoard();
+                    this.olga.updateStatus(this.position.turn());
                     this.olga.selectScoreItem(-1);
                 }
             }
@@ -472,9 +488,6 @@ export class ChessGame {
         return this.currentIndex === this.nodeMap.length;
     }
 
-    public createScoreItems(): GameScoreItem[] {
-        return [];
-    }
 }
 
 export enum GameScoreType {

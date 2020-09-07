@@ -1,8 +1,9 @@
 import { Component, OnInit, AfterViewInit, Input, Output } from '@angular/core';
 import { fabric } from 'fabric';
 import { BehaviorSubject } from 'rxjs';
-import { ChessMove, OlgaService } from '../services/game.service';
+import { ChessMove } from '../common/kokopu-engine';
 import { ColorService } from '../services/colors.service';
+import { OlgaService } from '../services/olga.service';
 
 export const SquareNames = [
   'a1',

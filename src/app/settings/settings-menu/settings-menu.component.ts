@@ -3,6 +3,7 @@ import { ColorService } from 'src/app/services/colors.service';
 import { LayoutService } from 'src/app/services/layout.service';
 import { CanvasChessBoard } from 'src/app/canvas-chessboard/canvas-chessboard.component';
 import { MatTabChangeEvent } from '@angular/material/tabs/tab-group';
+import { OlgaService } from 'src/app/services/olga.service';
 
 @Component({
   selector: 'settings-menu',
@@ -10,7 +11,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs/tab-group';
   styleUrls: ['./settings-menu.component.scss']
 })
 export class SettingsMenuComponent implements OnInit, AfterViewInit {
-  constructor(public colorService: ColorService, public layoutService: LayoutService) { }
+  constructor(public colorService: ColorService, public layoutService: LayoutService, olga: OlgaService) { }
   menus: HTMLCollectionOf<HTMLElement> | null = null;
   @ViewChild(CanvasChessBoard)
   settingsBoard: CanvasChessBoard | null = null;
@@ -21,7 +22,6 @@ export class SettingsMenuComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     const menus = document.getElementsByClassName('settings-content');
-    console.log(menus);
     this.colorService.boardBGDark.subscribe((color) => {
       this.settingsBoard?.setDarkTile(color);
     });

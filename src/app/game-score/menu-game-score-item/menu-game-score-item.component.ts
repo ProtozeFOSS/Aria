@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
-import { GameScoreItem } from 'src/app/services/game.service';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { GameScoreItem } from 'src/app/common/kokopu-engine';
 
 @Component({
   selector: 'app-menu-game-score-item',

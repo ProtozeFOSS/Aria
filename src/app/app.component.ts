@@ -10,7 +10,6 @@ import { GamescoreUxComponent } from './game-score/game-score.ux';
 import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.component';
 import { ColorService } from './services/colors.service';
 import { LayoutService } from './services/layout.service';
-import { OlgaService, ChessGame } from './services/game.service';
 import { OlgaService } from './services/olga.service';
 import { SettingsMenuComponent } from './settings/settings-menu/settings-menu.component';
 
@@ -88,6 +87,11 @@ export class Olga implements AfterViewInit {
         this.canvasBoardComponent.setDarkTile(dark);
       }
     });
+    const pgn = this.gameScoreComponent?.getPGN();
+    if (pgn) {
+      this.olga.loadPGN(pgn);
+      this.gameScoreComponent?.redrawGameScore();
+    }
   }
   mouseMoved(event: MouseEvent): void {
     if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
@@ -102,10 +106,6 @@ export class Olga implements AfterViewInit {
     if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
       this.gameScoreComponent.resizeTouchEvent(event);
     }
-  }
-
-  loadPGN(pgn: string) {
-    this.olga.loadPGN(pgn);
   }
 
   setBoardSize(size: number): void {

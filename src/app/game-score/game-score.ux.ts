@@ -10,20 +10,11 @@ import {
   QueryList,
 } from '@angular/core';
 import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-  // ...
-} from '@angular/animations';
-import {
-  OlgaService,
   GameScoreItem,
   GameScoreType,
   GameScoreAnnotation,
   GameScoreVariation
-} from '../services/game.service';
+} from '../common/kokopu-engine';
 import { MenuGameScoreItemComponent } from './menu-game-score-item/menu-game-score-item.component';
 import { GameScoreItemComponent } from './game-score-item/game-score-item.component';
 import { BehaviorSubject } from 'rxjs';
@@ -88,7 +79,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.pgnData) {
-      this.olga.loadPGN(this.pgnData.nativeElement.value);
       this.layoutService.resizeElement = document.getElementById('resize-handle-' + this.UUID);
       //console.log(this.scoreItems);
       window.setTimeout(() => {
@@ -171,8 +161,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     this.resizing = false;
   }
 
-  loadPGN(pgn: string) {
-    this.olga.loadPGN(pgn);
+  public redrawGameScore() {
     this.ngOnInit();
   }
 
@@ -208,5 +197,8 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
       item.setSelected(!item.isSelected());
       this.currentScoreItem = item;
     }
+  }
+  public getPGN(): string {
+    return this.pgnData?.nativeElement.value;
   }
 }

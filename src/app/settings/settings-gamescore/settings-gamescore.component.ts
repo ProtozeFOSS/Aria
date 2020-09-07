@@ -6,7 +6,6 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
-import { GameService } from '../../services/game.service';
 import { ColorService } from '../../services/colors.service';
 import { OlgaService } from 'src/app/services/olga.service';
 
@@ -18,7 +17,6 @@ import { OlgaService } from 'src/app/services/olga.service';
 export class GamescoreSettingsComponent implements OnInit, AfterViewInit {
   constructor(
     public olga: OlgaService,
-    public gameService: GameService,
     public colorService: ColorService
   ) { }
 

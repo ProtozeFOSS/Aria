@@ -24,7 +24,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MenuGameScoreItemComponent } from './game-score/menu-game-score-item/menu-game-score-item.component';
 
 import { OlgaService } from './services/olga.service';
-import { GameService } from './services/game.service';
 import { LayoutService } from './services/layout.service';
 import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.component';
 import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
@@ -62,7 +61,7 @@ import { OlgaTitleComponent } from './olga-title/olga-title.component';
     MatSlideToggleModule,
     MatTabsModule,
   ],
-  providers: [LayoutService, ColorService, GameService, OlgaService],
+  providers: [LayoutService, ColorService, OlgaService],
   bootstrap: [Olga],
 })
 export class AppModule { }

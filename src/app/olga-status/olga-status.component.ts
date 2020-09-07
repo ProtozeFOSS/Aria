@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { GameService, ChessMove } from '../services/game.service';
 
 //@ts-ignore
 import { Node as KNode } from 'kokopu';
+import { OlgaService } from '../services/olga.service';
 @Component({
   selector: 'olga-status',
   templateUrl: './olga-status.component.html',
@@ -11,8 +11,8 @@ import { Node as KNode } from 'kokopu';
 })
 export class OlgaStatusComponent implements OnInit {
   readonly status = new BehaviorSubject<string>('White to move.');
-  constructor(gameService: GameService) {
-    gameService.attachStatus(this);
+  constructor(olga: OlgaService) {
+    olga.attachStatus(this);
   }
 
   ngOnInit(): void {
