@@ -2,10 +2,7 @@
 //@ts-ignore
 import { Game as KGame, Variation as KVariation, Node as KNode, Position as KPosition } from 'kokopu';
 import { BehaviorSubject } from 'rxjs';
-import {
-    SquareNames,
-} from '../canvas-chessboard/canvas-chessboard.component';
-
+import { SquareNames } from '../canvas-chessboard/types';
 // Game Score
 
 export class GameScoreVariation {
@@ -101,6 +98,7 @@ export class ChessMove {
     color: string = '';
     capture?: { role: string; color: string };
     promotion?: { role: string };
+    castle?: {type:string, to:number, from: number};
     promoteFunction?: any;
     static fromNode(node: KNode): ChessMove | null {
         const move = new ChessMove();
@@ -112,7 +110,7 @@ export class ChessMove {
                 move.capture = { role: mDescriptor.capturedPiece().toUpperCase(), color: mDescriptor.capturedColoredPiece()[0] };
             }
             if (mDescriptor.isCastling()) {
-                // input castling data
+                move.castle = {type: node.notation(), to: SquareNames.indexOf(mDescriptor.rookTo()), from: SquareNames.indexOf(mDescriptor.rookFrom())};
             }
             if (mDescriptor.isPromotion()) {
                 move.promotion = { role: mDescriptor.promotion() };
@@ -326,33 +324,6 @@ export class ChessGame {
         }
     }
 
-    // // make all olga calls a callback
-    // // @ts-ignore
-    // public updateStatus: (turn: string, last?: KNode) => void;
-
-    // // @ts-ignore
-    // public redrawBoard: () => void;
-
-    // // @ts-ignore
-    // public isVariantChanged: (isVariant: boolean) => void;
-
-    // // @ts-ignore
-    // public makeBoardMove: (move: ChessMove) => void;
-
-    // // @ts-ignore
-    // public showPromotionDialog: (move: ChessMove) => void;
-
-    // // @ts-ignore
-    // public gameScoreItemsChanged: (items: GameScoreItem[]) => void;
-
-    // // @ts-ignore
-    // public selectScoreItem: (index: number) => void;
-
-    // // @ts-ignore
-    // public unmakeBoardMove: (move: ChessMove) => void;
-
-
-
     constructor(protected olga: any, public game?: KGame) {
         if (game) {
             this.setGame(this.game);
@@ -485,7 +456,7 @@ export class ChessGame {
     }
 
     public isFinalPosition(): boolean {
-        return this.currentIndex === this.nodeMap.length;
+        return this.currentIndex === (this.nodeMap.length-1);
     }
 
 }

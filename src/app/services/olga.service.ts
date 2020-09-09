@@ -6,6 +6,8 @@ import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 // @ts-ignore
 import { Database as KDatabase, pgnRead, Game as KGame, Node as KNode } from 'kokopu';
+import { SettingsMenuComponent } from '../settings/settings-menu/settings-menu.component';
+import { OlgaControlsComponent } from '../olga-controls/olga-controls.component';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,6 +16,9 @@ export class OlgaService {
   @Output() readonly showingPly = new BehaviorSubject<boolean>(true);
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
   @Output() readonly variation = new BehaviorSubject<GameScoreVariation[]>([]);
+  protected autoIntervalID = -1;
+  protected timeLeft = 600;
+  public UUID: string = '';
   @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(
     false
   );
@@ -42,6 +47,9 @@ export class OlgaService {
 
   private _status: OlgaStatusComponent | null = null;
   readonly status = new BehaviorSubject<OlgaStatusComponent | null>(null);
+
+  private _controls: OlgaControlsComponent | null = null;
+  readonly controls = new BehaviorSubject<OlgaControlsComponent | null>(null);
 
   readonly isVariant = new BehaviorSubject<boolean>(false);
 
@@ -87,17 +95,42 @@ export class OlgaService {
     if (this._game && !this._game.isFinalPosition()) {
       this._game.moveToEnd();
     }
+  } 
+  
+  protected autoAdvance():void {
+    this.timeLeft -= 100;
+    if(this._controls) {
+      this._controls.setTimer(this.timeLeft);
+    }
+    if(this.timeLeft <= 0) {
+      if(this._game && !this._game.isFinalPosition()){
+        this.advance();
+      } else {
+        this.toggleAutoPlay();
+      }
+      this.timeLeft = 600;
+    }
   }
 
-
-
-  public togglePlay(): void { }
+  public toggleAutoPlay():void {
+    if(this.autoIntervalID == -1) {
+      this.autoIntervalID = window.setInterval(this.autoAdvance.bind(this), 100);
+      if(this._controls) {
+        this._controls.playing = true;
+      }
+    } else {
+      window.clearInterval(this.autoIntervalID);
+      this.autoIntervalID = -1;
+      this.timeLeft = 600;
+      if(this._controls) {
+      this._controls.setTimer(600);
+        this._controls.playing = false;
+      }
+    }
+  }
 
   public openEngine(): void { }
 
-  public openSettings(): void {
-
-  }
   public toggleGameScoreViewType(): void {
 
   }
@@ -125,6 +158,8 @@ export class OlgaService {
     }
   }
 
+  public initializeComponents():void{}
+
   public attachBoard(board: CanvasChessBoard) {
     this._board = board;
     this.board.next(board);
@@ -138,6 +173,11 @@ export class OlgaService {
   public attachStatus(status: OlgaStatusComponent) {
     this._status = status;
     this.status.next(status);
+  }
+
+  public attachControls(controls: OlgaControlsComponent) {
+    this._controls = controls;
+    this.controls.next(controls);
   }
 
   public editComment(data: GameScoreItem): void {

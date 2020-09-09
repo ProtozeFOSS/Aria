@@ -1,6 +1,6 @@
 import { Injectable, Output, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BoardTheme } from '../canvas-chessboard/canvas-chessboard.component';
+import {  BoardTheme } from '../canvas-chessboard/types';
 
 @Injectable({
   providedIn: 'root',

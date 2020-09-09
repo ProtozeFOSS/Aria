@@ -1,11 +1,11 @@
 <!-- GameScoreGroup -->
 <div class="gsi-container {{typeName}}">
-  <div class="gsi-ply {{typeName}}" *ngIf="this.plyOn">
+  <div class="gsi-ply {{typeName}}" *ngIf="this.plyOn" (click)="clickMove()">
     {{ply}}</div>
   <!-- <div class="gsi-move {{typeName}}" *ngIf="!isGroup()">..&nbsp;</div> -->
   <div class="gsi-move {{typeName}}" *ngIf="this.data.move" (click)="clickMove()">
     {{this.data.move.notation()}}</div>
-  <div class="gsi-comment {{typeName}}" *ngIf="this.data.move" (contextmenu)="this.olga.editComment(data)">
+  <div class="gsi-comment {{typeName}}" *ngIf="this.data.move" (contextmenu)="this.olga.editComment(data)" (click)="clickMove()">
     {{this.data.move.comment()}}</div>
 </div>
 <!-- Variation -->

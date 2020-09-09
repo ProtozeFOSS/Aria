@@ -1,24 +1,34 @@
 <div class="quick-actions-container">
-        <div (click)="olga.openEngine()" class="engine">
-                <svg class="feather">
-                        <use xlink:href="/assets/images/feather-sprite.svg#cpu" />
+        <div (click)="toggleAutoPlay()" class="play">
+                <svg class="feather-play">
+                        <use [ngStyle]="{'visibility': playing ? 'visible':'hidden'}" xlink:href="/assets/images/feather-sprite.svg#pause" />
+                        <use [ngStyle]="{'visibility': !playing ? 'visible':'hidden'}"  xlink:href="/assets/images/feather-sprite.svg#play" />
                 </svg>
-        </div>
-        <div (click)="olga.togglePlay()" class="play">
-                <svg class="feather">
-                        <use xlink:href="/assets/images/feather-sprite.svg#play" />
-                </svg>
+                <div class="timer">{{timeLeft}}</div>
         </div>
         <div (click)="olga.toggleGameScoreViewType()" class="view">
                 <svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#columns" />
                 </svg>
         </div>
-        <div (click)="olga.openSettings()" class="settings">
+        <div (click)="layout.openSettings()" class="settings">
                 <svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#sliders" />
                 </svg>
         </div>
+        
+        <div (click)="layout.decreaseBoardSize()" class="shrink">
+                <svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#minus" />
+                </svg>
+        </div>
+        
+        <div (click)="layout.increaseBoardSize()" class="grow">
+                <svg class="feather">
+                        <use xlink:href="/assets/images/feather-sprite.svg#plus" />
+                </svg>
+        </div>
+        
 </div>
 <div class="navigation-container">
         <div (click)="moveToStart($event);" class="button start"><svg class="feather">

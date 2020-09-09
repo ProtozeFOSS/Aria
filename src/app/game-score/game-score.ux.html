@@ -93,6 +93,6 @@
 1/2-1/2' class="input-box" #pgnBox type="text" />
 </div>
 
-<div #resizeHandle id="resize-handle-{{UUID}}" class="resize-handle" (touchstart)="startTouch($event)"
+<div #resizeHandle id="resize-handle-{{this.olga.UUID}}" class="resize-handle" (touchstart)="startTouch($event)"
   (touchend)="stopTouch($event)" (mouseup)="resetResizeHandle($event)" (mousedown)="setGrabCursor($event)"
   (mouseleave)="resetCursor()"></div>

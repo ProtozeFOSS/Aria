@@ -46,7 +46,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   pgnData: ElementRef | null = null;
   @ViewChild('gamescore-container') container: ElementRef | null = null;
   @Input() gameScoreFontSize: number | null = 24;
-  @Input() UUID = '';
   columnCount = 3;
   gameScore: Move[] = [];
   rowHeight = '50px';
@@ -62,7 +61,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   @ViewChildren(GameScoreItemComponent) scoreItems: QueryList<GameScoreItemComponent> | null = null;
   @Output() currentScoreItem: GameScoreItemComponent | null = null;
-  constructor(public olga: OlgaService, public layoutService: LayoutService) {
+  constructor(public olga: OlgaService, public layout: LayoutService) {
     this.resetCursor();
     this.olga.figurineNotation.subscribe((figurineNotation: boolean) => {
       if (figurineNotation) {
@@ -79,7 +78,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.pgnData) {
-      this.layoutService.resizeElement = document.getElementById('resize-handle-' + this.UUID);
+      this.layout.resizeElement = document.getElementById('resize-handle-' + this.olga.UUID);
       //console.log(this.scoreItems);
       window.setTimeout(() => {
         if (this.scoreItems) {
@@ -151,7 +150,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   startTouch(event: TouchEvent): void {
     const touchPoint = event.touches[0];
     if (touchPoint) {
-      if (this.layoutService.resizeElement) {
+      if (this.layout.resizeElement) {
         this.resizing = true;
       }
     }

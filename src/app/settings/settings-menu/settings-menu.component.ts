@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { ColorService } from 'src/app/services/colors.service';
-import { LayoutService } from 'src/app/services/layout.service';
-import { CanvasChessBoard } from 'src/app/canvas-chessboard/canvas-chessboard.component';
+import { ColorService } from '../../services/colors.service';
+import { LayoutService } from '../../services/layout.service';
+import { CanvasChessBoard } from '../../canvas-chessboard/canvas-chessboard.component';
 import { MatTabChangeEvent } from '@angular/material/tabs/tab-group';
-import { OlgaService } from 'src/app/services/olga.service';
+import { OlgaService } from '../../services/olga.service';
 
 @Component({
   selector: 'settings-menu',
@@ -11,10 +11,11 @@ import { OlgaService } from 'src/app/services/olga.service';
   styleUrls: ['./settings-menu.component.scss']
 })
 export class SettingsMenuComponent implements OnInit, AfterViewInit {
-  constructor(public colorService: ColorService, public layoutService: LayoutService, olga: OlgaService) { }
+  constructor(public colorService: ColorService, public layout: LayoutService, public olga: OlgaService) { }
   menus: HTMLCollectionOf<HTMLElement> | null = null;
   @ViewChild(CanvasChessBoard)
   settingsBoard: CanvasChessBoard | null = null;
+  public visible = false;
   protected height = 360;
   protected width = 360;
   ngOnInit(): void {
@@ -55,6 +56,10 @@ export class SettingsMenuComponent implements OnInit, AfterViewInit {
     }
     this.height = height;
     this.width = width;
+  }
+
+  ignoreInnerClicks(event: MouseEvent) {
+    event.stopPropagation();
   }
 
   tabChanged(event: MatTabChangeEvent): void {

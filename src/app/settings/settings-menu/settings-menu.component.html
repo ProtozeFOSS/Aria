@@ -1,8 +1,8 @@
 <div class="settings-window">
-    <div class="settings-background">
-        <button mat-button-raised class="close-button">X</button>
-        <h3>Settings</h3>
-        <mat-tab-group dynamicHeight="true" mat-align-tabs="center" animationDuration="500ms"
+    <div class="settings-background" (click)="ignoreInnerClicks($event)">
+        <button mat-button-raised class="close-button" (click)="layout.closeSettings()">X</button>
+        <h3 >Settings</h3>
+        <mat-tab-group *ngIf="this.visible"   dynamicHeight="true" mat-align-tabs="center" animationDuration="500ms"
             (selectedTabChange)="tabChanged($event)">
             <mat-tab label="General">
                 Hello World
@@ -10,7 +10,7 @@
             <mat-tab label="Board">
                 <ng-template matTabContent>
                     <div class="settings-content">
-                        <canvas-chessboard class="settings-board" UUID="x-1232141"
+                        <canvas-chessboard class="settings-board" boardID="x-1232141"
                             [theme]="this.colorService.boardTheme()" [size]=640 [tileSize]=80 [interactive]=false>
                         </canvas-chessboard>
                         <board-settings class="settings"></board-settings>

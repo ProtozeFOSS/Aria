@@ -12,6 +12,7 @@ import { ColorService } from './services/colors.service';
 import { LayoutService } from './services/layout.service';
 import { OlgaService } from './services/olga.service';
 import { SettingsMenuComponent } from './settings/settings-menu/settings-menu.component';
+import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
 
 @Component({
   selector: 'olga',
@@ -28,49 +29,52 @@ export class Olga implements AfterViewInit {
   appContainer: ElementRef | null = null;
   @ViewChild(SettingsMenuComponent)
   settingsMenuComponent: SettingsMenuComponent | null = null;
-  @Output() gameScoreElement: HTMLElement | null = null;
-  @Output() boardElement: HTMLElement | null = null;
-  @Output() controlsElement: HTMLElement | null = null;
-  @Output() statusElement: HTMLElement | null = null;
+  @ViewChild(OlgaControlsComponent)
+  controlsComponent: OlgaControlsComponent | null = null;
   @Input() pgnString = '';
-  @Input() olgaID = '12312321';
   @Output() gameScoreWidth: number | null = 389;
   @Output() oldWidth: number | null = 0;
+  @Output() keymap: Map<string, any> = new Map<string, any>();
   protected doneResizingScore = false;
   constructor(
     public olga: OlgaService,
     public colorService: ColorService,
-    public layoutService: LayoutService,
+    public layout: LayoutService,
   ) {
     const date = new Date();
-    this.olgaID = 'OLGA-' + date.getTime().toString();
-    console.log('ID: ' + this.olgaID);
+    this.olga.UUID = 'OLGA-' + date.getTime().toString();
+    console.log('ID: ' + this.olga.UUID);
+    this.loadKeymap();
     // this.olga..subscribe((game) => {
     //   this.currentGame = game;
     //   //this.gameScoreComponent.setGame(game);
     //   //this.canvasBoarComponent.setGame(game);
-    //   //this.layoutService.updateLayout();
+    //   //this.layout.updateLayout();
     // })
   }
 
   // tslint:disable-next-line: typedef
   ngAfterViewInit() {
-    this.gameScoreElement = document.getElementById('app-gamescore' + this.olgaID);
-    this.boardElement = document.getElementById(this.olgaID + '-ccb');
-    this.controlsElement = document.getElementById('olga-controls' + this.olgaID);
-    this.statusElement = document.getElementById('olga-status' + this.olgaID);
+    this.layout.gameScoreElement = document.getElementById('app-gamescore-' + this.olga.UUID);
+    this.layout.boardElement = document.getElementById(this.olga.UUID + '-ccb');
+    this.layout.controlsElement = document.getElementById('olga-controls-' + this.olga.UUID);
+    this.layout.statusElement = document.getElementById('olga-status-' + this.olga.UUID);
+    this.layout.settingsMenuElement = document.getElementById('settings-menu-' + this.olga.UUID );
     this.colorService.initializeColorPalette();
     this.colorService.boardBGDark.subscribe((bgDark) => {
       this.canvasBoardComponent?.setDarkTile(bgDark);
     })
-    this.layoutService.initializeLayout(this);
+    this.layout.initializeLayout(this);
     if (this.canvasBoardComponent) {
       this.olga.attachBoard(this.canvasBoardComponent);
     }
+    if(this.controlsComponent) {
+      this.olga.attachControls(this.controlsComponent);
+    }
     if (this.gameScoreComponent) {
       this.olga.attachScore(this.gameScoreComponent);
-      this.gameScoreComponent.resizeHandleEvent = this.layoutService.onSliderDrag.bind(this.layoutService);
-      this.gameScoreComponent.resizeTouchEvent = this.layoutService.onSliderTouch.bind(this.layoutService);
+      this.gameScoreComponent.resizeHandleEvent = this.layout.onSliderDrag.bind(this.layout);
+      this.gameScoreComponent.resizeTouchEvent = this.layout.onSliderTouch.bind(this.layout);
     }
 
     if (this.canvasBoardComponent) {
@@ -92,6 +96,7 @@ export class Olga implements AfterViewInit {
       this.olga.loadPGN(pgn);
       this.gameScoreComponent?.redrawGameScore();
     }
+    window.onkeydown = this.keyEvent.bind(this);
   }
   mouseMoved(event: MouseEvent): void {
     if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
@@ -99,6 +104,28 @@ export class Olga implements AfterViewInit {
       if (event.buttons === 0) {
         this.gameScoreComponent.resizing = false;
       }
+    }
+  }
+
+  protected loadKeymap():void {
+    // initial default keymap
+
+    this.keymap.set('Space', ()=>{this.olga.toggleAutoPlay();});
+    this.keymap.set('Home', ()=>{this.olga.moveToStart();});
+    this.keymap.set('End', ()=>{this.olga.moveToEnd();});
+    this.keymap.set('ArrowRight', ()=>{this.olga.advance();});
+    this.keymap.set('ArrowLeft', ()=>{this.olga.previous();});
+  }
+
+
+
+
+  keyEvent(event: any): void {
+    console.log(event);
+    if(this.keymap.has(event.code)) {
+      console.log('Got this key: ' + event.code);
+      const action = this.keymap.get(event.code);
+      action();
     }
   }
 

@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Olga } from '../app.component';
 import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
+import { SettingsMenuComponent } from '../settings/settings-menu/settings-menu.component';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
 
@@ -22,6 +23,12 @@ export class LayoutService {
   preferredLayout: Layout = 'auto';
   preferredRatioLandscape = 0.3;
   preferredRatioPortrait = 0.4;
+  public gameScoreElement: HTMLElement | null = null;
+  public boardElement: HTMLElement | null = null;
+  public controlsElement: HTMLElement | null = null;
+  public statusElement: HTMLElement | null = null;
+  public settingsMenuElement: HTMLElement | null = null;
+  public settingsMenuComponent: SettingsMenuComponent | null = null;
   boardRatio = 1;
   constructor() { }
 
@@ -46,13 +53,30 @@ export class LayoutService {
     }
   }
 
+  public openSettings(): void {
+    if(this.settingsMenuComponent){
+      this.settingsMenuComponent.visible = true;
+      // @ts-ignore
+      this.settingsMenuElement.style.visibility = 'visible';
+    }
+  }
+
+  public closeSettings(): void {
+    if(this.settingsMenuComponent){
+      this.settingsMenuComponent.visible = false;
+      // @ts-ignore
+      this.settingsMenuElement.style.visibility = 'hidden';
+    }
+  }
+
+
   private resizeToLandscape(width: number, height: number, gsSize?: number) {
     if (
       this.olga &&
-      this.olga.gameScoreElement &&
-      this.olga.controlsElement &&
-      this.olga.statusElement &&
-      this.olga.settingsMenuComponent
+      this.gameScoreElement &&
+      this.controlsElement &&
+      this.statusElement &&
+      this.settingsMenuComponent
     ) {
       let boardSize = 0;
       const titleSize = 80;
@@ -77,23 +101,23 @@ export class LayoutService {
         this.board?.setSize(boardSize);
         let gsHeight = boardSize - 200 - controlsHeight;
         // game score
-        this.olga.gameScoreElement.style.left = '';
-        this.olga.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
-        this.olga.gameScoreElement.style.width = gsWidth + 'px';
-        this.olga.gameScoreElement.style.height = gsHeight + 'px';
+        this.gameScoreElement.style.left = '';
+        this.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
+        this.gameScoreElement.style.width = gsWidth + 'px';
+        this.gameScoreElement.style.height = gsHeight + 'px';
         // controls
-        this.olga.controlsElement.style.left = '';
-        this.olga.controlsElement.style.top =
+        this.controlsElement.style.left = '';
+        this.controlsElement.style.top =
           (gsHeight + (titleSize + 10)).toString() + 'px'; // 64 represents the
-        this.olga.controlsElement.style.width = (gsWidth - 2).toString() + 'px';
-        this.olga.controlsElement.style.height = controlsHeight + 'px';
-        this.olga.controlsElement.style.right = '1px';
-        this.olga.statusElement.style.left = '';
-        this.olga.statusElement.style.top =
+        this.controlsElement.style.width = (gsWidth - 2).toString() + 'px';
+        this.controlsElement.style.height = controlsHeight + 'px';
+        this.controlsElement.style.right = '1px';
+        this.statusElement.style.left = '';
+        this.statusElement.style.top =
           (gsHeight + titleSize + controlsHeight + 62).toString() + 'px'; // 64 represents the
-        this.olga.statusElement.style.width = gsWidth.toString() + 'px';
-        this.olga.statusElement.style.height = controlsHeight + 'px';
-        this.olga.statusElement.style.right = '1px';
+        this.statusElement.style.width = gsWidth.toString() + 'px';
+        this.statusElement.style.height = controlsHeight + 'px';
+        this.statusElement.style.right = '1px';
         this.scoreSize.next(gsWidth);
       } else {
         //this.preferredRatio = width / gsSize;
@@ -112,25 +136,27 @@ export class LayoutService {
         controlsHeight = controlsHeight > 62 ? 62 : controlsHeight;
         let gsHeight = boardSize - 200 - controlsHeight;
         // game score
-        this.olga.gameScoreElement.style.left = '';
-        this.olga.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
-        this.olga.gameScoreElement.style.width = gsSize + 'px';
-        this.olga.gameScoreElement.style.height = gsHeight + 'px';
-        this.olga.gameScoreElement.style.overflow = 'visible';
+        this.gameScoreElement.style.left = '';
+        this.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
+        this.gameScoreElement.style.width = gsSize + 'px';
+        this.gameScoreElement.style.height = gsHeight + 'px';
+        this.gameScoreElement.style.overflow = 'visible';
         // controls
-        this.olga.controlsElement.style.left = '';
-        this.olga.controlsElement.style.top =
+        this.controlsElement.style.left = '';
+        this.controlsElement.style.top =
           (gsHeight + titleSize + 34).toString() + 'px'; // 64 represents the
-        this.olga.controlsElement.style.width = (gsSize - 2).toString() + 'px';
-        this.olga.controlsElement.style.right = '1px';
-        this.olga.statusElement.style.left = '';
-        this.olga.statusElement.style.top =
+        this.controlsElement.style.width = (gsSize - 2).toString() + 'px';
+        this.controlsElement.style.right = '1px';
+        this.statusElement.style.left = '';
+        this.statusElement.style.top =
           (gsHeight + titleSize + controlsHeight + 62).toString() + 'px'; // 64 represents the
-        this.olga.statusElement.style.width = gsSize.toString() + 'px';
-        this.olga.statusElement.style.right = '1px';
+        this.statusElement.style.width = gsSize.toString() + 'px';
+        this.statusElement.style.right = '1px';
         this.scoreSize.next(gsSize);
       }
-      this.olga.settingsMenuComponent.resize(width, height);
+      if(this.settingsMenuComponent && this.settingsMenuComponent.visible) {
+        this.settingsMenuComponent.resize(width, height);
+      }
       this.boardSize.next(boardSize);
     }
   }
@@ -138,31 +164,31 @@ export class LayoutService {
     if (this.olga) {
       const boardSize = width * this.boardRatio - 6;
       this.board?.setSize(boardSize);
-      if (this.olga.statusElement) {
-        this.olga.statusElement.style.top = (boardSize - 32).toString() + 'px'; // 64 represents the controls ux
-        this.olga.statusElement.style.left = 'calc(1% - 1px)';
-        this.olga.statusElement.style.width = '98%';
-        this.olga.statusElement.style.height = '52px';
+      if (this.statusElement) {
+        this.statusElement.style.top = (boardSize - 32).toString() + 'px'; // 64 represents the controls ux
+        this.statusElement.style.left = 'calc(1% - 1px)';
+        this.statusElement.style.width = '98%';
+        this.statusElement.style.height = '52px';
       }
-      if (this.olga.boardElement) {
-        this.olga.boardElement.style.left =
+      if (this.boardElement) {
+        this.boardElement.style.left =
           width * ((1 - this.boardRatio) / 2) + 'px';
       }
-      if (this.olga.gameScoreElement) {
-        this.olga.gameScoreElement.style.top = boardSize + 129 + 'px'; // 64 represents the controls ux
-        this.olga.gameScoreElement.style.left = 'calc(1% - 1px)';
-        this.olga.gameScoreElement.style.width = 'calc(98%  + 2px)';
+      if (this.gameScoreElement) {
+        this.gameScoreElement.style.top = boardSize + 129 + 'px'; // 64 represents the controls ux
+        this.gameScoreElement.style.left = 'calc(1% - 1px)';
+        this.gameScoreElement.style.width = 'calc(98%  + 2px)';
         // MUST MOVE TO DYNAMICALLY RESIZING TO GAME SCORE
-        this.olga.gameScoreElement.style.height = height * .55 + 'px';
-        this.olga.gameScoreElement.style.overflow = 'visible ';
+        this.gameScoreElement.style.height = height * .55 + 'px';
+        this.gameScoreElement.style.overflow = 'visible ';
         //  (boardSize / 3 > 425 ? 425 : boardSize / 3).toString() + 'px';
       }
-      if (this.olga.controlsElement) {
-        this.olga.controlsElement.style.top =
+      if (this.controlsElement) {
+        this.controlsElement.style.top =
           (boardSize + 30).toString() + 'px'; // 64 represents the controls ux
-        this.olga.controlsElement.style.left = 'calc(1% - 1px)';
-        this.olga.controlsElement.style.width = '98%';
-        this.olga.controlsElement.style.height = '99px';
+        this.controlsElement.style.left = 'calc(1% - 1px)';
+        this.controlsElement.style.width = '98%';
+        this.controlsElement.style.height = '99px';
       }
       if (this.resizeElement) {
         this.resizeElement.style.left = 'calc(50% - 3em)';
@@ -170,13 +196,16 @@ export class LayoutService {
         this.resizeElement.style.width = '6em';
         this.resizeElement.style.height = '1.2em';
       }
-      this.olga.settingsMenuComponent?.resize(width, height);
+      if(this.settingsMenuComponent && this.settingsMenuComponent.visible) {
+        this.settingsMenuComponent.resize(width, height);
+      }
     }
   }
   initializeLayout(olga: Olga, autoResize = true): void {
     this.olga = olga;
     this.gameScore = olga.gameScoreComponent;
     this.board = olga.canvasBoardComponent;
+    this.settingsMenuComponent = olga.settingsMenuComponent;
     this.appContainer = olga.appContainer;
     if (autoResize) {
       window.removeEventListener('resize', this.resizeLayout.bind(this));
@@ -186,6 +215,26 @@ export class LayoutService {
     window.setTimeout(() => {
       this.resizeLayout();
     }, 250);
+  }
+
+  public increaseBoardSize(): void {
+    if(this.preferredRatioLandscape > .3) {
+      this.preferredRatioLandscape -= .025;
+    }
+    if(this.preferredRatioPortrait > .3) {
+      this.preferredRatioPortrait -= .025;
+    }
+    this.resizeLayout();
+  }
+
+  public decreaseBoardSize(): void {
+    if(this.preferredRatioLandscape < .7) {
+      this.preferredRatioLandscape += .025;
+    }
+    if(this.preferredRatioPortrait < .7) {
+      this.preferredRatioPortrait += .025;
+    }
+    this.resizeLayout();
   }
 
   onSliderTouch(event: TouchEvent): void {
