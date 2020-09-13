@@ -1,0 +1,33 @@
+@import '../../../../styles.scss';
+
+.keymap-label {
+    position:relative;
+    left:86px;
+    bottom: 18px;
+    height: 14px;
+    width:180px;
+    font-size: 14px;
+    line-height: 14px;
+    color: $gsTextColor;
+}
+
+.icon{
+    position:relative;
+    width:64px;
+    height: 64px;
+    border: 2px white solid;
+    background: $boardBGDark;
+}
+
+.feather  {
+    position: relative;
+    left:10%;
+    width: 80%;
+    height: 80%;
+    top:10%;
+    stroke: $boardBGLight;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
