@@ -1,5 +1,5 @@
-<app-menu-game-score-item class="gs-menu" #scoreItemMenu [style.z-index]="scoreItemMenu.open ? 20 : -1"
-  (click)="scoreItemMenu.open = false;"></app-menu-game-score-item>
+<game-score-item-menu class="gs-menu" #scoreItemMenu [style.z-index]="scoreItemMenu.open ? 20 : -1"
+  (click)="scoreItemMenu.open = false;"></game-score-item-menu>
 <mat-card class="gamescore-container">
   <h1 class="score-title">Score</h1>
   <mat-card-content *ngIf="viewType === ScoreViewType.Flow" class="score-list">

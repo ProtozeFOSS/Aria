@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { GameScoreItem } from 'src/app/common/kokopu-engine';
+import { GameScoreItem } from '../../common/kokopu-engine';
 
 @Component({
-  selector: 'app-menu-game-score-item',
+  selector: 'game-score-item-menu',
   templateUrl: './menu-game-score-item.component.html',
   styleUrls: ['./menu-game-score-item.component.scss']
 })
 
-export class MenuGameScoreItemComponent implements OnInit, AfterViewInit {
+export class GameScoreItemMenu implements OnInit, AfterViewInit {
   @Input() data: GameScoreItem | null = null
   @Input() menuTitle = 'Menu Title';
   public open = false;
@@ -31,6 +31,8 @@ export class MenuGameScoreItemComponent implements OnInit, AfterViewInit {
   }
 
   openAt(item: GameScoreItem): void {
+    this.data = item;
+    this.menuTitle = item.move.notation();
     this.open = true;
   }
 }

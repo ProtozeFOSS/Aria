@@ -21,7 +21,7 @@ import { SettingsBoardComponent } from './settings/settings-board/settings-board
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { MenuGameScoreItemComponent } from './game-score/menu-game-score-item/menu-game-score-item.component';
+import { GameScoreItemMenu } from './game-score/menu-game-score-item/menu-game-score-item.component';
 
 import { OlgaService } from './services/olga.service';
 import { LayoutService } from './services/layout.service';
@@ -29,6 +29,9 @@ import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.componen
 import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
 import { OlgaStatusComponent } from './olga-status/olga-status.component';
 import { OlgaTitleComponent } from './olga-title/olga-title.component';
+import { SettingsKeymapComponent } from './settings/settings-keymap/settings-keymap.component';
+import { KeymapItemComponent } from './settings/settings-keymap/keymap-item/keymap-item.component';
+import { SettingsGeneralComponent } from './settings/settings-general/settings-general.component';
 
 @NgModule({
   declarations: [
@@ -40,11 +43,14 @@ import { OlgaTitleComponent } from './olga-title/olga-title.component';
     LabeledSliderComponent,
     SettingsMenuComponent,
     SettingsBoardComponent,
-    MenuGameScoreItemComponent,
+    GameScoreItemMenu,
     CanvasChessBoard,
     OlgaControlsComponent,
     OlgaStatusComponent,
-    OlgaTitleComponent
+    OlgaTitleComponent,
+    SettingsKeymapComponent,
+    KeymapItemComponent,
+    SettingsGeneralComponent
   ],
   imports: [
     BrowserModule,

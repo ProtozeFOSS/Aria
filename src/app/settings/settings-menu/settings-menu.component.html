@@ -5,25 +5,26 @@
         <mat-tab-group *ngIf="this.visible"   dynamicHeight="true" mat-align-tabs="center" animationDuration="500ms"
             (selectedTabChange)="tabChanged($event)">
             <mat-tab label="General">
-                Hello World
             </mat-tab>
             <mat-tab label="Board">
-                <ng-template matTabContent>
+                <!-- <ng-template matTabContent>
                     <div class="settings-content">
                         <canvas-chessboard class="settings-board" boardID="x-1232141"
                             [theme]="this.colorService.boardTheme()" [size]=640 [tileSize]=80 [interactive]=false>
                         </canvas-chessboard>
-                        <board-settings class="settings"></board-settings>
                     </div>
-                </ng-template>
+                </ng-template> -->
             </mat-tab>
             <mat-tab label="Game Score">
-                <ng-template matTabContent>
+            <!--     <ng-template matTabContent>
                     <div class="settings-content">
                     </div>
-                </ng-template>
+                </ng-template> -->
             </mat-tab>
-            <mat-tab label="Keymap"></mat-tab>
+            <mat-tab label="Keymap">
+            </mat-tab>
         </mat-tab-group>
+        <settings-keymap></settings-keymap>
+        <board-settings></board-settings>
     </div>
 </div>

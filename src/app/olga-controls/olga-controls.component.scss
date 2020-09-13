@@ -3,13 +3,13 @@
 .button {
     position: absolute;
     border: black 2px solid;
-    background: $gsBackground;
+    background: $boardBGDark;
     text-align: center;
     border-radius: 2px;
 }
 
 .quick-actions-container{
-    background-color: transparent;
+    background: $boardBGDark;
     border: none;
     border-radius: 2px;
     position:absolute;
@@ -55,7 +55,7 @@
     left: 4px;
     top: 4px;
     bottom:4px;
-    border: $boardBGDark solid 2px;
+    border: $boardBGLight solid 2px;
     border-radius: 6px;
 }
 .shrink{
@@ -97,7 +97,7 @@
   width: 80%;
   height: 80%;
   top:10%;
-  stroke: $boardBGDark;
+  stroke: $boardBGLight;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -109,7 +109,7 @@
   width: 32px;
   height: 80%;
   top:10%;
-  stroke: $boardBGDark;
+  stroke: $boardBGLight;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -117,7 +117,7 @@
 }
 .timer {
     text-align: center;
-    color:$gsTextColor;
+    color:$boardBGLight;
     line-height: 38px;
     margin-left: 24px;
     font-size: 18px;

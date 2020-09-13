@@ -113,7 +113,8 @@ export class OlgaService {
   }
 
   public toggleAutoPlay():void {
-    if(this.autoIntervalID == -1) {
+    
+    if(this._game && !this._game.isFinalPosition() && this.autoIntervalID == -1) {
       this.autoIntervalID = window.setInterval(this.autoAdvance.bind(this), 100);
       if(this._controls) {
         this._controls.playing = true;
@@ -182,6 +183,15 @@ export class OlgaService {
 
   public editComment(data: GameScoreItem): void {
     console.log('Editing Comment -> ' + data.move.comment());
+  }
+
+  public openVariation(data: GameScoreItem): void {
+    const variations = data.move.variations();
+    if(this._score && variations && variations.length) {
+      console.log('Editing Variations on: ' + data.move.notation());
+      console.log(variations);
+      this._score.scoreItemMenu?.openAt(data);
+    }
   }
 
   public displayVariations(data: GameScoreItem): void {

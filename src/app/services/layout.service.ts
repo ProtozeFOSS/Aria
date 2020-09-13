@@ -55,7 +55,7 @@ export class LayoutService {
 
   public openSettings(): void {
     if(this.settingsMenuComponent){
-      this.settingsMenuComponent.visible = true;
+      this.settingsMenuComponent.open();
       // @ts-ignore
       this.settingsMenuElement.style.visibility = 'visible';
     }
@@ -63,7 +63,7 @@ export class LayoutService {
 
   public closeSettings(): void {
     if(this.settingsMenuComponent){
-      this.settingsMenuComponent.visible = false;
+      this.settingsMenuComponent.close();
       // @ts-ignore
       this.settingsMenuElement.style.visibility = 'hidden';
     }

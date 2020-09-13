@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, Output } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, ViewChild, ElementRef } from '@angular/core';
 import { fabric } from 'fabric';
 import { BehaviorSubject } from 'rxjs';
 import { ChessMove } from '../common/kokopu-engine';
@@ -37,6 +37,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   } | null = null;
   @Output() touching = false;
   @Output() midPromotion = false;
+
+  @ViewChild('boardCanvas', {static: false}) boardCanvas: ElementRef | null = null;
   constructor(
     public olga: OlgaService,
     public colorService: ColorService
@@ -101,21 +103,23 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     fabric.Object.prototype.transparentCorners = false;
-    this.canvas = new fabric.Canvas(this.boardID + '-canvas');
-    this.canvas.selection = false;
-    const waitCount = this.loadPieces();
-    waitCount.subscribe((count) => {
-      if (count >= 12) {
-        this.generateBoard();
-        this.connectMouseInput();
-        this.setBoardToGamePosition();
-        waitCount.unsubscribe();
-        this.resizeBoardObjects(this.size);
-      }
-    });
-    this.canvas.hoverCursor = 'arrow';
-    this.canvas.allowTouchScrolling = true;
-    this.setInteractive(this.interactive);
+    if(this.boardCanvas) { 
+      this.canvas = new fabric.Canvas(this.boardCanvas.nativeElement);
+      this.canvas.selection = false;
+      const waitCount = this.loadPieces();
+      waitCount.subscribe((count) => {
+        if (count >= 12) {
+          this.generateBoard();
+          this.connectMouseInput();
+          this.setBoardToGamePosition();
+          waitCount.unsubscribe();
+          this.resizeBoardObjects(this.size);
+        }
+      });
+      this.canvas.hoverCursor = 'arrow';
+      this.canvas.allowTouchScrolling = true;
+      this.setInteractive(this.interactive);
+    }
   }
   addPiece(tile: number, color: string, role: string) {
     const col = tile % 8;
@@ -1165,10 +1169,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   setDarkTile(color: string): void {
-    if (this.theme) {
-      this.theme.tileDark = color;
-    }
-    if (this.tiles.length != 0) {
+    if (this.tiles.length != 0 && this.theme) {
       for (let index = 0; index < 64; index++) {
         const row = Math.floor(index / 8);
         if (row % 2 === 0) {
@@ -1183,15 +1184,22 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           }
         }
       }
+      if(this.labels.length) {
+        this.labels.forEach((label: fabric.Object)=>{
+          // @ts-ignore
+          if(label &&  label.get('fill') === this.theme.tileDark) {
+            label.setColor(color);
+          }
+        });
+      }
+      this.theme.tileDark = color;      
       this.canvas?.requestRenderAll();
     }
   }
 
   setLightTile(color: string): void {
-    if (this.theme) {
-      this.theme.tileLight = color;
-    }
-    if (this.tiles.length != 0) {
+
+    if (this.tiles.length != 0 && this.theme) {
       for (let index = 0; index < 64; index++) {
         const row = Math.floor(index / 8);
         if (row % 2 !== 0) {
@@ -1206,8 +1214,18 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           }
         }
       }
+      if(this.labels.length) {
+        this.labels.forEach((label: fabric.Object)=>{
+          // @ts-ignore
+          if(label && label.get('fill') === this.theme.tileLight) {
+            label.setColor(color);
+          }
+        });
+      }
+      this.theme.tileLight = color;      
       this.canvas?.requestRenderAll();
     }
+
   }
 
   setSize(size: number): void {
@@ -1254,5 +1272,16 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   requestRedraw(): void {
     this.clearBoard();
     this.generateBoard();
+  }
+  
+  show(): void {
+    if(this.boardCanvas) {
+      this.boardCanvas.nativeElement.style.visibility = 'visible';
+    }
+  }
+  hide(): void {
+    if(this.boardCanvas) {
+      this.boardCanvas.nativeElement.style.visibility = 'hidden';
+    }
   }
 }

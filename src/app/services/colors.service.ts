@@ -116,6 +116,18 @@ export class ColorService {
     this.propertyMap.set(this.gsTextColorHG, '--gsTextColorHG');
     this.propertyMap.set(this.gsBackgroundHG, '--gsBackgroundHG');
     this.propertyMap.set(this.gsBorderHG, '--gsBorderHG');
+    this.boardBGDark.subscribe((dark)=>{
+      document.documentElement.style.setProperty(
+        '--boardBGDark',
+        dark
+      );
+    });
+    this.boardBGLight.subscribe((light)=>{
+      document.documentElement.style.setProperty(
+        '--boardBGLight',
+        light
+      );
+    });
   }
 
 

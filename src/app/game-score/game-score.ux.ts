@@ -15,7 +15,7 @@ import {
   GameScoreAnnotation,
   GameScoreVariation
 } from '../common/kokopu-engine';
-import { MenuGameScoreItemComponent } from './menu-game-score-item/menu-game-score-item.component';
+import { GameScoreItemMenu } from './menu-game-score-item/menu-game-score-item.component';
 import { GameScoreItemComponent } from './game-score-item/game-score-item.component';
 import { BehaviorSubject } from 'rxjs';
 import { OlgaService } from '../services/olga.service';
@@ -38,8 +38,8 @@ export enum ScoreViewType {
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
   @Output() readonly scoreFontFamily = new BehaviorSubject<string>('Caveat');
   @Output() readonly scoreFontSize = new BehaviorSubject<number>(18);
-  @ViewChild(MenuGameScoreItemComponent)
-  scoreItemMenu: MenuGameScoreItemComponent | null = null;
+  @ViewChild(GameScoreItemMenu)
+  scoreItemMenu: GameScoreItemMenu | null = null;
   @ViewChild('resizeHandle')
   resizeHandle: ElementRef | null = null;
   @ViewChild('pgnData')
