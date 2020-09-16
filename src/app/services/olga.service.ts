@@ -1,11 +1,11 @@
 import { Injectable, Output, Input } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { GameScoreAnnotation, GameScoreVariation, GameScoreItem, ChessGame, GameScoreType, ChessMove } from '../common/kokopu-engine';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
 import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 // @ts-ignore
-import { Database as KDatabase, pgnRead, Game as KGame, Node as KNode } from 'kokopu';
+import { Database as KDatabase, pgnRead, Game as KGame, Node as KNode, Variation as KVariation } from 'kokopu';
 import { SettingsMenuComponent } from '../settings/settings-menu/settings-menu.component';
 import { OlgaControlsComponent } from '../olga-controls/olga-controls.component';
 @Injectable({
@@ -15,16 +15,16 @@ export class OlgaService {
   @Output() readonly annotations = new BehaviorSubject<GameScoreAnnotation[]>([]);
   @Output() readonly showingPly = new BehaviorSubject<boolean>(true);
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
-  @Output() readonly variation = new BehaviorSubject<GameScoreVariation[]>([]);
   protected autoIntervalID = -1;
   protected timeLeft = 600;
   public UUID: string = '';
   @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(
     false
   );
-  public _items = new BehaviorSubject<GameScoreItem[]>([]);
-  private scoreData: { items: GameScoreItem[] } = { items: [] };
-  readonly currentScore = this._items.asObservable();
+  @Output() readonly scoreFontFamily = new BehaviorSubject<string>('Caveat');
+  @Output() readonly scoreFontSize = new BehaviorSubject<number>(18);
+  @Output() readonly figurineSize = new BehaviorSubject<number>(20);
+  
 
   private _fen = new BehaviorSubject<string>('');
   readonly fen = this._fen.asObservable();
@@ -33,8 +33,9 @@ export class OlgaService {
   private gamesData: { games: ChessGame[] } = { games: [] };
   readonly games = this._games.asObservable();
 
-  private state: KDatabase | null = null;
+  private gameSubscriptions: Subscription[] = [];
 
+  private state: KDatabase | null = null;
   // current
   private _game: ChessGame | null = null;
   readonly game = new BehaviorSubject<ChessGame | null>(null);
@@ -53,19 +54,30 @@ export class OlgaService {
 
   readonly isVariant = new BehaviorSubject<boolean>(false);
 
+    private attachToGame(game: ChessGame): void {
+      this.gameSubscriptions.forEach((sub)=>{
+        sub.unsubscribe();
+      });
+      this.gameSubscriptions = [];
+    }
+
   private parsePGN(pgn: string) {
     const gameCount = 1;
-    if (gameCount == 1) {
-      this.state = pgnRead(pgn) as KDatabase;
-      const first = this.state.game(0) as KGame;
-      const game = new ChessGame(this);
-      this.gamesData.games.push(game);
-      this._games.next(Object.assign({}, this.gamesData).games);
-      this._game = game;
-      this.game.next(game);
-      this._game.setGame(first);
-      const score = game.generateGameScore();
-      this._items.next(score);
+    this.state = pgnRead(pgn) as KDatabase;
+    if(this.state) {
+      if (gameCount == 1) {
+        const first = this.state.game(0) as KGame;
+        const game = new ChessGame(this);
+        this.gamesData.games.push(game);
+        this._games.next(Object.assign({}, this.gamesData).games);
+        this._game = game;
+        this.game.next(game);
+        this._game.setGame(first);
+        this.attachToGame(game);
+        window.setTimeout( () => {
+          this._score?.setGameScoreItems(this._game?.generateGameScore());
+        }, 1);
+      } 
     }
   }
 
@@ -74,7 +86,15 @@ export class OlgaService {
   }
 
   // Visual Settings
-  constructor() { }
+  constructor() { 
+    this.figurineNotation.subscribe((figurineNotation: boolean) => {
+      if (figurineNotation) {
+        this.scoreFontFamily.next('FigurineSymbolT1');
+      } else {
+        this.scoreFontFamily.next('Cambria');
+      }
+    });
+  }
 
   public moveToStart(): void {
     if (this._game) {
@@ -95,7 +115,14 @@ export class OlgaService {
     if (this._game && !this._game.isFinalPosition()) {
       this._game.moveToEnd();
     }
-  } 
+  }
+
+  public getNodeIndex(): number {
+    if(this._game) {
+      return this._game.getNodeIndex();
+    }
+    return -1;
+  }
   
   protected autoAdvance():void {
     this.timeLeft -= 100;
@@ -143,8 +170,9 @@ export class OlgaService {
   }
 
   public clearItems(): void {
-    this.scoreData.items = [];
-    this._items.next(Object.assign({}, this.scoreData).items);
+    if(this._score) {
+      this._score._items = [];
+    }
   }
 
   public typeToString(type: GameScoreType): string {
@@ -152,9 +180,9 @@ export class OlgaService {
   }
 
   public selectGame(index: number) {
-    if (index >= 0 && index <= this.gamesData.games.length) {
+    if (index >= 0 && index <= this.gamesData.games.length && this._score) {
       this._game = this.gamesData.games[index];
-      this.scoreData.items = this._game.generateGameScore();
+      this._score._items = this._game.generateGameScore();
       this.game.next(this._game);
     }
   }
@@ -198,6 +226,25 @@ export class OlgaService {
     console.log('Displaying Variations');
     console.log(data.move.notation());
     const variations = data.move.variations();
+    variations.forEach((variation: KVariation) =>{
+      console.log(variation);
+      let current = variation.first();
+      const previous = data.previous();
+      if(current) {
+        console.log('Variation chain :');
+        let chain = current.notation();
+        if(previous) {
+          chain = previous.move.notation() + '->' + chain;
+        }
+        while(current){
+          current = current.next();
+          if(current) {
+            chain += '->'+ current.notation();
+          }
+        }
+        console.log(chain);
+      }
+    });
     console.log(variations);
   }
 
@@ -225,12 +272,11 @@ export class OlgaService {
     this._board?.showPromotionDialog(move);
   }
 
-  public gameScoreItemsChanged(items: GameScoreItem[]): void {
-    this._items.next(items);
-  }
-
   public selectScoreItem(index: number): void {
     this._score?.selectGameScoreItem(index);
+  }
+  public gameScoreItemsChanged(items: GameScoreItem[]): void {
+    this._score?.setGameScoreItems(items);
   }
 
   unmakeBoardMove(move: ChessMove): void {

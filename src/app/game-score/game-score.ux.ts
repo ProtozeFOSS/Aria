@@ -7,7 +7,7 @@ import {
   ViewChild,
   ElementRef,
   ViewChildren,
-  QueryList,
+  QueryList
 } from '@angular/core';
 import {
   GameScoreItem,
@@ -20,10 +20,6 @@ import { GameScoreItemComponent } from './game-score-item/game-score-item.compon
 import { BehaviorSubject } from 'rxjs';
 import { OlgaService } from '../services/olga.service';
 import { LayoutService } from '../services/layout.service';
-interface Move {
-  w: string;
-  b: string;
-};
 
 export enum ScoreViewType {
   Table = 101,
@@ -36,40 +32,34 @@ export enum ScoreViewType {
   styleUrls: ['./game-score.ux.scss'],
 })
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
-  @Output() readonly scoreFontFamily = new BehaviorSubject<string>('Caveat');
-  @Output() readonly scoreFontSize = new BehaviorSubject<number>(18);
+  // Settings For Game Score Font
+  @Input() viewType: ScoreViewType = ScoreViewType.Flow;
+
+  // View Children Handles
   @ViewChild(GameScoreItemMenu)
   scoreItemMenu: GameScoreItemMenu | null = null;
   @ViewChild('resizeHandle')
   resizeHandle: ElementRef | null = null;
-  @ViewChild('pgnData')
-  pgnData: ElementRef | null = null;
+  @ViewChildren(GameScoreItemComponent) scoreItems: QueryList<GameScoreItemComponent> | null = null;
   @ViewChild('gamescore-container') container: ElementRef | null = null;
-  @Input() gameScoreFontSize: number | null = 24;
+  @ViewChild('pgnData')
+  pgnData: ElementRef | null = null; // To Be Deleted
   columnCount = 3;
-  gameScore: Move[] = [];
   rowHeight = '50px';
   maxPlySize = 178;
   @Output() resizing = false;
   @Input() scoreWidth: number | null = 360;
-  @Input() viewType: ScoreViewType = ScoreViewType.Flow;
   GameScoreType = GameScoreType;
   ScoreViewType = ScoreViewType;
+  public _items: GameScoreItem[] = [];
+  // Current item data and visual
+  @Output() readonly currentData = new BehaviorSubject<GameScoreItem | null>(null);
+  @Output() currentItem: GameScoreItemComponent | null = null;
 
-  // Settings
-  @Output() readonly currentItem = new BehaviorSubject<GameScoreItem | null>(null);
 
-  @ViewChildren(GameScoreItemComponent) scoreItems: QueryList<GameScoreItemComponent> | null = null;
-  @Output() currentScoreItem: GameScoreItemComponent | null = null;
   constructor(public olga: OlgaService, public layout: LayoutService) {
     this.resetCursor();
-    this.olga.figurineNotation.subscribe((figurineNotation: boolean) => {
-      if (figurineNotation) {
-        this.scoreFontFamily.next('FigurineSymbolT1');
-      } else {
-        this.scoreFontFamily.next('Cambria');
-      }
-    });
+
   }
 
   ngOnInit(): void {
@@ -77,16 +67,17 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.pgnData) {
-      this.layout.resizeElement = document.getElementById('resize-handle-' + this.olga.UUID);
-      //console.log(this.scoreItems);
-      window.setTimeout(() => {
-        if (this.scoreItems) {
-          this.currentScoreItem = this.scoreItems.first;
-        }
-      }, 300);
+    this.layout.resizeElement = document.getElementById('resize-handle-' + this.olga.UUID);
+  }
+
+
+  public setGameScoreItems(items: GameScoreItem[] | undefined): void {
+    if(items) {
+      this._items = items;
+      window.setTimeout(()=>{this.selectGameScoreItem(this.olga.getNodeIndex());}, 100);
+    } else {
+      this._items = [];
     }
-    this.resizeScore();
   }
 
   resizeScore(): void {
@@ -160,9 +151,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     this.resizing = false;
   }
 
-  public redrawGameScore() {
-    this.ngOnInit();
-  }
+
 
   resizeHandleEvent(event: DragEvent | MouseEvent): void {
     if (this.resizing) {
@@ -188,13 +177,17 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     }
   }
   selectGameScoreItem(index: number) {
-    const item = this.scoreItems?.toArray()[index];
-    if (this.currentScoreItem) {
-      this.currentScoreItem.setSelected(!this.currentScoreItem.isSelected());
+    if (this.currentItem) {
+      this.currentItem.setSelected(false);
+      this.currentItem = null;
     }
-    if (item && item != this.currentScoreItem) {
-      item.setSelected(!item.isSelected());
-      this.currentScoreItem = item;
+    if(index >= 0) {
+      // TODO: Update on on ngChanges
+      const item = this.scoreItems?.toArray()[index];
+      if (item && item != this.currentItem) {
+        item.setSelected(!item.isSelected());
+        this.currentItem = item;
+      }
     }
   }
   public getPGN(): string {

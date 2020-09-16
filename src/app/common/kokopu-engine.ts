@@ -38,32 +38,35 @@ export class GameScoreItem {
     getIndex(): number {
         return this.index;
     }
-
+    addType(type: GameScoreType): void {
+        this.type |= type;
+    }
+    removeType(type: GameScoreType): void {
+        this.type ^= type;
+    } 
     getType(): number {
-        this.type = 0;
         if (this.move) {
             const previous = this.previous();
-            const notation = this.move.notation();
             let variations = this.move.variations();
             if (previous) {
                 if (previous.move.moveColor() == 'w') {
-                    this.type += GameScoreType.HalfPly;
+                    this.type |= GameScoreType.HalfPly;
                     if (!previous.move.comment()) {
-                        this.type += GameScoreType.Group;
+                        this.type |= GameScoreType.Group;
                     }
                 }
             }
             if (variations && variations.length > 0) {
-                this.type += GameScoreType.Variation;
+                this.type |= GameScoreType.Variation;
             } else if (this.move.comment()) {
-                this.type += GameScoreType.Annotation;
+                this.type |= GameScoreType.Annotation;
             } else {
                 let comment = null;
                 if (previous && previous.move) {
                     comment = previous.move.comment();
                 }
                 if ((!previous && this.move.moveColor() == 'w') || !comment) {
-                    this.type += GameScoreType.Group;
+                    this.type |= GameScoreType.Group;
                 }
             }
         }
@@ -127,7 +130,6 @@ export class ChessGame {
     protected currentVariation: KVariation | null = null;
     protected currentIndex = -1;
     protected nodeMap: Array<GameScoreItem> = [];
-    readonly score = new BehaviorSubject<GameScoreItem[] | null>(null);
     protected moveMap: KNode | KVariation[] = [];
     protected gameVariations: KVariation[] = [];
     protected variation: KVariation | null = null;
@@ -135,7 +137,9 @@ export class ChessGame {
     protected lastNode: KNode | null = null;
     protected isVariation = false;
     public fen = '';
-
+    public getNodeIndex(): number {
+        return this.currentIndex;
+    }
     protected static compareKNode(left: KNode, right: KNode): boolean {
         if (
             left !== null &&
@@ -230,9 +234,14 @@ export class ChessGame {
         }
     }
     public makeMove(move: ChessMove, fromPGN = false): void {
-        const lastNode = this.currentNode;
+        let lastNode = this.currentNode;
         if (this.currentNode) {
-            const pgnMove = this.currentNode._info.moveDescriptor;
+            let pgnMove = null;
+            if(this.currentNode.move) {
+                move = this.currentNode.move._info.moveDescriptor
+            } else {
+                pgnMove = this.currentNode._info.moveDescriptor;
+            }
             const toSquare = SquareNames[move.to];
             const fromSquare = SquareNames[move.from];
             const next = this.currentNode.next();
@@ -251,62 +260,30 @@ export class ChessGame {
                     this.olga.makeBoardMove(move);
                 }
                 this.currentNode = next;
-
-                // const move = new ChessMove();
-                // move.from = SquareNames.indexOf(this.currentNode._info.moveDescriptor.from());
-                // move.to = SquareNames.indexOf(this.currentNode._info.moveDescriptor.to());
-                // let newTo = move.to;
-                // let newFrom = move.from;
-                // if (this.currentNode._info.moveDescriptor._to >= 64) {
-                //   let rowFrom = Math.ceil(newFrom / 8);
-                //   let colFrom = newFrom % 8;
-                //   newFrom = (rowFrom * 8) - colFrom;
-
-                //   let rowTo = Math.floor(newTo / 8);
-                //   let colTo = newTo % 8;
-
-                //   newTo = (rowTo * 8) - colTo;
-                //   console.log(SquareNames[newFrom]);
-                //   console.log(SquareNames[newTo]);
-                // }
-                // if (fromPGN && this.olga.board.value !== null) {
-                //   this.olga.board.value.makeMove(move);
-                // }
-                // this.olga.status.value?.updateStatus(this.position.turn(), this.currentNode);
             } else {
                 // look for an existing variant
                 console.log(
                     'Check Variants= ' + pgnMove.from() + ' -> ' + pgnMove.to()
                 );
-                const variations = this.currentNode.variations();
+                lastNode = this.currentNode.next();
+                const variations = lastNode.variations();
                 this.isVariation = true;
-                this.olga.isVariantChanged(this.isVariation);
+                // Generate methods of communicating branched variations to iteration pattern
+                // Adjust algorithms to account for a branched has the ability to un-branch or
+                // even become another "peer" branch all togeth0er
                 variations.forEach((variation: KVariation) => {
                     const firstMove = variation.first();
                     if (firstMove && firstMove._info.moveDescriptor) {
                         const test = firstMove._info.moveDescriptor;
                         if (test.to() == toSquare && test.from() == fromSquare) {
                             this.variation = variation;
-                            this.startNode = firstMove;
+                            this.gameVariations.push(variation);
                             this.position.play(test);
-                            this.currentNode = firstMove.next();
-                            if (this.currentNode == null) {
-                                this.currentNode = this.lastNode = this.startNode;
-                            }
-                            if (this.position.play(this.currentNode.notation())) {
-                                const node = this.variation.play(this.currentNode.notation());
-                                if (node) {
-                                    if (!this.lastNode || this.lastNode == this.currentNode) {
-                                        this.lastNode = node;
-                                    }
-                                    if (!this.startNode) {
-                                        this.startNode = node;
-                                    }
-                                    this.currentNode = node;
-                                    this.currentNode._info.moveDescriptor = this.currentNode.notation();
-                                    this.olga.redrawBoard();
-                                }
-                            }
+                            this.olga.isVariantChanged(this.isVariation);                            
+                            console.log('Found Existing Variation');
+                            console.log(variation);
+                            ++this.currentIndex;
+                            this.olga.gameScoreItemsChanged(this.generateGameScore());
                         } else {
                             console.log(
                                 'Variation checked: ' + test.from() + ' -> ' + test.to()
@@ -337,28 +314,52 @@ export class ChessGame {
     public generateGameScore(): GameScoreItem[] {
         const items = [];
         this.nodeMap = [];
-        let nextScore = this.variation.first() as KNode;
         let index = 0;
-        let previous: GameScoreItem | null = null;
-        this.score.next([]);
-        while (nextScore) {
-            if (nextScore) {
-                const gItem = new GameScoreItem(this, index, nextScore);
-                this.nodeMap[index] = gItem;
-                previous = gItem;
-                nextScore = nextScore.next();
-                items.push(gItem);
-                ++index;
+        let currentNode = this.currentNode;
+        for(let i = 0; i < this.gameVariations.length; ++i) {
+            const variation = this.gameVariations[i];
+            let targetVariation: KVariation | null = null;
+            let targetNotation = '';
+            if(currentNode)
+            targetNotation = currentNode.notation();
+            if(i < this.gameVariations.length-1) {
+                targetVariation = this.gameVariations[i+1];
+            }
+            let nextScore = variation.first() as KNode;
+            let previous: GameScoreItem | null = null;
+            let branched = (i > 0);
+            while (nextScore) {
+                if (nextScore) {
+                    const gItem = new GameScoreItem(this, index, nextScore);
+                    const notation = nextScore.notation();
+                    if(targetVariation && notation == targetNotation) {
+                            nextScore = null;
+                            this.nodeMap[index] = gItem;
+                            previous = gItem;
+                            items.push(gItem);
+                            ++index;
+                            continue;
+                    }
+                    if(branched) {
+                        gItem.addType(GameScoreType.Branched);
+                        branched = false;
+                    }
+                    this.nodeMap[index] = gItem;
+                    previous = gItem;
+                    items.push(gItem);
+                    ++index;
+                    nextScore = nextScore.next();
+                }
             }
         }
         this.lastNode = this.nodeMap[this.nodeMap.length - 1];
-        this.score.next(items);
         return items;
     }
 
     setGame(game: KGame): void {
         this.game = game;
         this.variation = this.game.mainVariation() as KVariation;
+        this.gameVariations.push(this.variation);
         this.startNode = this.variation.first();
         this.position = this.variation.initialPosition() as KPosition;
         this.currentIndex = -1;

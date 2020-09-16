@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, Output } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, Output, ViewChild, ElementRef } from '@angular/core';
 import { GameScoreType, GameScoreItem } from '../../common/kokopu-engine';
 import { OlgaService } from 'src/app/services/olga.service';
+import { ColorService } from '../../services/colors.service';
 
 @Component({
-  selector: 'app-game-score-item',
+  selector: 'game-score-item',
   templateUrl: './game-score-item.component.html',
   styleUrls: ['./game-score-item.component.scss']
 })
@@ -12,10 +13,10 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
   @Output() typeName = '';
 
   // visual nodes
-  public plyOn = false;
-  public ply = '';
+  @Output() ply = '';
   GameScoreType = GameScoreType;
-  constructor(public olga: OlgaService) {
+  @ViewChild('gsiPly') gsiPly: ElementRef | null = null;
+  constructor(public olga: OlgaService, public colors:ColorService) {
     // use data to actually set type
 
   }
@@ -27,14 +28,20 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
     if (changes.data) {
       let newData = changes.data.currentValue as GameScoreItem;
       this.data = newData;
-      if (this.data) {
+      if (this.data && this.gsiPly) {
+        let showing = false;
         if (this.isFullPly()) {
-          this.plyOn = this.olga.showingPly.value;
+          showing = this.olga.showingPly.value;
         } else {
-          this.plyOn = this.olga.showingHalfPly.value;
+          showing = this.olga.showingHalfPly.value;
+        }
+        if(!showing) {
+          this.gsiPly.nativeElement.remove();
+          this.gsiPly = null;
+        }else{
+          this.ply = this.data.move.fullMoveNumber().toString() + '.';
         }
       }
-      this.ply = this.data.move.fullMoveNumber().toString() + '.';
       this.data.getType();
       this.updateTypeName();
     }
@@ -42,6 +49,21 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
 
   ngAfterViewInit(): void {
     this.updateTypeName();
+    if(this.gsiPly) {
+      let showing = false;
+      if (this.isFullPly()) {
+        showing = this.olga.showingPly.value;
+      } else {
+        showing = this.olga.showingHalfPly.value;
+      }
+      if(!showing) {
+        this.gsiPly.nativeElement.remove();
+        this.gsiPly = null;
+      }else{
+        window.setTimeout( ()=>{this.ply = this.data.move.fullMoveNumber().toString() + '.';},
+        10);
+      }
+    }
   }
 
   showPly(): boolean {
@@ -129,11 +151,10 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
       }
       const variations = this.data.move.variations();
       if (variations && variations.length > 0) {
-        if ((this.data.type & GameScoreType.Branched) == GameScoreType.Branched) { // must have a variation to be branched
-          this.typeName += ' Branched ';
-        } else {
           this.typeName += ' Variation ';
-        }
+      }
+      if ((this.data.type & GameScoreType.Branched) == GameScoreType.Branched) { // must have a variation to be branched
+          this.typeName += ' Branched Variation ';
       }
     }
   }

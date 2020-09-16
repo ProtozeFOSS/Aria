@@ -64,7 +64,6 @@ export class Olga implements AfterViewInit {
     this.colorService.boardBGDark.subscribe((bgDark) => {
       this.canvasBoardComponent?.setDarkTile(bgDark);
     })
-    this.layout.initializeLayout(this);
     if (this.canvasBoardComponent) {
       this.olga.attachBoard(this.canvasBoardComponent);
     }
@@ -94,9 +93,9 @@ export class Olga implements AfterViewInit {
     const pgn = this.gameScoreComponent?.getPGN();
     if (pgn) {
       this.olga.loadPGN(pgn);
-      this.gameScoreComponent?.redrawGameScore();
     }
     window.onkeydown = this.keyEvent.bind(this);
+    this.layout.initializeLayout(this);
   }
   mouseMoved(event: MouseEvent): void {
     if (this.gameScoreComponent && this.gameScoreComponent.resizing) {

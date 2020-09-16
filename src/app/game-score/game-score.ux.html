@@ -2,9 +2,11 @@
   (click)="scoreItemMenu.open = false;"></game-score-item-menu>
 <mat-card class="gamescore-container">
   <h1 class="score-title">Score</h1>
-  <mat-card-content *ngIf="viewType === ScoreViewType.Flow" class="score-list">
-    <app-game-score-item #scoreItem *ngFor="let item of (olga._items | async); index as i;" [data]="item">
-    </app-game-score-item>
+  <mat-card-content class="score-list">
+    <div>
+      <game-score-item #scoreItem *ngFor="let item of _items; index as i;" [data]="item">
+      </game-score-item>
+    </div>
   </mat-card-content>
 </mat-card>
 <div>

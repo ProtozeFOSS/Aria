@@ -1,6 +1,6 @@
 <!-- GameScoreGroup -->
 <div class="gsi-container {{typeName}}">
-  <div class="gsi-ply {{typeName}}" *ngIf="this.plyOn" (click)="clickMove()">
+  <div class="gsi-ply {{typeName}}" (click)="clickMove()" #gsiPly>
     {{ply}}</div>
   <!-- <div class="gsi-move {{typeName}}" *ngIf="!isGroup()">..&nbsp;</div> -->
   <div class="gsi-move {{typeName}}" *ngIf="this.data.move" (contextmenu)="this.olga.openVariation(data)" (click)="clickMove()">
