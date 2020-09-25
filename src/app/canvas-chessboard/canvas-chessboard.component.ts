@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ChessMove } from '../common/kokopu-engine';
 import { ColorService } from '../services/colors.service';
 import { OlgaService } from '../services/olga.service';
-import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames } from './types';
+import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames, Color } from './types';
 @Component({
   selector: 'canvas-chessboard',
   templateUrl: './canvas-chessboard.component.html',
@@ -43,7 +43,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     public olga: OlgaService,
     public colorService: ColorService
   ) {
-    if (this.olga.game.value !== null) {
+    if (this.olga.validGame()) {
       this.setBoardToGamePosition();
     }
   }
@@ -176,12 +176,10 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       console.log('Promoting to ' + move.promotion.role);
       console.log('@ ' + SquareNames[move.to]);
       // remove old piece
-      this.removePiece(move.to);
+      this.removePiece(move.from);
       this.addPiece(move.to, move.color, move.promotion.role);
-      if (this.olga.game.value) {
-        this.olga.game.value.performPromotion(move);
-        this.closePromotionDialog();
-      }
+      this.olga.performPromotion(move);
+      this.closePromotionDialog();
     }
   }
   protected closePromotionDialog() {
@@ -746,8 +744,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   public isValidDrop(from: number, to: number): boolean {
-    if (this.olga.game.value !== null) {
-      const position = this.olga.game.value.getPosition();
+    if (this.olga.validGame()) {
+      const position = this.olga.getGame()?.getPosition();
       const legal = position.isMoveLegal(SquareNames[from], SquareNames[to]);
       return legal !== false;
     }
@@ -791,9 +789,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       } else {
         if (
           this.isValidDrop(this.selectedPiece.tile, tile) &&
-          this.olga.game.value !== null
+          this.olga.validGame() && this.olga.getGame()?.makeMove(move)
         ) {
-          this.olga.game.value.makeMove(move);
           this.makeMove(move);
         } else {
           this.resetMove(move);
@@ -861,6 +858,13 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.canvas?.remove(tileData.tile);
     });
     this.tiles = [];
+    this.labels.forEach((label) => {
+      this.canvas?.remove(label);
+    });
+    this.labels =[]
+    if(this.tileGroup){
+      this.canvas?.remove(this.tileGroup);
+    }
   }
 
   public clearMaterial(): void {
@@ -870,11 +874,92 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     this.pieces = [];
   }
 
+  public clearLabels(): void{
+    this.labels.forEach((value, index) =>{
+      this.tileGroup.remove(value);
+    });
+    this.labels = [];
+  }
+
+  public generateLabels(): void {
+    let label = null;
+    // let labelText = '';
+    let labels = [];
+    let targetRow = 7;
+    let targetCol = 0;
+    let incrementRow = 1;
+    let incrementCol = -1;
+    let labelText = '';
+
+    if(this.settings.orientation == 'white'){
+      for(let i = 0; i != targetCol; i += targetCol) {
+        if (this.settings.orientation == 'white') {
+          labelText = SquareNames[((7 - i) * 8) + 7][1];
+        } else {
+          labelText = SquareNames[(i * 8) + 7][1];
+        }
+        label = this.generateLabel(i, 7, labelText);
+        this.tileGroup.add(label);
+        labels.push(label);
+        label = this.generateLabel(i, 0 + 1, i.toString(), true);
+        this.tileGroup.add(label);
+        labels.push(label);
+      }
+      
+    } else {
+
+       //label = this.generateLabel(targetRow, targetCol);
+    }
+    this.labels = labels;
+  }
+
   private connectMouseInput(): void {
     if (this.canvas) {
       this.canvas.on('object:moved', this.checkValidDrop.bind(this));
       this.canvas.on('mouse:down', this.selectPiece.bind(this));
     }
+  }
+
+  private generateLabel(row: number, col: number, labelText: string, isDigit= false): fabric.Text {
+    let label = null;
+    let dark = false;
+    if (row % 2 === 0) {
+      if (col % 2 === 0) {
+        dark = false;
+      } else {
+        dark = true;
+      }
+    } else {
+      // odd row 1, 3, 5, 7
+      if (col % 2 === 0) {
+        dark = true;
+      } else {
+        dark = false;
+      }
+    }
+    let x = 4;
+    let y = (row * this.tileSize) + 4;
+    if(isDigit) {
+      if(this.settings.orientation  == 'black') {
+        x = (col * this.tileSize) + (4 - this.theme.labelFontSize);
+      }
+    }
+    label = new fabric.Text(labelText, {
+      fontSize: this.theme.labelFontSize, left: x, top: y, fontFamily: this.theme.labelFontFamily,
+      fontWeight: this.theme.labelFontWeight
+    });
+    label.set('lockMovementX', true);
+    label.set('lockMovementY', true);
+    label.set('lockRotation', true);
+    label.set('lockScalingX', true);
+    label.set('lockScalingY', true);
+    label.set('lockUniScaling', true);
+    label.set('hasControls', false);
+    label.set('hasBorders', false);
+    label.set('selectable', false);
+    label.setColor(dark ? this.colorService.boardBGLight.value : this.colorService.boardBGDark.value);
+    label.setCoords();
+    return label;
   }
 
   private generateTiles(): void {
@@ -955,58 +1040,22 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           }
           this.tiles.push({ tile });
           tiles.push(tile);
+          
+          let labelText = '';
+          if (this.settings.orientation == 'white') {
+            labelText = SquareNames[((7 - row) * 8) + col][0];
+          } else {
+            labelText = SquareNames[(row * 8) + col][0];
+          }
           if (col == 0) {
             // create new col label
-            let labelText = '';
-            if (this.settings.orientation == 'white') {
-              labelText = SquareNames[((7 - row) * 8) + col][1];
-            } else {
-              labelText = SquareNames[(row * 8) + col][1];
-            }
-            if (this.settings.orientation == 'white') {
-            }
-            const label = new fabric.Text(labelText, {
-              fontSize: this.theme.labelFontSize, left: (col * this.tileSize) + 4, top: (row * this.tileSize) + 4, fontFamily: this.theme.labelFontFamily,
-              fontWeight: this.theme.labelFontWeight
-            });
-
-            label.set('lockMovementX', true);
-            label.set('lockMovementY', true);
-            label.set('lockRotation', true);
-            label.set('lockScalingX', true);
-            label.set('lockScalingY', true);
-            label.set('lockUniScaling', true);
-            label.set('hasControls', false);
-            label.set('hasBorders', false);
-            label.set('selectable', false);
-            label.setColor(dark ? this.colorService.boardBGLight.value : this.colorService.boardBGDark.value);
-            label.setCoords();
+            const label = this.generateLabel(row, col, labelText);
             labels.push(label);
             this.labels.push(label);
+           
           }
           if (row == 7) {
-            let labelText = '';
-            if (this.settings.orientation == 'white') {
-              labelText = SquareNames[((7 - row) * 8) + col][0];
-            } else {
-              labelText = SquareNames[(row * 8) + col][0];
-            }
-            const label = new fabric.Text(labelText, {
-              fontSize: this.theme.labelFontSize, left: ((col + 1) * this.tileSize) - this.theme.labelFontSize + 2, top: ((row + 1) * this.tileSize) - this.theme.labelFontSize - 2, fontFamily: this.theme.labelFontFamily,
-              fontWeight: this.theme.labelFontWeight
-            });
-
-            label.set('lockMovementX', true);
-            label.set('lockMovementY', true);
-            label.set('lockRotation', true);
-            label.set('lockScalingX', true);
-            label.set('lockScalingY', true);
-            label.set('lockUniScaling', true);
-            label.set('hasControls', false);
-            label.set('hasBorders', false);
-            label.set('selectable', false);
-            label.setColor(dark ? this.colorService.boardBGLight.value : this.colorService.boardBGDark.value);
-            label.setCoords();
+            const label = this.generateLabel(row, col, (col + 1).toString(), true);
             labels.push(label);
             this.labels.push(label);
           }
@@ -1038,14 +1087,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     }
   }
 
-  private addTile(tileData: { tile: fabric.Object; piece?: Piece }) {
-    if (this.canvas) {
-      this.canvas.add(tileData.tile);
-      tileData.tile.moveTo(-100);
-      tileData.tile.setCoords();
-    }
-  }
-
   private loadPieces(): BehaviorSubject<number> {
     const count = new BehaviorSubject<number>(0);
     this.loadPieceImage('wK', count);
@@ -1065,7 +1106,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   private generateBoard(): void {
     this.clearBoard();
+    this.clearLabels();
     this.generateTiles();
+
   }
 
   private loadPieceImage(
@@ -1255,8 +1298,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   setBoardToGamePosition(): void {
     this.clearMaterial();
-    if (this.olga.game.value !== null) {
-      const position = this.olga.game.value.getPosition();
+    if (this.olga.validGame()) {
+      const position = this.olga.getGame()?.getPosition();
       if (position) {
         for (let index = 0; index < 64; ++index) {
           const squareData = position.square(SquareNames[index]);

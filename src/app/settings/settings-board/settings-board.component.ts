@@ -42,15 +42,17 @@ export class SettingsBoardComponent implements OnInit, AfterViewInit {
   }
 
   updateLight(color: string) {
-    if (this.olga.board.value) {
-      this.olga.board.value.setLightTile(color);
+    const board = this.olga.getBoard();
+    if (board) {
+      board.setLightTile(color);
       this.colorService.boardBGLight.next(color);
     }
   }
 
   updateDark(color: string) {
-    if (this.olga.board.value) {
-      this.olga.board.value.setDarkTile(color);
+    const board = this.olga.getBoard();
+    if (board) {
+      board.setDarkTile(color);
       this.colorService.boardBGDark.next(color);
     }
   }

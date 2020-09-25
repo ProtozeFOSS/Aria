@@ -1,42 +1,16 @@
 
 //@ts-ignore
-import { Game as KGame, Variation as KVariation, Node as KNode, Position as KPosition } from 'kokopu';
-import { BehaviorSubject } from 'rxjs';
+import { Game as KGame, Variation as KVariation, MoveDescriptor, Node as KNode, Position as KPosition, pgnRead, Database as KDatabase } from 'kokopu';
 import { SquareNames } from '../canvas-chessboard/types';
-// Game Score
-
-export class GameScoreVariation {
-    variationData: GameScoreItem[];
-    constructor(variationData: GameScoreItem[] = []) {
-        this.variationData = variationData;
-    }
-}
-
-export class GameScoreAnnotation {
-    annotation = '';
-    constructor(annotation: string = '') {
-        this.annotation = annotation;
-    }
-}
 
 export class GameScoreItem {
     type = 0;
     move: KNode | null = null;
-    selection = 0;
-    current = false;
-
-    // flatten the variables
-
     constructor(
         protected game: ChessGame | null = null,
-        protected index: number,
         move?: KNode
     ) {
         this.move = move;
-        this.getType();
-    }
-    getIndex(): number {
-        return this.index;
     }
     addType(type: GameScoreType): void {
         this.type |= type;
@@ -44,9 +18,8 @@ export class GameScoreItem {
     removeType(type: GameScoreType): void {
         this.type ^= type;
     } 
-    getType(): number {
+    getType(previous: GameScoreItem | null = null): number {
         if (this.move) {
-            const previous = this.previous();
             let variations = this.move.variations();
             if (previous) {
                 if (previous.move.moveColor() == 'w') {
@@ -72,25 +45,15 @@ export class GameScoreItem {
         }
         return this.type;
     }
-
-    next(): GameScoreItem | null {
-        if (this.game) {
-            return this.game.getNext(this.index);
-        }
-        return null;
-    }
-    previous(): GameScoreItem | null {
-        if (this.game) {
-            return this.game.getPrevious(this.index);
-        }
-        return null;
-    }
     setSelected(select = true): void {
         if (select) {
             this.type = this.type | GameScoreType.Selected;
         } else {
             this.type = this.type ^ GameScoreType.Selected;
         }
+    }
+    isBranched(): boolean {
+        return ((this.type & GameScoreType.Branched) == GameScoreType.Branched);
     }
 }
 
@@ -104,6 +67,9 @@ export class ChessMove {
     castle?: {type:string, to:number, from: number};
     promoteFunction?: any;
     static fromNode(node: KNode): ChessMove | null {
+        if(!node || !node._info) {
+            return null;
+        }
         const move = new ChessMove();
         const mDescriptor = node._info.moveDescriptor;
         if (mDescriptor) {
@@ -122,31 +88,29 @@ export class ChessMove {
         }
         return null;
     }
+    compareMoveToNode(node: KNode): boolean {
+        const mDescriptor = node._info.moveDescriptor;
+        if(mDescriptor) {
+            return (this.to === SquareNames.indexOf(mDescriptor.to()) && this.from === SquareNames.indexOf(mDescriptor.from()));
+        }
+        return false;
+    }
 }
-
+export type GameScorePath = {active: number, paths:GameScoreItem[]};
+export type Traversal = {right: number, down: number};
 export class ChessGame {
     protected position: KPosition | null = null;
-    protected currentNode: KNode | null = null;
-    protected currentVariation: KVariation | null = null;
-    protected currentIndex = -1;
-    protected nodeMap: Array<GameScoreItem> = [];
-    protected moveMap: KNode | KVariation[] = [];
-    protected gameVariations: KVariation[] = [];
-    protected variation: KVariation | null = null;
+    protected scorePath: Array<Traversal> = [];
     protected startNode: KNode | null = null;
+    protected currentNode: KNode | null = null;
     protected lastNode: KNode | null = null;
-    protected isVariation = false;
-    public fen = '';
-    public getNodeIndex(): number {
-        return this.currentIndex;
-    }
+    protected currentIndex = 0;
+
     protected static compareKNode(left: KNode, right: KNode): boolean {
-        if (
-            left !== null &&
+        if (left !== null &&
             right !== null &&
             left !== undefined &&
-            right !== undefined
-        ) {
+            right !== undefined) {
             const leftMove = left._info.moveDescriptor;
             const rightMove = right._info.moveDescriptor;
             return (
@@ -160,12 +124,10 @@ export class ChessGame {
         left: KVariation,
         right: KVariation
     ): boolean {
-        if (
-            left !== null &&
+        if (left !== null &&
             right !== null &&
             left !== undefined &&
-            right !== undefined
-        ) {
+            right !== undefined) {
             if (ChessGame.compareKNode(left.first(), right.first())) {
                 return (
                     left.comment() === right.comment() &&
@@ -175,7 +137,18 @@ export class ChessGame {
         }
         return false;
     }
-
+    static parsePGN(olga: any, pgn: string): ChessGame[] {
+        const games = [];
+        const state = pgnRead(pgn) as KDatabase;
+        if(state) {
+            const gameCount = state.gameCount();
+            for(let index = 0; index < gameCount; ++index) {
+                games.push(new ChessGame(olga, state.game(index)));
+            }            
+        }
+        return games;
+    }
+  
     protected getLastNode(): KNode {
         let node = this.currentNode;
         while (node && node.next()) {
@@ -191,37 +164,30 @@ export class ChessGame {
         if (!this.currentNode) {
             this.currentNode = this.lastNode;
         }
-        this.fen = this.position.fen();
         this.olga.redrawBoard();
         this.olga.updateStatus(this.position.turn(), node);
     }
 
+    protected addNextMove(notation: string): void {
+        this.currentNode = this.currentNode.play(notation);
+        this.olga.gameScoreItemsChanged(this.generateGameScore());
+    }
+
     public onVariant(): boolean {
-        return this.isVariation;
-    }
-
-    public getNext(index: number): GameScoreItem | null {
-        const next = index + 1;
-        if (next >= 0 && next < this.nodeMap.length) {
-            return this.nodeMap[next];
-        }
-        return null;
-    }
-
-    public getPrevious(index: number): GameScoreItem | null {
-        const prev = index - 1;
-        if (prev >= 0 && prev < this.nodeMap.length) {
-            return this.nodeMap[prev];
-        }
-        return null;
+        this.scorePath.forEach((traversal:Traversal)=>{
+            if(traversal.down > 0) {
+                return true;
+            }
+            return false;
+        });
+        return false;
     }
 
     public performPromotion(move: ChessMove) {
         if (move.promotion && move.promoteFunction) {
-            //const moveDesc = 1
             const moveDesc = move.promoteFunction(move.promotion.role.toLowerCase());
             if (this.position.play(moveDesc)) {
-                const node = this.variation.play(moveDesc);
+                const node = this.currentNode.play(moveDesc);
                 if (!this.lastNode || this.lastNode == this.currentNode) {
                     this.lastNode = node;
                 }
@@ -231,73 +197,6 @@ export class ChessGame {
                 this.currentNode = node;
                 this.currentNode._info.moveDescriptor = moveDesc;
             }
-        }
-    }
-    public makeMove(move: ChessMove, fromPGN = false): void {
-        let lastNode = this.currentNode;
-        if (this.currentNode) {
-            let pgnMove = null;
-            if(this.currentNode.move) {
-                move = this.currentNode.move._info.moveDescriptor
-            } else {
-                pgnMove = this.currentNode._info.moveDescriptor;
-            }
-            const toSquare = SquareNames[move.to];
-            const fromSquare = SquareNames[move.from];
-            const next = this.currentNode.next();
-            const legal = this.position.isMoveLegal(fromSquare, toSquare);
-            if (pgnMove && pgnMove.from() == fromSquare && pgnMove.to() == toSquare) {
-                // not a variant
-                this.position.play(pgnMove);
-                if (fromPGN) {
-                    if (pgnMove.isPromotion()) {
-                        move.promoteFunction = legal;
-                        this.olga.showPromotionDialog(move);
-                    }
-                    if (pgnMove.isCastling()) {
-                        this.olga.redrawBoard();
-                    }
-                    this.olga.makeBoardMove(move);
-                }
-                this.currentNode = next;
-            } else {
-                // look for an existing variant
-                console.log(
-                    'Check Variants= ' + pgnMove.from() + ' -> ' + pgnMove.to()
-                );
-                lastNode = this.currentNode.next();
-                const variations = lastNode.variations();
-                this.isVariation = true;
-                // Generate methods of communicating branched variations to iteration pattern
-                // Adjust algorithms to account for a branched has the ability to un-branch or
-                // even become another "peer" branch all togeth0er
-                variations.forEach((variation: KVariation) => {
-                    const firstMove = variation.first();
-                    if (firstMove && firstMove._info.moveDescriptor) {
-                        const test = firstMove._info.moveDescriptor;
-                        if (test.to() == toSquare && test.from() == fromSquare) {
-                            this.variation = variation;
-                            this.gameVariations.push(variation);
-                            this.position.play(test);
-                            this.olga.isVariantChanged(this.isVariation);                            
-                            console.log('Found Existing Variation');
-                            console.log(variation);
-                            ++this.currentIndex;
-                            this.olga.gameScoreItemsChanged(this.generateGameScore());
-                        } else {
-                            console.log(
-                                'Variation checked: ' + test.from() + ' -> ' + test.to()
-                            );
-                        }
-                    }
-                });
-            }
-        }
-        if (!ChessGame.compareKNode(lastNode, this.currentNode)) {
-            this.olga.updateStatus(
-                this.position.turn(),
-                lastNode
-            );
         }
     }
 
@@ -311,155 +210,234 @@ export class ChessGame {
         return this.position;
     }
 
+    protected generateRootScore(): GameScoreItem[] {
+        const items = Array<GameScoreItem>();
+        const variation = this.game.mainVariation();
+        let node = variation.first();
+        let previous = null;
+        let gItem = null;
+        while(node) {
+            gItem = new GameScoreItem(this, node);
+            gItem.getType(previous);
+            items.push(gItem);
+            previous = gItem;
+            node = node.next();
+        }
+        return items;
+    }
+
     public generateGameScore(): GameScoreItem[] {
-        const items = [];
-        this.nodeMap = [];
-        let index = 0;
-        let currentNode = this.currentNode;
-        for(let i = 0; i < this.gameVariations.length; ++i) {
-            const variation = this.gameVariations[i];
-            let targetVariation: KVariation | null = null;
-            let targetNotation = '';
-            if(currentNode)
-            targetNotation = currentNode.notation();
-            if(i < this.gameVariations.length-1) {
-                targetVariation = this.gameVariations[i+1];
+        let items = Array<GameScoreItem>();
+        let gItem = null;
+        let previous = null;
+        const traversals = this.scorePath.length;
+        let current = this.startNode;
+        if(traversals == 0) {
+            items = this.generateRootScore();
+        }
+        for(let index = 0; index < traversals; ++index) {
+            const traversal = this.scorePath[index] as Traversal;
+            for(let j = 0; j < traversal.right; ++j){
+                gItem = new GameScoreItem(this, current);
+                gItem.getType(previous);
+                items.push(gItem);
+                previous = gItem;
+                current = current.next();
+                // go down
             }
-            let nextScore = variation.first() as KNode;
-            let previous: GameScoreItem | null = null;
-            let branched = (i > 0);
-            while (nextScore) {
-                if (nextScore) {
-                    const gItem = new GameScoreItem(this, index, nextScore);
-                    const notation = nextScore.notation();
-                    if(targetVariation && notation == targetNotation) {
-                            nextScore = null;
-                            this.nodeMap[index] = gItem;
-                            previous = gItem;
-                            items.push(gItem);
-                            ++index;
-                            continue;
-                    }
-                    if(branched) {
-                        gItem.addType(GameScoreType.Branched);
-                        branched = false;
-                    }
-                    this.nodeMap[index] = gItem;
-                    previous = gItem;
+            if(traversal.down > 0) {
+                const variations = current.variations() as KVariation[];
+                if(variations.length > (traversal.down-1)) {
+                    const variation = variations[traversal.down-1];
+                    current = variation.first();
+                    console.log('Branching at ' + current.notation());
+                    gItem = new GameScoreItem(this, current);
+                    gItem.getType(previous);
                     items.push(gItem);
-                    ++index;
-                    nextScore = nextScore.next();
+                    previous = gItem;
+                    current = current.next();
                 }
             }
         }
-        this.lastNode = this.nodeMap[this.nodeMap.length - 1];
+        while(current) {
+            gItem = new GameScoreItem(this, current);
+            gItem.getType(previous);
+            items.push(gItem);
+            previous = gItem;
+            current = current.next();
+        }
+        if(items.length > 0) {
+            this.lastNode = items[items.length - 1].move;
+        }
         return items;
     }
 
     setGame(game: KGame): void {
         this.game = game;
-        this.variation = this.game.mainVariation() as KVariation;
-        this.gameVariations.push(this.variation);
-        this.startNode = this.variation.first();
-        this.position = this.variation.initialPosition() as KPosition;
-        this.currentIndex = -1;
-        this.fen = this.position.fen();
+        let variation = this.game.mainVariation() as KVariation;
+        this.startNode = variation.first();
+        this.position = variation.initialPosition() as KPosition;
         this.currentNode = null;
         this.olga.redrawBoard();
-        window.setTimeout(this.generateGameScore.bind(this), 10);
     }
 
 
-
-    public navigateToNode(index: number) {
-        if (this.currentIndex < index) {
-            while (this.currentIndex < index) {
-                const next = this.nodeMap[++this.currentIndex] as GameScoreItem;
-                if (next) {
-                    const cmove = ChessMove.fromNode(next.move);
-                    if (cmove) {
-                        if (this.position.play(next.move._info.moveDescriptor)) {
-                            this.olga.makeBoardMove(cmove);
-                            this.currentNode = next.move;
-                            this.olga.selectScoreItem(this.currentIndex);
-                            this.nodeMap[this.currentIndex] = next;
-                            this.olga.updateStatus(this.position.turn(), next.move);
-                        }
-                    }
-                }
+    public moveToPrevious(previousNode: KNode, current: KNode): ChessMove | null {
+        if(this.currentNode) {
+            const previousPosition = this.currentNode.positionBefore();
+            if(previousPosition && this.currentNode) {
+                const moveToBeUndone = ChessMove.fromNode(this.currentNode) as ChessMove;
+                this.olga.updateStatus(this.position.turn(), previousNode);
+                return moveToBeUndone;
             }
-            return;
+            this.position = previousPosition;
+            this.currentNode = previousNode;
+            --this.currentIndex;
         }
-        if (this.currentIndex > index) {
-            while (this.currentIndex > index && --this.currentIndex >= -1) {
-                const node = this.nodeMap[this.currentIndex + 1];
-                const previous = this.nodeMap[this.currentIndex];
-                if (previous) {
-                    const cmove = ChessMove.fromNode(node.move);
-                    if (cmove) {
-                        this.position = previous.move.position();
-                        this.olga.unmakeBoardMove(cmove);
-                        this.currentNode = previous;
-                        this.olga.selectScoreItem(this.currentIndex);
-                        this.olga.updateStatus(this.position.turn(), previous.move);
-                    }
-                } else {
-                    this.position.reset();
-                    this.currentIndex = -1;
-                    this.currentNode = null;
-                    if (!this.currentNode) {
-                        this.currentNode = this.lastNode;
-                    }
-                    this.fen = this.position.fen();
-                    this.olga.redrawBoard();
-                    this.olga.updateStatus(this.position.turn());
-                    this.olga.selectScoreItem(-1);
-                }
-            }
-            return;
-        }
+        return null;
+    }
+    
+    public isGameOver(): boolean {
+        return (this.position.isLegal() && this.position.moves().length == 0);
     }
 
-    // navigation
-    public advance(updateBoard = true): boolean {
-        if (!this.isFinalPosition()) {
-            const next = this.currentIndex + 1;
-            if (next < this.nodeMap.length && next >= 0) {
-                this.navigateToNode(next);
-                return true;
-            }
+    public play(next: KNode): boolean {
+        if (this.position.play(next._info.moveDescriptor)) {
+            this.currentNode = next;
+            this.olga.updateStatus(this.position.turn(), next);
+            ++this.currentIndex;
+            return true;
+        }
+        return false;
+    }
+    public unPlay(previous: KNode): boolean {
+        if(previous) {
+            this.position = previous.position();
+            this.currentNode = previous;
+            --this.currentIndex;
+            this.olga.updateStatus(this.position.turn(), previous);
+            return true;
         }
         return false;
     }
 
-    public moveToStart(): void {
-        while (this.previous()) {
-
-        }
-    }
-    public moveToEnd(): void {
-        this.navigateToNode(this.nodeMap.length - 1);
-    }
-
-    public previous(): boolean {
-        if (!this.isStartingPosition()) {
-            const prev = this.currentIndex - 1;
-            if (prev < this.nodeMap.length && prev >= -1) {
-                this.navigateToNode(prev);
-                return true;
-            }
+    public createVariation(move: MoveDescriptor | string): boolean {
+        if(this.currentNode){
+            const variationsBefore = this.currentNode.variations();
+            this.currentNode = this.currentNode.play(move);
+            this.position = this.currentNode.position();
+            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            this.scorePath.push({right:this.currentIndex, down: variationsBefore.length + 1});
+            this.currentIndex = 0;
+            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            // tell it to restore gamescore
+            this.olga.gameScoreItemsChanged(this.generateGameScore());
+            this.olga.incrementGameScoreSelection();
+            return true;
         }
         return false;
     }
 
-    public isStartingPosition(): boolean {
-        return this.currentIndex === -1;
+    public addMoveToEnd(move: MoveDescriptor): boolean {
+        if(this.currentNode && this.position.play(move)) {
+            const next = this.currentNode.play(move);
+            this.currentNode = next;
+            this.position = this.currentNode.position();
+            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            // tell it to restore gamescore
+            this.olga.gameScoreItemsChanged([]);
+            this.olga.gameScoreItemsChanged(this.generateGameScore());
+            this.olga.incrementGameScoreSelection();
+            return true;
+        }
+        return false;
     }
 
-    public isFinalPosition(): boolean {
-        return this.currentIndex === (this.nodeMap.length-1);
+    public makeVariantMove(index: number, node: KNode, updateBoard = false) : boolean {
+        const variations= node.variations();
+        if(index >= 0 && index < variations.length) {
+            const variation = variations[index];
+            this.currentNode = variation.first();
+            this.position = this.currentNode.position();
+            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            this.scorePath.push({right:this.currentIndex, down: index + 1});
+            this.currentIndex = 0;
+            if(updateBoard) {
+                this.olga.makeBoardMove(ChessMove.fromNode(this.currentNode));
+            }
+            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            // tell it to restore gamescore
+            this.olga.gameScoreItemsChanged(this.generateGameScore());
+            this.olga.incrementGameScoreSelection();
+            return true;
+        }
+        return false;
     }
 
+    public makeMoveOrVariation(nextMove: KNode, moveToBeMade: ChessMove, legalMove: MoveDescriptor | string): boolean {
+        let valid = false;
+        if(nextMove && moveToBeMade.compareMoveToNode(nextMove)) {
+            valid = this.position.play(legalMove);
+            this.olga.incrementGameScoreSelection();
+            this.currentNode = nextMove;
+            ++this.currentIndex;
+        }else {
+            // search through all the variant moves, if
+            if(nextMove) {
+                const variations = nextMove.variations();
+                for(let index = 1; index <= variations.length; ++index){
+                    const variation = variations[index-1];
+                    const variantMove = variation.first();
+                    if(moveToBeMade.compareMoveToNode(variantMove)){
+                        return this.makeVariantMove(index-1, nextMove);
+                    }
+                }
+            }
+            // move is new, createVariant
+            return this.createVariation(legalMove);
+
+        }
+        return valid;
+    }
+
+    public makeMove(move: ChessMove): boolean {
+        // Valid move of current variation (continue main variation)
+        // Move of a separate Variation that exists (move to that variation)
+        // at the end of variation but game isnt over ( Create New Move)
+        // move of separate variation that does not exist ( Create Move/Variation)  
+
+       
+        const legal = this.position.isMoveLegal(SquareNames[move.from], SquareNames[move.to]);
+        let lastNode = null;
+        if(legal) {  
+            if (legal.status == 'promotion') {
+                move.promoteFunction = legal;
+                this.olga.showPromotionDialog(move);
+                return true;
+            }
+            const legalMove = legal();
+            if(this.currentNode == null) {
+                this.currentNode = this.startNode;
+                return this.makeMoveOrVariation(this.currentNode, move, legalMove);
+            }
+            const nextMove = this.currentNode.next();
+            if(!nextMove) {
+                return this.addMoveToEnd(legalMove);
+            }
+            console.log("Next Move ->" + nextMove.notation());
+            lastNode = this.currentNode;
+            return this.makeMoveOrVariation(nextMove, move, legalMove);  
+
+        } 
+        return false;
+    }
+    
+
+    public resetEngine(): void {
+        this.position.reset();
+        this.currentNode = null;
+        this.olga.updateStatus(this.position.turn());
+    }
 }
 
 export enum GameScoreType {
@@ -470,3 +448,4 @@ export enum GameScoreType {
     Selected = 16,
     Branched = 32
 }
+

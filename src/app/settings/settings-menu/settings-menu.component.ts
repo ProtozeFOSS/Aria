@@ -92,7 +92,14 @@ export class SettingsMenuComponent implements OnInit, AfterViewInit {
     if(event.tab) {
       switch(event.tab.textLabel){
         case 'Board': {
-          if(this.boardMenu) {
+          if(this.boardMenu && this.boardMenu.settingsBoard) {
+            const boardWidth = this.width * .5;
+            const boardHeight = this.height * .8;
+            if (boardHeight > boardWidth) {
+              this.boardMenu.settingsBoard.setSize(boardWidth);
+            } else {
+              this.boardMenu.settingsBoard.setSize(boardHeight);
+            }
             this.boardMenu.show();
           }
           break;

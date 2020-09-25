@@ -4,6 +4,7 @@
   display: inline-flex;
   line-height: $gsTextSize;
   margin: 2px;
+  padding-left:2px;
 }
 
 .gsi-move{
@@ -39,6 +40,21 @@
   color: rgb(0, 212, 250);
 }
 
+.Current.Variation.gsi-container{
+  border:rgb(0, 212, 250) 2px dashed;
+}
+.Current.Branched.gsi-container{
+  border:rgb(0, 212, 250) 2px dashed;
+}
+.Current.Branched.Variation.gsi-container{
+  border:rgb(0, 212, 250) 2px dashed;
+}
+.Branched.Variation.gsi-container{
+  border:2px lightcoral dashed;
+}
+.Branched.gsi-container{
+  border:2px lightcoral dashed;
+}
 
 /************************************ Game Score Group **************************/
 .Group.gsi-container {

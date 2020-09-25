@@ -10,10 +10,9 @@ import {
   QueryList
 } from '@angular/core';
 import {
+  ChessMove,
   GameScoreItem,
-  GameScoreType,
-  GameScoreAnnotation,
-  GameScoreVariation
+  GameScoreType
 } from '../common/kokopu-engine';
 import { GameScoreItemMenu } from './menu-game-score-item/menu-game-score-item.component';
 import { GameScoreItemComponent } from './game-score-item/game-score-item.component';
@@ -25,6 +24,8 @@ export enum ScoreViewType {
   Table = 101,
   Flow = 202
 };
+
+
 
 @Component({
   selector: 'app-game-score-ux',
@@ -55,6 +56,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   // Current item data and visual
   @Output() readonly currentData = new BehaviorSubject<GameScoreItem | null>(null);
   @Output() currentItem: GameScoreItemComponent | null = null;
+  @Output() currentIndex: number = -1;
 
 
   constructor(public olga: OlgaService, public layout: LayoutService) {
@@ -74,10 +76,18 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   public setGameScoreItems(items: GameScoreItem[] | undefined): void {
     if(items) {
       this._items = items;
-      window.setTimeout(()=>{this.selectGameScoreItem(this.olga.getNodeIndex());}, 100);
+      this.updateSelection();
     } else {
       this._items = [];
     }
+  }
+
+  public updateSelection(): void {
+    window.setTimeout(()=>{this.selectGameScoreItem(this.currentIndex);}, 75);
+  }
+
+  protected navigateToItem(index: number):void {
+
   }
 
   resizeScore(): void {
@@ -182,7 +192,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
       this.currentItem = null;
     }
     if(index >= 0) {
-      // TODO: Update on on ngChanges
       const item = this.scoreItems?.toArray()[index];
       if (item && item != this.currentItem) {
         item.setSelected(!item.isSelected());
@@ -193,4 +202,102 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   public getPGN(): string {
     return this.pgnData?.nativeElement.value;
   }
+
+  // Navigation
+
+  public takeVariation(index: number) {
+    this.navigateToNode(index - 1);
+    window.setTimeout(()=>{
+      if(this.currentItem) {
+        const item = this._items[++this.currentIndex];
+        const variations = item.move.variations();
+        if (variations.length > 0) {
+          // show variation 
+          console.log('Taking first variation');
+          console.log(variations[0]);
+          this.olga.makeVariantMove(0, item.move);
+          this.updateSelection();
+        }
+      }
+    }, 200);
+  }
+
+  public navigateToNode(index: number) {
+    if (this.currentIndex < index) {
+        while (this.currentIndex < index) {
+            const next = this._items[++this.currentIndex] as GameScoreItem;
+            if (next) {
+                if(this.olga.play(next.move)) {
+                  const nodeMove = ChessMove.fromNode(next.move);
+                  if(nodeMove){
+                    this.olga.makeBoardMove(nodeMove);
+                  }
+                }
+            }
+        }
+        this.currentIndex = index;
+        this.updateSelection();
+        return;
+    }
+    while (this.currentIndex > index) {
+        const node = this._items[this.currentIndex] ;
+        if (node) {
+            if (this.olga.unPlay(node.move)) {
+              const nodeMove = ChessMove.fromNode(node.move);
+              if(nodeMove){
+                this.olga.reverseBoardMove(nodeMove);
+              }
+            }
+        }
+        --this.currentIndex;
+    } 
+    if(index === -1) {
+      this.olga.resetEngine();
+      this.olga.redrawBoard();
+    }
+    this.updateSelection();
+  }
+  public advance(): boolean {
+      if (!this.isFinalPosition()) {
+          const next = this.currentIndex + 1;
+          if (next < this._items.length && next >= 0) {
+              this.navigateToNode(next);
+              return true;
+          }
+      }
+      return false;
+  }
+
+  public moveToStart(): void {
+    while(this.previous()){}
+  }
+
+  public moveToEnd(): void {
+    while(this.advance()){}
+  }
+
+  public previous(): boolean {
+      if (this.currentIndex !== -1) {
+          const prev = this.currentIndex - 1;
+          if (prev < this._items.length && prev >= -1) {
+              this.navigateToNode(prev);
+              return true;
+          }
+      }
+      return false;
+  }
+
+  public isStartingPosition(): boolean {
+      return this.currentIndex === -1;
+  }
+
+  public isFinalPosition(): boolean {
+      return this.currentIndex === (this._items.length-1);
+  }
+
+  public incrementSelection(): void {
+    ++this.currentIndex;
+    this.updateSelection();
+  }
+
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, Output, ViewChild, ElementRef } from '@angular/core';
-import { GameScoreType, GameScoreItem } from '../../common/kokopu-engine';
-import { OlgaService } from 'src/app/services/olga.service';
+import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, Output, ViewChild, ElementRef, ComponentFactoryResolver } from '@angular/core';
+import { GameScoreType, GameScoreItem, ChessMove } from '../../common/kokopu-engine';
+import { OlgaService } from '../../services/olga.service';
 import { ColorService } from '../../services/colors.service';
 
 @Component({
@@ -14,6 +14,7 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
 
   // visual nodes
   @Output() ply = '';
+  @Output() score = '';
   GameScoreType = GameScoreType;
   @ViewChild('gsiPly') gsiPly: ElementRef | null = null;
   constructor(public olga: OlgaService, public colors:ColorService) {
@@ -41,6 +42,11 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
         }else{
           this.ply = this.data.move.fullMoveNumber().toString() + '.';
         }
+      }
+      if(this.data.move._info.moveDescriptor && typeof this.data.move._info.moveDescriptor != 'string'){ 
+        this.score = this.data.move.notation();
+      } else {
+        this.score = this.data.move._info.moveDescriptor;
       }
       this.data.getType();
       this.updateTypeName();
@@ -125,11 +131,12 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   clickMove(): void {
-    if (this.data.move.variations().length > 0) {
+    const variations = this.data.move.variations();
+    if (variations.length > 0) {
       this.olga.displayVariations(this.data);
-      this.olga.navigateToItem(this.data);
-    } else {
-      this.olga.navigateToItem(this.data);
+      // show variation 
+      console.log('Taking first variation');
+      console.log(variations[0]);
     }
   }
 
@@ -154,7 +161,7 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
           this.typeName += ' Variation ';
       }
       if ((this.data.type & GameScoreType.Branched) == GameScoreType.Branched) { // must have a variation to be branched
-          this.typeName += ' Branched Variation ';
+          this.typeName += ' Branched';
       }
     }
   }

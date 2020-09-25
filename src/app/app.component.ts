@@ -108,12 +108,12 @@ export class Olga implements AfterViewInit {
 
   protected loadKeymap():void {
     // initial default keymap
-
     this.keymap.set('Space', ()=>{this.olga.toggleAutoPlay();});
     this.keymap.set('Home', ()=>{this.olga.moveToStart();});
     this.keymap.set('End', ()=>{this.olga.moveToEnd();});
     this.keymap.set('ArrowRight', ()=>{this.olga.advance();});
     this.keymap.set('ArrowLeft', ()=>{this.olga.previous();});
+    this.keymap.set('KeyI', ()=>{this.olga.rotateBoardOrientation();});
   }
 
 
