@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Olga } from '../app.component';
 import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
-import { SettingsMenuComponent } from '../settings/settings-menu/settings-menu.component';
+import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
 
@@ -23,12 +23,13 @@ export class LayoutService {
   preferredLayout: Layout = 'auto';
   preferredRatioLandscape = 0.3;
   preferredRatioPortrait = 0.4;
+  preferredWidthPercentage = 1.0;
+  preferredHeightPercentage = 1.0
   public gameScoreElement: HTMLElement | null = null;
   public boardElement: HTMLElement | null = null;
   public controlsElement: HTMLElement | null = null;
   public statusElement: HTMLElement | null = null;
-  public settingsMenuElement: HTMLElement | null = null;
-  public settingsMenuComponent: SettingsMenuComponent | null = null;
+  public menuComponent: OlgaMenuComponent | null = null;
   boardRatio = 1;
   constructor() { }
 
@@ -54,18 +55,14 @@ export class LayoutService {
   }
 
   public openSettings(): void {
-    if(this.settingsMenuComponent){
-      this.settingsMenuComponent.open();
-      // @ts-ignore
-      this.settingsMenuElement.style.visibility = 'visible';
+    if(this.menuComponent){
+      this.menuComponent.open();
     }
   }
 
   public closeSettings(): void {
-    if(this.settingsMenuComponent){
-      this.settingsMenuComponent.close();
-      // @ts-ignore
-      this.settingsMenuElement.style.visibility = 'hidden';
+    if(this.menuComponent){
+      this.menuComponent.close();
     }
   }
 
@@ -76,10 +73,11 @@ export class LayoutService {
       this.gameScoreElement &&
       this.controlsElement &&
       this.statusElement &&
-      this.settingsMenuComponent
+      this.menuComponent
     ) {
       let boardSize = 0;
       const titleSize = 80;
+      width = (this.preferredWidthPercentage * width);
       if (this.resizeElement) {
         this.resizeElement.style.left = '-10px';
         this.resizeElement.style.top = 'calc(50% - 3em)';
@@ -154,8 +152,8 @@ export class LayoutService {
         this.statusElement.style.right = '1px';
         this.scoreSize.next(gsSize);
       }
-      if(this.settingsMenuComponent && this.settingsMenuComponent.visible) {
-        this.settingsMenuComponent.resize(width, height);
+      if(this.menuComponent && this.menuComponent.visible) {
+        this.menuComponent.resize(width, height);
       }
       this.boardSize.next(boardSize);
     }
@@ -196,8 +194,8 @@ export class LayoutService {
         this.resizeElement.style.width = '6em';
         this.resizeElement.style.height = '1.2em';
       }
-      if(this.settingsMenuComponent && this.settingsMenuComponent.visible) {
-        this.settingsMenuComponent.resize(width, height);
+      if(this.menuComponent && this.menuComponent.visible) {
+        this.menuComponent.resize(width, height);
       }
     }
   }
@@ -205,7 +203,7 @@ export class LayoutService {
     this.olga = olga;
     this.gameScore = olga.gameScoreComponent;
     this.board = olga.canvasBoardComponent;
-    this.settingsMenuComponent = olga.settingsMenuComponent;
+    this.menuComponent = olga.menuComponent;
     this.appContainer = olga.appContainer;
     if (autoResize) {
       window.removeEventListener('resize', this.resizeLayout.bind(this));
@@ -381,5 +379,40 @@ export class LayoutService {
         }
       }
     }
+  }
+
+  
+  public shrink() {
+    if(this.appContainer){
+      if(this.landscapeOrientation) {
+        if(this.preferredWidthPercentage >= .3) {
+          this.preferredWidthPercentage -= .1;
+          this.appContainer.nativeElement.clientWidth = (window.innerWidth  * this.preferredWidthPercentage);
+        }
+      }else {
+        if(this.preferredHeightPercentage >= .3) {
+          this.preferredHeightPercentage -= .1;
+          this.appContainer.nativeElement.clientHeight = (window.innerHeight  * this.preferredHeightPercentage);
+        }
+      }
+      this.resizeLayout();
+    }
+  }
+
+  public grow() {
+    if(this.appContainer){
+      if(this.landscapeOrientation) {
+        if(this.preferredWidthPercentage <= .9) {
+          this.preferredWidthPercentage += .1;
+          this.appContainer.nativeElement.clientWidth = (window.innerWidth  * this.preferredWidthPercentage);
+        }
+      }else {
+        if(this.preferredHeightPercentage <= .9) {
+          this.preferredHeightPercentage += .1;
+          this.appContainer.nativeElement.clientHeight = (window.innerHeight  * this.preferredHeightPercentage);
+        }
+      }
+      this.resizeLayout();
+    } 
   }
 }

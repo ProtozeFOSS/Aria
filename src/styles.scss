@@ -45,6 +45,7 @@ $gsTextColor: var(--gsTextColor); // Text color for game score
 $gsBackground: var(--gsBackground); // background of Containers
 $gsBorder: var(--gsBorder); // background of Menus
 $gsTextSize: var(--gsTextSize); // background of Menus
+$gsFontFamily: var(--gsFontFamily); // score font
 
 /******************* Game Score Container Variables ***************************/
 $gsTextColorMW: var(--gsTextColorMW); // Text color for game score
@@ -78,9 +79,15 @@ $gsTextColorPC: var(--gsTextColorPC); // Text color for game score ply
 $gsBackgroundPC: var(--gsBackgroundPC); // background for game score ply
 $gsBorderPC: var(--gsBorderPC); // border for game score ply
 
-// Board colors reflected out
-$boardBGDark: var(--boardBGDark); // border for highlight
-$boardBGLight: var(--boardBGLight); // border for highlight
+/******************** Control Colors ************************************/
+$csBackground: var(--csBackground); // background for controls
+$csColor: var(--csColor); // controls color (foreground)
+
+/******************** Board Colors ************************************/
+$boardBGDark: var(--boardBGDark); // board dark tile
+$boardBGLight: var(--boardBGLight); // board light tile
+$boardLabelLight: var(--boardLabelLight); // board light label
+$boardLabelDark: var(--boardLabelDark); // board dark label
 
 // General stuff
 $text-color: var(--text-color);

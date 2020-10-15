@@ -11,8 +11,8 @@ import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.componen
 import { ColorService } from './services/colors.service';
 import { LayoutService } from './services/layout.service';
 import { OlgaService } from './services/olga.service';
-import { SettingsMenuComponent } from './settings/settings-menu/settings-menu.component';
 import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
+import { OlgaMenuComponent } from './olga-menu/olga-menu.component';
 
 @Component({
   selector: 'olga',
@@ -27,8 +27,8 @@ export class Olga implements AfterViewInit {
   canvasBoardComponent: CanvasChessBoard | null = null;
   @ViewChild('olgaContainer')
   appContainer: ElementRef | null = null;
-  @ViewChild(SettingsMenuComponent)
-  settingsMenuComponent: SettingsMenuComponent | null = null;
+  @ViewChild(OlgaMenuComponent)
+  menuComponent: OlgaMenuComponent | null = null;
   @ViewChild(OlgaControlsComponent)
   controlsComponent: OlgaControlsComponent | null = null;
   @Input() pgnString = '';
@@ -59,8 +59,8 @@ export class Olga implements AfterViewInit {
     this.layout.boardElement = document.getElementById(this.olga.UUID + '-ccb');
     this.layout.controlsElement = document.getElementById('olga-controls-' + this.olga.UUID);
     this.layout.statusElement = document.getElementById('olga-status-' + this.olga.UUID);
-    this.layout.settingsMenuElement = document.getElementById('settings-menu-' + this.olga.UUID );
     this.colorService.initializeColorPalette();
+    this.colorService.setOlga(this.olga);
     this.colorService.boardBGDark.subscribe((bgDark) => {
       this.canvasBoardComponent?.setDarkTile(bgDark);
     })
@@ -147,7 +147,7 @@ export class Olga implements AfterViewInit {
   }
 
   setMenuSize(size: number): void {
-    this.settingsMenuComponent?.resize(size, size);
+    this.menuComponent?.resize(size, size);
   }
 
   ignoreEvent(event: MouseEvent): void {

@@ -6,23 +6,25 @@ import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 // @ts-ignore
 import {Node as KNode, Variation as KVariation } from 'kokopu';
-import { SettingsMenuComponent } from '../settings/settings-menu/settings-menu.component';
 import { OlgaControlsComponent } from '../olga-controls/olga-controls.component';
+import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
 @Injectable({
   providedIn: 'root'
 })
 export class OlgaService {
   @Output() readonly showingPly = new BehaviorSubject<boolean>(true);
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
+  @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(1200);
   protected autoIntervalID = -1;
-  protected timeLeft = 600;
+  protected timeLeft = 300;
   public UUID: string = '';
   @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(
-    false
+    true
   );
-  @Output() readonly scoreFontFamily = new BehaviorSubject<string>('Caveat');
-  @Output() readonly scoreFontSize = new BehaviorSubject<number>(18);
+  @Output() readonly gsFontFamily = new BehaviorSubject<string>('FigurineSymbolT1');
+  @Output() readonly scoreFontSize = new BehaviorSubject<number>(32);
   @Output() readonly figurineSize = new BehaviorSubject<number>(20);
+  @Output() readonly showLabels = new BehaviorSubject<boolean>(true);
 
   private _games: ChessGame[] = [];
   private _game: ChessGame | null = null;
@@ -31,6 +33,7 @@ export class OlgaService {
   private _score: GamescoreUxComponent | null = null;
   private _status: OlgaStatusComponent | null = null;
   private _controls: OlgaControlsComponent | null = null;
+  private _menu: OlgaMenuComponent | null = null;
   readonly isVariant = new BehaviorSubject<boolean>(false);
 
 
@@ -38,11 +41,15 @@ export class OlgaService {
   constructor() { 
     this.figurineNotation.subscribe((figurineNotation: boolean) => {
       if (figurineNotation) {
-        this.scoreFontFamily.next('FigurineSymbolT1');
+        this.gsFontFamily.next('FigurineSymbolT1');
       } else {
-        this.scoreFontFamily.next('Cambria');
+        this.gsFontFamily.next('Cambria');
       }
-    });
+      document.documentElement.style.setProperty(
+        '--gsFontFamily',
+        this.gsFontFamily.value
+      );
+    });    
   }
 
   public moveToStart(): void {
@@ -84,7 +91,7 @@ export class OlgaService {
       } else {
         this.toggleAutoPlay();
       }
-      this.timeLeft = 600;
+      this.timeLeft = this.autoPlaySpeed.value;
     }
   }
 
@@ -98,9 +105,9 @@ export class OlgaService {
     } else {
       window.clearInterval(this.autoIntervalID);
       this.autoIntervalID = -1;
-      this.timeLeft = 600;
+      this.timeLeft = this.autoPlaySpeed.value;
       if(this._controls) {
-      this._controls.setTimer(600);
+      this._controls.setTimer(this.timeLeft);
         this._controls.playing = false;
       }
     }
@@ -114,11 +121,14 @@ export class OlgaService {
 
   public loadPGN(pgn: string) {
     this._games = ChessGame.parsePGN(this, pgn);
+    this._score?.setGameScoreItems([]);
     if(this._games.length > 0){
       const game = this._games[0];
       this._game = game;
       window.setTimeout( () => {
         this._score?.setGameScoreItems(this._game?.generateGameScore());
+        this._board?.setBoardToPosition(this._game?.getPosition());
+        this._score?.updateSelection();
       }, 1);
     }
   }
@@ -167,7 +177,9 @@ export class OlgaService {
     if(this._score && variations && variations.length) {
       console.log('Editing Variations on: ' + data.move.notation());
       console.log(variations);
-      this._score.scoreItemMenu?.openAt(data);
+      if(this._menu) {
+        this._menu.openVariationMenu(data);
+      }
     }
   }
 
@@ -210,16 +222,25 @@ export class OlgaService {
       } else {
         this._board.settings.orientation = 'white';
       }
-      this._board.clearLabels();
+      this._board.requestRedraw();
+    }
+  }
+  public reRenderBoard(): void {
+    if(this._board) {
+      this._board.requestRedraw();
+    }
+  }
+  public redrawBoard(): void {
+    if(this._game && this._board) {
+    const position = this._game.getPosition();
+      if(position) {
+        this._board.setBoardToPosition(position);
+      }
     }
   }
 
-  public redrawBoard(): void {
-    this._board?.setBoardToGamePosition();
-  }
-
-  public updateStatus(turn: string, last?: KNode): void {
-    this._status?.updateStatus(turn, last);
+  public updateStatus(turn: string, last?: KNode, move: any = null): void {
+    this._status?.updateStatus(turn, last, move);
   }
 
   public isVariantChanged(isVariant: boolean): void {
@@ -233,7 +254,6 @@ export class OlgaService {
   public reverseBoardMove(move: ChessMove) : void {
     this._board?.unMakeMove(move);
   }
-
 
   public showPromotionDialog(move: ChessMove): void {
     this._board?.showPromotionDialog(move);
@@ -266,6 +286,16 @@ export class OlgaService {
 
 
   // engine interface
+  public isMoveDescriptor(move: any) : boolean {
+    return ChessGame.isMoveDescriptor(move);
+  }
+
+  public getMoveNotation(node: KNode): string {
+    if(this._game) {
+      return this._game.getMoveNotation(node);
+    }
+    return '';
+  }
 
   public play(next: GameScoreItem): boolean {
     if(this._game) {
@@ -273,9 +303,9 @@ export class OlgaService {
     }
     return false;
   }
-  public unPlay(item: GameScoreItem): boolean {
+  public unPlay(current: KNode, previous = null): boolean {
     if(this._game) {
-      return this._game.unPlay(item);
+      return this._game.unPlay(current, previous);
     }
     return false;
   }
@@ -294,6 +324,11 @@ export class OlgaService {
     return false;
   }
   
+  public setPGN(pgn: string):void {
+    if(this._game) {
+      this._game.setPGN(pgn);
+    }
+  }
 
   public resetEngine(): void {
     if(this._game) {

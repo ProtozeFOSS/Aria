@@ -14,7 +14,6 @@ import {
   GameScoreItem,
   GameScoreType
 } from '../common/kokopu-engine';
-import { GameScoreItemMenu } from './menu-game-score-item/menu-game-score-item.component';
 import { GameScoreItemComponent } from './game-score-item/game-score-item.component';
 import { BehaviorSubject } from 'rxjs';
 import { OlgaService } from '../services/olga.service';
@@ -37,8 +36,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   @Input() viewType: ScoreViewType = ScoreViewType.Flow;
 
   // View Children Handles
-  @ViewChild(GameScoreItemMenu)
-  scoreItemMenu: GameScoreItemMenu | null = null;
   @ViewChild('resizeHandle')
   resizeHandle: ElementRef | null = null;
   @ViewChildren(GameScoreItemComponent) scoreItems: QueryList<GameScoreItemComponent> | null = null;
@@ -108,7 +105,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     switch (item.data.type) { // open different menus
 
     }
-    //this.scoreItemMenu?.openAt(item);
   }
 
   ignoreEvent(event: MouseEvent): void {
@@ -240,9 +236,13 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
         return;
     }
     while (this.currentIndex > index) {
-        const node = this._items[this.currentIndex] ;
-        if (node) {
-            if (this.olga.unPlay(node.move)) {
+        const node = this._items[this.currentIndex];
+        let prev = null;
+        if (this.currentIndex > 0) {
+          prev = this._items[this.currentIndex-1];
+        }
+        if (prev && node) {
+            if (this.olga.unPlay(node.move, prev.move)) {
               const nodeMove = ChessMove.fromNode(node.move);
               if(nodeMove){
                 this.olga.reverseBoardMove(nodeMove);
@@ -292,7 +292,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   public isFinalPosition(): boolean {
-      return this.currentIndex === (this._items.length-1);
+      return this.currentIndex >= (this._items.length-1);
   }
 
   public incrementSelection(): void {

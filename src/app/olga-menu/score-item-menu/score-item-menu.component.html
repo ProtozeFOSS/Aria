@@ -1,0 +1,9 @@
+<div class="gs-context-menu-container" (click)="open = false">
+  <div>Variations</div>
+  <div>-> {{ menuTitle }}</div>
+  <mat-grid-list [cols]="2" rowHeight="72px" *ngIf="data !== null">
+    <mat-grid-tile  *ngFor="let variation of variations">
+      <variation-item [data]="variation"></variation-item>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>

@@ -78,7 +78,7 @@ export const SquareNames = [
       public pieceSet: string = '',
       public isSpriteSheet = false,
       public fileExtension = '.svg',
-      public labelFontSize = 14,
+      public labelFontSize = 16,
       public labelFontFamily = 'Cambria',
       public labelFontWeight = 'bold'
     ) { }

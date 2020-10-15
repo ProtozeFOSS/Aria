@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Olga } from './app.component';
-import { GamescoreSettingsComponent } from './settings/settings-gamescore/settings-gamescore.component';
+import { GamescoreMenuComponent } from './olga-menu/gamescore-menu/gamescore-menu.component';
 import { GamescoreUxComponent } from './game-score/game-score.ux';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,12 +16,12 @@ import { GameScoreItemComponent } from './game-score/game-score-item/game-score-
 import { ColorService } from './services/colors.service';
 import { ToggleSwitchComponent } from './common/toggle-switch/toggle-switch.component';
 import { LabeledSliderComponent } from './common/labeled-slider/labeled-slider.component';
-import { SettingsMenuComponent } from './settings/settings-menu/settings-menu.component';
-import { SettingsBoardComponent } from './settings/settings-board/settings-board.component';
+import { MainMenuComponent } from './olga-menu/main-menu/main-menu.component';
+import { BoardMenuComponent } from './olga-menu/board-menu/board-menu.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { GameScoreItemMenu } from './game-score/menu-game-score-item/menu-game-score-item.component';
+import { ScoreItemMenu } from './olga-menu/score-item-menu/score-item-menu.component';
 
 import { OlgaService } from './services/olga.service';
 import { LayoutService } from './services/layout.service';
@@ -29,28 +29,42 @@ import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.componen
 import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
 import { OlgaStatusComponent } from './olga-status/olga-status.component';
 import { OlgaTitleComponent } from './olga-title/olga-title.component';
-import { SettingsKeymapComponent } from './settings/settings-keymap/settings-keymap.component';
-import { KeymapItemComponent } from './settings/settings-keymap/keymap-item/keymap-item.component';
-import { SettingsGeneralComponent } from './settings/settings-general/settings-general.component';
+import { KeymapMenuComponent } from './olga-menu/keymap-menu/keymap-menu.component';
+import { GeneralMenuComponent } from './olga-menu/general-menu/general-menu.component';
+import { OlgaMenuComponent } from './olga-menu/olga-menu.component';
+import { KeymapItemComponent } from './olga-menu/keymap-menu/keymap-item/keymap-item.component';
+import { VariationItemComponent } from './olga-menu/score-item-menu/variation-item/variation-item.component';
+import { MenuSectionComponent } from './olga-menu/common/menu-section/menu-section.component';
+import { LayoutModeSelectComponent } from './olga-menu/controls/layout-mode-select/layout-mode-select.component';
+import { ColorSelectComponent } from './olga-menu/controls/color-select/color-select.component';
+import { ThemesMenuComponent } from './olga-menu/themes-menu/themes-menu.component';
+import { PgnMenuComponent } from './olga-menu/pgn-menu/pgn-menu.component';
 
 @NgModule({
   declarations: [
     Olga,
-    GamescoreSettingsComponent,
+    GamescoreMenuComponent,
     GamescoreUxComponent,
     GameScoreItemComponent,
     ToggleSwitchComponent,
     LabeledSliderComponent,
-    SettingsMenuComponent,
-    SettingsBoardComponent,
-    GameScoreItemMenu,
+    MainMenuComponent,
+    BoardMenuComponent,
+    ScoreItemMenu,
     CanvasChessBoard,
     OlgaControlsComponent,
     OlgaStatusComponent,
     OlgaTitleComponent,
-    SettingsKeymapComponent,
+    KeymapMenuComponent,
+    GeneralMenuComponent,
     KeymapItemComponent,
-    SettingsGeneralComponent
+    VariationItemComponent,
+    OlgaMenuComponent,
+    MenuSectionComponent,
+    LayoutModeSelectComponent,
+    ColorSelectComponent,
+    ThemesMenuComponent,
+    PgnMenuComponent
   ],
   imports: [
     BrowserModule,

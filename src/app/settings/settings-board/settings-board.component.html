@@ -1,9 +1,0 @@
-<div class="settings-container" #container>
-    <canvas-chessboard class="settings-board" boardID="x-1232141"
-    [theme]="this.colorService.boardTheme()" [size]=640 [tileSize]=80 [interactive]=false>
-</canvas-chessboard>
-    <input #lightBGHandle type="color" id="lightColor" class="color-input" (input)="updateLight(lightBGHandle.value)"
-    (blur)="updateLight(lightBGHandle.value)" />
-    <input #darkBGHandle type="color" id="darkColor" class="color-input" (input)="updateDark(darkBGHandle.value)"
-    (blur)="updateDark(darkBGHandle.value)" />
-</div>

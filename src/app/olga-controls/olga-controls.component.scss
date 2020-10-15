@@ -3,13 +3,13 @@
 .button {
     position: absolute;
     border: black 2px solid;
-    background: $boardBGDark;
+    background: $csBackground;
     text-align: center;
     border-radius: 2px;
 }
 
 .quick-actions-container{
-    background: $boardBGDark;
+    background: $csBackground;
     border: none;
     border-radius: 2px;
     position:absolute;
@@ -55,7 +55,7 @@
     left: 4px;
     top: 4px;
     bottom:4px;
-    border: $boardBGLight solid 2px;
+    border: $csColor solid 2px;
     border-radius: 6px;
 }
 .shrink{
@@ -93,14 +93,14 @@
 
 .feather  {
   position: absolute;
-  left:10%;
-  width: 80%;
-  height: 80%;
-  top:10%;
-  stroke: $boardBGLight;
+  left:4%;
+  width: 90%;
+  height: 90%;
+  top:5%;
+  stroke: $csColor;
   stroke-width: 2;
   stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-linejoin: flat;
   fill: none;
 }
 .feather-play  {
@@ -109,7 +109,7 @@
   width: 32px;
   height: 80%;
   top:10%;
-  stroke: $boardBGLight;
+  stroke: $csColor;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -117,7 +117,7 @@
 }
 .timer {
     text-align: center;
-    color:$boardBGLight;
+    color:$csColor;
     line-height: 38px;
     margin-left: 24px;
     font-size: 18px;

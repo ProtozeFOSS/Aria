@@ -8,6 +8,7 @@ import {  BoardTheme } from '../canvas-chessboard/types';
 export class ColorService {
   // DEFAULTING TO DARK COLOR PALLETE
   // Main Elements (background, sub containers, context menu)
+  protected olga: any | null = null;
   @Input() @Output() readonly textColor = 'white'; // Main Text Color
   @Input() @Output() readonly textColorAttention = 'purple'; // Attention text
   @Input() @Output() readonly textColorRemove = 'red'; // Remove/Delete/Close
@@ -35,6 +36,12 @@ export class ColorService {
     '#81388f'
   );
   @Input() @Output() readonly boardBGLight = new BehaviorSubject<string>(
+    '#e0fffb'
+  );
+  @Input() @Output() readonly boardLabelDark = new BehaviorSubject<string>(
+    '#81388f'
+  );
+  @Input() @Output() readonly boardLabelLight = new BehaviorSubject<string>(
     '#e0fffb'
   );
   @Input() @Output() readonly boardPieceSet = new BehaviorSubject<string>(
@@ -96,26 +103,40 @@ export class ColorService {
     ''
   );
 
-  @Output() propertyMap = new Map<BehaviorSubject<string>, string>();
+  @Input() @Output() readonly csBackground = new BehaviorSubject<string>(
+    '#81388f'
+  );
+  @Input() @Output() readonly csColor = new BehaviorSubject<string>(
+    '#e0fffb'
+  );
+
+
+  @Output() propertyMap = new Map<string, BehaviorSubject<string>>();
   // Menu specific Colors
 
   // Title Colors
   constructor() {
-    this.propertyMap.set(this.gsTextColorPC, '--gsTextColorPC');
-    this.propertyMap.set(this.gsBackgroundPC, '--gsBackgroundPC');
-    this.propertyMap.set(this.gsBorderPC, '--gsBorderPC');
-    this.propertyMap.set(this.gsTextColorVA, '--gsTextColorVA');
-    this.propertyMap.set(this.gsBackgroundVA, '--gsBackgroundVA');
-    this.propertyMap.set(this.gsBorderVA, '--gsBorderVA');
-    this.propertyMap.set(this.gsTextColorAN, '--gsTextColorAN');
-    this.propertyMap.set(this.gsBackgroundAN, '--gsBackgroundAN');
-    this.propertyMap.set(this.gsBorderAN, '--gsBorderAN');
-    this.propertyMap.set(this.gsTextColorHG, '--gsTextColorHG');
-    this.propertyMap.set(this.gsBackgroundHG, '--gsBackgroundHG');
-    this.propertyMap.set(this.gsBorderHG, '--gsBorderHG');
-    this.propertyMap.set(this.gsTextColorHG, '--gsTextColorHG');
-    this.propertyMap.set(this.gsBackgroundHG, '--gsBackgroundHG');
-    this.propertyMap.set(this.gsBorderHG, '--gsBorderHG');
+    this.propertyMap.set( '--gsTextColorPC', this.gsTextColorPC);
+    this.propertyMap.set('--gsTextColor', this.gsTextColor);
+    this.propertyMap.set('--gsBackgroundPC', this.gsBackgroundPC);
+    this.propertyMap.set('--gsBorderPC', this.gsBorderPC);
+    this.propertyMap.set('--gsTextColorVA', this.gsTextColorVA);
+    this.propertyMap.set('--gsBackgroundVA', this.gsBackgroundVA);
+    this.propertyMap.set('--gsBorderVA', this.gsBorderVA);
+    this.propertyMap.set('--gsTextColorAN', this.gsTextColorAN);
+    this.propertyMap.set('--gsBackgroundAN', this.gsBackgroundAN);
+    this.propertyMap.set('--gsBorderAN', this.gsBorderAN);
+    this.propertyMap.set('--gsTextColorHG', this.gsTextColorHG);
+    this.propertyMap.set('--gsBackgroundHG', this.gsBackgroundHG);
+    this.propertyMap.set('--gsBorderHG', this.gsBorderHG);
+    this.propertyMap.set('--gsTextColorHG', this.gsTextColorHG);
+    this.propertyMap.set('--gsBackgroundHG', this.gsBackgroundHG);
+    this.propertyMap.set('--boardLabelDark', this.boardLabelDark);
+    this.propertyMap.set('--boardLabelLight', this.boardLabelLight);
+    this.propertyMap.set('--boardBGDark', this.boardBGDark);
+    this.propertyMap.set('--boardBGLight', this.boardBGLight);
+    this.propertyMap.set('--csBackground', this.csBackground);
+    this.propertyMap.set('--csColor', this.csColor);
     this.boardBGDark.subscribe((dark)=>{
       document.documentElement.style.setProperty(
         '--boardBGDark',
@@ -129,7 +150,26 @@ export class ColorService {
       );
     });
   }
-
+  public setOlga(olga: any) : void {
+    this.olga = olga;
+  }
+  updateColor(name: string, color: string) : void {
+    if(this.propertyMap.has(name)) {
+      const subject = this.propertyMap.get(name);
+      if(subject) {
+        subject.next(color);
+      }
+      document.documentElement.style.setProperty(
+        name,
+        color
+      );
+    }
+    // if(name.indexOf('board') >= 0) {
+    //   if(this.olga && this.olga.reRenderBoard) {
+    //     this.olga.reRenderBoard();
+    //   }
+    // }
+  }
 
   boardTheme(): BoardTheme {
     return new BoardTheme(
@@ -153,7 +193,7 @@ export class ColorService {
     // Main Elements
     document.documentElement.style.setProperty('--textCoolor', this.textColor);
     document.documentElement.style.setProperty(
-      '--itextColorAttention',
+      '--textColorAttention',
       this.textColorAttention
     );
     document.documentElement.style.setProperty(
@@ -199,10 +239,6 @@ export class ColorService {
     // Game Score
     document.documentElement.style.setProperty('--gsBackground', this.gsBackground.value);
     document.documentElement.style.setProperty(
-      '--gsTextColor',
-      this.gsTextColor.value
-    );
-    document.documentElement.style.setProperty(
       '--gsTextSize',
       this.gsTextSize.value
     );
@@ -214,14 +250,10 @@ export class ColorService {
       '--gsBorder',
       this.gsBorder.value
     );
-    document.documentElement.style.setProperty(
-      '--boardBGDark',
-      this.boardBGDark.value
-    );
     this.propertyMap.forEach((value, key) => {
       document.documentElement.style.setProperty(
-        value,
-        key.value
+        key,
+        value.value
       );
     })
   }

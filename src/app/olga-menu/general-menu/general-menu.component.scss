@@ -1,0 +1,14 @@
+@import "../../../styles.scss";
+
+.menu-container{
+  position:absolute;
+  width:100%;
+  height:100%;
+  margin-left:24px;
+  min-width: 240px;
+  overflow-y: visible;
+}
+
+.inner-text{
+  color:white;
+}

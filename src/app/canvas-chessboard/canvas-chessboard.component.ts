@@ -5,6 +5,13 @@ import { ChessMove } from '../common/kokopu-engine';
 import { ColorService } from '../services/colors.service';
 import { OlgaService } from '../services/olga.service';
 import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames, Color } from './types';
+
+
+enum ObjectType {
+  Tile = 111,
+  Label = 222
+}
+
 @Component({
   selector: 'canvas-chessboard',
   templateUrl: './canvas-chessboard.component.html',
@@ -14,6 +21,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Input() size = 320;
   @Input() @Output() tileSize = Math.floor(this.size / 8);
   @Input() interactive = true;
+  @Input() showLabels = false;
   @Input() boardID: string = '';
   protected promotionDialog: fabric.Group | null = null;
   protected knightButton: fabric.Group | null = null;
@@ -21,10 +29,11 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   protected rookButton: fabric.Group | null = null;
   protected queenButton: fabric.Group | null = null;
   protected pieceAnimation: { piece: fabric.Group, x: number, y: number } | null = null;
-  @Input() @Output() theme: BoardTheme | null = new BoardTheme();
+  @Input() @Output() theme: BoardTheme = new BoardTheme();
   @Input() @Output() settings: BoardSettings = new BoardSettings();
   @Output() pieceMap = new Map<string, fabric.Group>();
   @Output() pieces: { tile: number; object: fabric.Group }[] = [];
+  @Output() background: fabric.Rect | null = null;
   @Output() tileGroup: fabric.Group | null = null;
   @Output() tiles: { tile: fabric.Object; piece?: Piece }[] = [];
   @Output() labels: fabric.Object[] = [];
@@ -42,12 +51,91 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   constructor(
     public olga: OlgaService,
     public colorService: ColorService
-  ) {
-    if (this.olga.validGame()) {
-      this.setBoardToGamePosition();
+  ) {}
+
+
+
+  // initialization
+  ngOnInit(): void { }
+
+  ngAfterViewInit(): void {
+    fabric.Object.prototype.transparentCorners = false;
+    if(this.boardCanvas) { 
+      this.canvas = new fabric.Canvas(this.boardCanvas.nativeElement);
+      this.canvas.selection = false;
+      const waitCount = this.loadPieces();
+      waitCount.subscribe((count) => {
+        if (count >= 12) {
+          this.generateBoard();
+          this.connectMouseInput();
+          const position = this.olga.getGame()?.getPosition();
+          if(position) {
+            this.setBoardToPosition(position);
+          }
+          waitCount.unsubscribe();
+          this.resizeBoardObjects(this.size);
+        }
+      });
+      this.canvas.hoverCursor = 'arrow';
+      this.canvas.allowTouchScrolling = true;
+      this.setInteractive(this.interactive);
     }
   }
 
+  private loadPieces(): BehaviorSubject<number> {
+    const count = new BehaviorSubject<number>(0);
+    this.loadPieceImage('wK', count);
+    this.loadPieceImage('wB', count);
+    this.loadPieceImage('wQ', count);
+    this.loadPieceImage('wR', count);
+    this.loadPieceImage('wP', count);
+    this.loadPieceImage('wN', count);
+    this.loadPieceImage('bK', count);
+    this.loadPieceImage('bB', count);
+    this.loadPieceImage('bQ', count);
+    this.loadPieceImage('bR', count);
+    this.loadPieceImage('bP', count);
+    this.loadPieceImage('bN', count);
+    return count;
+  }
+
+  private generateBoard(): void {
+    this.generateBoardObjects();
+    const position = this.olga.getGame()?.getPosition();
+    if(position) {
+      this.setBoardToPosition(position);
+    }
+  }
+
+  private loadPieceImage(
+    piece: string,
+    subject: BehaviorSubject<number>
+  ): void {
+    if (this.theme?.pieceSet) {
+      if (this.theme.isSpriteSheet) {
+      } else {
+        if (this.theme.fileExtension === '.svg') {
+          fabric.loadSVGFromURL(
+            this.theme.pieceSet + piece + this.theme.fileExtension,
+            (objects, options) => {
+              const obj = fabric.util.groupSVGElements(
+                objects,
+                options
+              ) as fabric.Group;
+              obj.left = -400;
+              obj.top = 0;
+              obj.moveTo(10);
+              this.pieceMap.set(piece, obj);
+              subject.next(subject.value + 1);
+            }
+          );
+        }
+      }
+    }
+  }
+
+
+  // Piece Animation
   protected updatePiece() {
     if (this.pieceAnimation) {
       const piece = this.pieceAnimation.piece;
@@ -87,7 +175,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     }
   }
 
-
   protected startMoveAnimation(piece: fabric.Group, x: number, y: number): void {
     if (this.pieceAnimation) {
       const lastPiece = this.pieceAnimation.piece;
@@ -99,77 +186,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     this.updatePiece();
   }
 
-  ngOnInit(): void { }
-
-  ngAfterViewInit(): void {
-    fabric.Object.prototype.transparentCorners = false;
-    if(this.boardCanvas) { 
-      this.canvas = new fabric.Canvas(this.boardCanvas.nativeElement);
-      this.canvas.selection = false;
-      const waitCount = this.loadPieces();
-      waitCount.subscribe((count) => {
-        if (count >= 12) {
-          this.generateBoard();
-          this.connectMouseInput();
-          this.setBoardToGamePosition();
-          waitCount.unsubscribe();
-          this.resizeBoardObjects(this.size);
-        }
-      });
-      this.canvas.hoverCursor = 'arrow';
-      this.canvas.allowTouchScrolling = true;
-      this.setInteractive(this.interactive);
-    }
-  }
-  addPiece(tile: number, color: string, role: string) {
-    const col = tile % 8;
-    const row = Math.floor(tile / 8);
-    const padding = 1;
-    if (role && color) {
-      const pieceImage = this.pieceMap.get(color + role);
-      if (pieceImage) {
-        pieceImage.clone((pieceObject: fabric.Group) => {
-          pieceObject.set('lockRotation', true);
-          pieceObject.set('lockScalingX', true);
-          pieceObject.set('lockScalingY', true);
-          pieceObject.set('lockUniScaling', true);
-          pieceObject.set('hasControls', false);
-          pieceObject.set('hasBorders', false);
-          if (!this.interactive) {
-            pieceObject.set('lockMovementX', true);
-            pieceObject.set('lockMovementY', true);
-          } else {
-            pieceObject.hoverCursor = 'grab';
-            pieceObject.moveCursor = 'grabbing';
-          }
-          const tileSizeFragment = this.tileSize / 100;
-          pieceObject.scaleToHeight(Math.ceil(tileSizeFragment * 90));
-          const piecePadding = Math.ceil(tileSizeFragment * 3) + 1;
-          if (this.settings.orientation == 'white') {
-            pieceObject.set('left', Math.floor(col * this.tileSize) + piecePadding);
-            pieceObject.set('top', Math.floor((7 - row) * this.tileSize) + piecePadding);
-          } else {
-            pieceObject.set('left', Math.floor((7 - col) * this.tileSize) + piecePadding);
-            pieceObject.set('top', Math.floor(row * this.tileSize) + piecePadding);
-          }
-          pieceObject.setCoords();
-          this.pieces[tile] = { tile: tile, object: pieceObject };
-          this.tiles[tile].piece = { role, color } as Piece;
-          if (this.canvas) {
-            this.canvas?.add(pieceObject);
-            pieceObject.moveTo(10);
-          }
-        });
-      }
-    }
-  }
-
-  removePiece(tile: number) {
-    const object = this.pieces[tile].object;
-    delete this.pieces[tile];
-    this.canvas?.remove(object);
-    delete this.tiles[tile].piece;
-  }
 
   protected performPromotion(move: ChessMove): void {
     if (move.promotion) {
@@ -182,6 +198,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.closePromotionDialog();
     }
   }
+
   protected closePromotionDialog() {
     if (this.knightButton) {
       this.canvas?.remove(this.knightButton);
@@ -204,6 +221,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     this.queenButton = null;
     this.promotionDialog = null;
   }
+
+  
+
   protected createPromotionDialog(move: ChessMove) {
     // pull items out of chess move
     const tileIndex = move.to;
@@ -660,8 +680,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           rmove.color = move.color;
           this.makeMove(rmove);
         }
-        // piece.object.moveTo(10);
-        // this.promotionDialog?.moveTo(500);
       }
     }
     this.canvas?.requestRenderAll();
@@ -729,19 +747,58 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       piece.setCoords();
     }
   }
-  // Move to just board functions
-  // movePiece(to, from);
-  // removePiece(tile);
-  // addPiece(tile, piece);
-  // clearPieces();
-  //
 
-  checkPieceCanMove(
-    fromData: { tile: number; object: fabric.Group; piece: Piece | undefined },
-    toData: { tile: number; object: fabric.Group; piece: Piece | undefined }
-  ): boolean {
-    return true;
+  // board API
+  public addPiece(tile: number, color: string, role: string) {
+    const col = tile % 8;
+    const row = Math.floor(tile / 8);
+    const padding = 1;
+    if (role && color) {
+      const pieceImage = this.pieceMap.get(color + role);
+      if (pieceImage) {
+        pieceImage.clone((pieceObject: fabric.Group) => {
+          pieceObject.set('lockRotation', true);
+          pieceObject.set('lockScalingX', true);
+          pieceObject.set('lockScalingY', true);
+          pieceObject.set('lockUniScaling', true);
+          pieceObject.set('hasControls', false);
+          pieceObject.set('hasBorders', false);
+          if (!this.interactive) {
+            pieceObject.set('lockMovementX', true);
+            pieceObject.set('lockMovementY', true);
+          } else {
+            pieceObject.hoverCursor = 'grab';
+            pieceObject.moveCursor = 'grabbing';
+          }
+          const tileSizeFragment = this.tileSize / 100;
+          pieceObject.scaleToHeight(Math.ceil(tileSizeFragment * 90));
+          const piecePadding = Math.ceil(tileSizeFragment * 3) + 1;
+          if (this.settings.orientation == 'white') {
+            pieceObject.set('left', Math.floor(col * this.tileSize) + piecePadding);
+            pieceObject.set('top', Math.floor((7 - row) * this.tileSize) + piecePadding);
+          } else {
+            pieceObject.set('left', Math.floor((7 - col) * this.tileSize) + piecePadding);
+            pieceObject.set('top', Math.floor(row * this.tileSize) + piecePadding);
+          }
+          pieceObject.setCoords();
+          this.pieces[tile] = { tile: tile, object: pieceObject };
+          this.tiles[tile].piece = { role, color } as Piece;
+          if (this.canvas) {
+            this.canvas?.add(pieceObject);
+            pieceObject.moveTo(10);
+          }
+        });
+      }
+    }
   }
+
+  public removePiece(tile: number) {
+    const object = this.pieces[tile].object;
+    delete this.pieces[tile];
+    this.canvas?.remove(object);
+    delete this.tiles[tile].piece;
+  }
+
 
   public isValidDrop(from: number, to: number): boolean {
     if (this.olga.validGame()) {
@@ -850,18 +907,15 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   private clearBoard(): void {
-    this.pieces.forEach((piece) => {
-      this.canvas?.remove(piece.object);
-    });
-    this.pieces = [];
+    this.clearMaterial();
+    this.clearLabels();
     this.tiles.forEach((tileData) => {
       this.canvas?.remove(tileData.tile);
     });
     this.tiles = [];
-    this.labels.forEach((label) => {
-      this.canvas?.remove(label);
-    });
-    this.labels =[]
+    if(this.background) {
+      this.canvas?.remove(this.background);
+    }
     if(this.tileGroup){
       this.canvas?.remove(this.tileGroup);
     }
@@ -875,42 +929,12 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   public clearLabels(): void{
-    this.labels.forEach((value, index) =>{
-      this.tileGroup.remove(value);
-    });
-    this.labels = [];
-  }
-
-  public generateLabels(): void {
-    let label = null;
-    // let labelText = '';
-    let labels = [];
-    let targetRow = 7;
-    let targetCol = 0;
-    let incrementRow = 1;
-    let incrementCol = -1;
-    let labelText = '';
-
-    if(this.settings.orientation == 'white'){
-      for(let i = 0; i != targetCol; i += targetCol) {
-        if (this.settings.orientation == 'white') {
-          labelText = SquareNames[((7 - i) * 8) + 7][1];
-        } else {
-          labelText = SquareNames[(i * 8) + 7][1];
-        }
-        label = this.generateLabel(i, 7, labelText);
-        this.tileGroup.add(label);
-        labels.push(label);
-        label = this.generateLabel(i, 0 + 1, i.toString(), true);
-        this.tileGroup.add(label);
-        labels.push(label);
+    this.labels.forEach((value) =>{
+      if(this.tileGroup){
+        this.tileGroup.remove(value);
       }
-      
-    } else {
-
-       //label = this.generateLabel(targetRow, targetCol);
-    }
-    this.labels = labels;
+      });
+    this.labels = [];
   }
 
   private connectMouseInput(): void {
@@ -919,72 +943,67 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.canvas.on('mouse:down', this.selectPiece.bind(this));
     }
   }
-
-  private generateLabel(row: number, col: number, labelText: string, isDigit= false): fabric.Text {
-    let label = null;
-    let dark = false;
-    if (row % 2 === 0) {
-      if (col % 2 === 0) {
-        dark = false;
-      } else {
-        dark = true;
+  private createBoardObject(type: ObjectType, x: number, y: number, selectable = false, labelText = '', isDark?: boolean): fabric.Rect | fabric.Text | null {
+    let object: fabric.Object | null = null;
+    switch(type) {
+      case ObjectType.Label:{
+        object = new fabric.Text(labelText, {
+          fontSize: this.theme.labelFontSize, left: x, top: y, fontFamily: this.theme.labelFontFamily,
+          fontWeight: this.theme.labelFontWeight
+        }) as fabric.Object;
+        
+        if(isDark !== undefined && isDark !== null) {
+          object.setColor(isDark ? this.colorService.boardLabelDark.value : this.colorService.boardLabelLight.value);
+        }
+        break;
       }
-    } else {
-      // odd row 1, 3, 5, 7
-      if (col % 2 === 0) {
-        dark = true;
-      } else {
-        dark = false;
+      case ObjectType.Tile:{
+        object = new fabric.Rect({
+          width: this.tileSize,
+          height: this.tileSize,
+        });
+        if(isDark !== undefined && isDark !== null) {
+          object.setColor(isDark ? this.colorService.boardBGDark.value : this.colorService.boardBGLight.value);
+        }
+        break;
       }
     }
-    let x = 4;
-    let y = (row * this.tileSize) + 4;
-    if(isDigit) {
-      if(this.settings.orientation  == 'black') {
-        x = (col * this.tileSize) + (4 - this.theme.labelFontSize);
-      }
+    if(object) {
+      object.set('left', x);
+      object.set('top', y);
+      object.set('lockRotation', true);
+      object.set('lockScalingX', true);
+      object.set('lockScalingY', true);
+      object.set('lockUniScaling', true);
+      object.set('hasControls', false);
+      object.set('hasBorders', false);
+      object.set('selectable', false);
+      object.set('lockMovementX', !selectable);
+      object.set('lockMovementY', !selectable);
+      object.set('selectable', selectable);
+      object.setCoords(); 
     }
-    label = new fabric.Text(labelText, {
-      fontSize: this.theme.labelFontSize, left: x, top: y, fontFamily: this.theme.labelFontFamily,
-      fontWeight: this.theme.labelFontWeight
-    });
-    label.set('lockMovementX', true);
-    label.set('lockMovementY', true);
-    label.set('lockRotation', true);
-    label.set('lockScalingX', true);
-    label.set('lockScalingY', true);
-    label.set('lockUniScaling', true);
-    label.set('hasControls', false);
-    label.set('hasBorders', false);
-    label.set('selectable', false);
-    label.setColor(dark ? this.colorService.boardBGLight.value : this.colorService.boardBGDark.value);
-    label.setCoords();
-    return label;
+    return object;
   }
 
-  private generateTiles(): void {
+  private generateBoardObjects(): void {
     if (this.canvas) {
-      if (!this.theme) {
-        console.log('Cannot generate board without theme');
-        return;
-      }
       const tiles = [];
       const labels = [];
-      const padding = 1;
+      const padding = 2;
       let dark = false;
       const size = this.tileSize * 8;
       const background = new fabric.Rect({
         // position from group center
         left: 0,
         top: 0,
-        width: size + 1,
-        height: size + 1,
+        width: size,
+        height: size,
 
         stroke: 'black',
-        strokeWidth: 2,
-        fill: undefined,
+        strokeWidth: 3,
+        fill: undefined
       })
-
       background.set('lockMovementX', true);
       background.set('lockMovementY', true);
       background.set('lockRotation', true);
@@ -995,69 +1014,55 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       background.set('hasBorders', false);
       background.set('selectable', false);
       background.setCoords();
-      tiles.push(background);
-
+      this.background = background;
       for (let row = 7; row >= 0; row--) {
         for (let col = 0; col < 8; col++) {
-          // move this to clone feature, only create the tiles once.
-
-          const tile = new fabric.Rect({
-            width: this.tileSize,
-            height: this.tileSize,
-          });
-
-          tile.set('left', col * this.tileSize + padding);
-          tile.set('top', row * this.tileSize + padding);
-
-          tile.set('lockMovementX', true);
-          tile.set('lockMovementY', true);
-          tile.set('lockRotation', true);
-          tile.set('lockScalingX', true);
-          tile.set('lockScalingY', true);
-          tile.set('lockUniScaling', true);
-          tile.set('hasControls', false);
-          tile.set('hasBorders', false);
-          tile.set('selectable', false);
-          tile.setCoords();
           if (row % 2 === 0) {
             // even row 0, 2, 4, 6
             if (col % 2 === 0) {
               dark = false;
-              tile.setColor(this.theme.tileLight);
             } else {
               dark = true;
-              tile.setColor(this.theme.tileDark);
             }
           } else {
             // odd row 1, 3, 5, 7
             if (col % 2 === 0) {
               dark = true;
-              tile.setColor(this.theme.tileDark);
             } else {
               dark = false;
-              tile.setColor(this.theme.tileLight);
             }
           }
-          this.tiles.push({ tile });
-          tiles.push(tile);
-          
-          let labelText = '';
-          if (this.settings.orientation == 'white') {
-            labelText = SquareNames[((7 - row) * 8) + col][0];
-          } else {
-            labelText = SquareNames[(row * 8) + col][0];
+          const tile = this.createBoardObject(ObjectType.Tile, col * this.tileSize + padding , row * this.tileSize + padding, true,'', dark);
+          if(tile){
+            this.tiles.push({ tile });
+            tiles.push(tile);
           }
-          if (col == 0) {
-            // create new col label
-            const label = this.generateLabel(row, col, labelText);
-            labels.push(label);
-            this.labels.push(label);
-           
-          }
-          if (row == 7) {
-            const label = this.generateLabel(row, col, (col + 1).toString(), true);
-            labels.push(label);
-            this.labels.push(label);
+          if(this.showLabels) {          
+            let labelText = '';
+            let rowText = '';
+            if (this.settings.orientation == 'white') {
+              labelText = SquareNames[((7 - row) * 8) + col][0];
+              rowText = (8-row).toString();
+            } else {
+              labelText = SquareNames[(row * 8) + (7-col)][0];
+              rowText = (row + 1).toString();
+            }
+            let x = 4 + padding;
+            let y = (row * this.tileSize) + 4;
+            if (col == 0) {
+              const file = this.createBoardObject(ObjectType.Label, x, y, false, rowText, !dark);
+              if(file){
+                labels.push(file);
+                this.labels.push(file);
+              }
+            }
+            if (row == 7) {
+              const rank = this.createBoardObject(ObjectType.Label, ((this.tileSize * (col + 1)) - this.theme.labelFontSize/2) - padding, size - this.theme.labelFontSize, false, labelText, !dark);
+              if(rank){
+                labels.push(rank);
+                this.labels.push(rank);
+              }
+            }
           }
         }
       }
@@ -1080,66 +1085,23 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       tileGroup.set('selectable', false);
       tileGroup.set('originX', 'left');
       tileGroup.set('originY', 'top');
+      this.canvas.add(background);
       this.canvas.add(tileGroup);
       this.tileGroup = tileGroup;
+      background.moveTo(-40);
       tileGroup.moveTo(-30);
       this.canvas.requestRenderAll();
     }
   }
 
-  private loadPieces(): BehaviorSubject<number> {
-    const count = new BehaviorSubject<number>(0);
-    this.loadPieceImage('wK', count);
-    this.loadPieceImage('wB', count);
-    this.loadPieceImage('wQ', count);
-    this.loadPieceImage('wR', count);
-    this.loadPieceImage('wP', count);
-    this.loadPieceImage('wN', count);
-    this.loadPieceImage('bK', count);
-    this.loadPieceImage('bB', count);
-    this.loadPieceImage('bQ', count);
-    this.loadPieceImage('bR', count);
-    this.loadPieceImage('bP', count);
-    this.loadPieceImage('bN', count);
-    return count;
-  }
-
-  private generateBoard(): void {
-    this.clearBoard();
-    this.clearLabels();
-    this.generateTiles();
-
-  }
-
-  private loadPieceImage(
-    piece: string,
-    subject: BehaviorSubject<number>
-  ): void {
-    if (this.theme?.pieceSet) {
-      if (this.theme.isSpriteSheet) {
-      } else {
-        if (this.theme.fileExtension === '.svg') {
-          fabric.loadSVGFromURL(
-            this.theme.pieceSet + piece + this.theme.fileExtension,
-            (objects, options) => {
-              const obj = fabric.util.groupSVGElements(
-                objects,
-                options
-              ) as fabric.Group;
-              obj.left = -400;
-              obj.top = 0;
-              obj.moveTo(10);
-              this.pieceMap.set(piece, obj);
-              subject.next(subject.value + 1);
-            }
-          );
-        }
-      }
-    }
-  }
-
+  
   private resizeBoardObjects(size: number): void {
+    if(!this.background) {
+      return;
+    }
     this.tileSize = Math.floor(this.size / 8);
+    this.background.scaleToHeight((this.tileSize * 8) - 1); 
+    this.background.scaleToWidth((this.tileSize * 8) - 1);
     if (this.tileGroup) {
       this.tileGroup.set('top', 0);
       this.tileGroup.set('left', 0);
@@ -1240,8 +1202,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     }
   }
 
-  setLightTile(color: string): void {
-
+  public setLightTile(color: string): void {
     if (this.tiles.length != 0 && this.theme) {
       for (let index = 0; index < 64; index++) {
         const row = Math.floor(index / 8);
@@ -1271,22 +1232,22 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   }
 
-  setSize(size: number): void {
+  public setSize(size: number): void {
     if (this.canvas) {
       this.size = size;
       this.tileSize = Math.floor(size / 8);
       this.canvas.width = size;
       this.canvas.height = size;
       this.canvas.setDimensions({
-        width: size,
-        height: size,
+        width: size + 4,
+        height: size + 4,
       });
       this.resizeBoardObjects(size);
       this.canvas.requestRenderAll();
     }
   }
 
-  setInteractive(interactive: boolean): void {
+  public setInteractive(interactive: boolean): void {
     if (interactive) {
       if (this.canvas) {
       }
@@ -1296,33 +1257,30 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     }
   }
 
-  setBoardToGamePosition(): void {
+  public setBoardToPosition(position: any): void {
     this.clearMaterial();
-    if (this.olga.validGame()) {
-      const position = this.olga.getGame()?.getPosition();
-      if (position) {
-        for (let index = 0; index < 64; ++index) {
-          const squareData = position.square(SquareNames[index]);
-          // get the first and last of the role and color
-          if (squareData.length >= 2) {
-            this.addPiece(index, squareData[0], squareData[1].toUpperCase());
-          }
+    if (position) {
+      for (let index = 0; index < 64; ++index) {
+        const squareData = position.square(SquareNames[index]);
+        // get the first and last of the role and color
+        if (squareData.length >= 2) {
+          this.addPiece(index, squareData[0], squareData[1].toUpperCase());
         }
       }
     }
   }
 
-  requestRedraw(): void {
+  public requestRedraw(): void {
     this.clearBoard();
     this.generateBoard();
   }
   
-  show(): void {
+  public show(): void {
     if(this.boardCanvas) {
       this.boardCanvas.nativeElement.style.visibility = 'visible';
     }
   }
-  hide(): void {
+  public hide(): void {
     if(this.boardCanvas) {
       this.boardCanvas.nativeElement.style.visibility = 'hidden';
     }

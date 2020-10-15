@@ -1,0 +1,20 @@
+<div class="menu-container" #container>
+    <br/>
+    <h2 class="divider-text">Board Colors</h2>
+    <mat-divider [vertical]="true"></mat-divider>
+    <color-select class="color-input" title='Light Tile Color' [color]="this.colors.boardBGLight.value" variableName='--boardBGLight'></color-select>
+    <color-select class="color-input" title='Dark Tile Color' [color]="this.colors.boardBGDark.value" variableName='--boardBGDark'></color-select>
+    <color-select class="color-input" title='Light Label Color' [color]="this.colors.boardLabelLight.value" variableName='--boardLabelLight'></color-select>
+    <color-select class="color-input" title='Dark Label Color' [color]="this.colors.boardLabelDark.value" variableName='--boardLabelDark'></color-select>
+    <br/><br/>
+    <h2 class="divider-text">Game Score Colors</h2>
+    <mat-divider [vertical]="true"></mat-divider>
+    <color-select class="color-input" title='Text Color' [color]="this.colors.gsTextColor.value" variableName='--gsTextColor'></color-select>
+    <color-select class="color-input" title='Annotation Color' [color]="this.colors.gsTextColorAN.value" variableName='--gsTextColorAN'></color-select>
+    <br/><br/>
+    <h2 class="divider-text">Olga Control Colors</h2>
+    <mat-divider [vertical]="true"></mat-divider>
+    <color-select class="color-input" title='Controls Background' [color]="this.colors.csBackground.value" variableName='--csBackground'></color-select>
+    <color-select class="color-input" title='Controls Color' [color]="this.colors.csColor.value" variableName='--csColor'></color-select>
+
+</div>

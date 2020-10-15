@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, Output, ViewChild, ElementRef, ComponentFactoryResolver } from '@angular/core';
-import { GameScoreType, GameScoreItem, ChessMove } from '../../common/kokopu-engine';
+import { GameScoreType, GameScoreItem } from '../../common/kokopu-engine';
 import { OlgaService } from '../../services/olga.service';
 import { ColorService } from '../../services/colors.service';
 

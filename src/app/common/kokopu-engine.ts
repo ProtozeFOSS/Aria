@@ -1,6 +1,6 @@
 
 //@ts-ignore
-import { Game as KGame, Variation as KVariation, MoveDescriptor, Node as KNode, Position as KPosition, pgnRead, Database as KDatabase } from 'kokopu';
+import { isMoveDescriptor, Game as KGame, Variation as KVariation, MoveDescriptor, Node as KNode, Position as KPosition, pgnRead, Database as KDatabase } from 'kokopu';
 import { SquareNames } from '../canvas-chessboard/types';
 
 export class GameScoreItem {
@@ -66,23 +66,29 @@ export class ChessMove {
     promotion?: { role: string };
     castle?: {type:string, to:number, from: number};
     promoteFunction?: any;
-    static fromNode(node: KNode): ChessMove | null {
+    static fromNode(node: KNode, descriptor: MoveDescriptor = null): ChessMove | null {
         if(!node || !node._info) {
             return null;
         }
         const move = new ChessMove();
-        const mDescriptor = node._info.moveDescriptor;
-        if (mDescriptor) {
-            move.from = SquareNames.indexOf(mDescriptor.from());
-            move.to = SquareNames.indexOf(mDescriptor.to());
-            if (mDescriptor.isCapture()) {
-                move.capture = { role: mDescriptor.capturedPiece().toUpperCase(), color: mDescriptor.capturedColoredPiece()[0] };
+        if(descriptor == null) {
+            if(isMoveDescriptor(node._info.moveDescriptor)) {
+                descriptor = node._info.moveDescriptor;
+            }else {
+                descriptor = node.positionBefore().notation(node._info.moveDescriptor);
             }
-            if (mDescriptor.isCastling()) {
-                move.castle = {type: node.notation(), to: SquareNames.indexOf(mDescriptor.rookTo()), from: SquareNames.indexOf(mDescriptor.rookFrom())};
+        }
+        if (descriptor) {
+            move.from = SquareNames.indexOf(descriptor.from());
+            move.to = SquareNames.indexOf(descriptor.to());
+            if (descriptor.isCapture()) {
+                move.capture = { role: descriptor.capturedPiece().toUpperCase(), color: descriptor.capturedColoredPiece()[0] };
             }
-            if (mDescriptor.isPromotion()) {
-                move.promotion = { role: mDescriptor.promotion() };
+            if (descriptor.isCastling()) {
+                move.castle = {type: node.notation(), to: SquareNames.indexOf(descriptor.rookTo()), from: SquareNames.indexOf(descriptor.rookFrom())};
+            }
+            if (descriptor.isPromotion()) {
+                move.promotion = { role: descriptor.promotion() };
             }
             return move;
         }
@@ -148,7 +154,9 @@ export class ChessGame {
         }
         return games;
     }
-  
+    static isMoveDescriptor(move: any) : boolean {
+        return isMoveDescriptor(move);
+    }
     protected getLastNode(): KNode {
         let node = this.currentNode;
         while (node && node.next()) {
@@ -173,6 +181,16 @@ export class ChessGame {
         this.olga.gameScoreItemsChanged(this.generateGameScore());
     }
 
+    public getMoveNotation(node: KNode): string {
+        if(isMoveDescriptor(node._info.moveDescriptor)) {
+            return node.notation();
+        }
+        const positionBefore = node.positionBefore();
+        if( positionBefore) {
+            return node._info.moveDescriptor
+        }
+        return '';
+    }
     public onVariant(): boolean {
         this.scorePath.forEach((traversal:Traversal)=>{
             if(traversal.down > 0) {
@@ -271,6 +289,13 @@ export class ChessGame {
         }
         return items;
     }
+    setPGN(pgn: string) : void {
+        const games = ChessGame.parsePGN(this.olga, pgn);
+        if(games.length) {
+            const game = games[0];
+            this.setGame(game);
+        }
+    }
 
     setGame(game: KGame): void {
         this.game = game;
@@ -310,7 +335,7 @@ export class ChessGame {
         }
         return false;
     }
-    public unPlay(previous: KNode): boolean {
+    public unPlay(current: KNode, previous: KNode): boolean {
         if(previous) {
             this.position = previous.position();
             this.currentNode = previous;
@@ -324,12 +349,12 @@ export class ChessGame {
     public createVariation(move: MoveDescriptor | string): boolean {
         if(this.currentNode){
             const variationsBefore = this.currentNode.variations();
-            this.currentNode = this.currentNode.play(move);
+            const variation = this.currentNode.addVariation(false);
+            this.currentNode = variation.play(move);
             this.position = this.currentNode.position();
-            this.olga.updateStatus(this.position.turn(), this.currentNode);
             this.scorePath.push({right:this.currentIndex, down: variationsBefore.length + 1});
             this.currentIndex = 0;
-            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            this.olga.updateStatus(this.position.turn(), this.currentNode, move);
             // tell it to restore gamescore
             this.olga.gameScoreItemsChanged(this.generateGameScore());
             this.olga.incrementGameScoreSelection();

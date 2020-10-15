@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 //@ts-ignore
 import { Node as KNode } from 'kokopu';
 import { OlgaService } from '../services/olga.service';
+import { ChessMove } from '../common/kokopu-engine';
 @Component({
   selector: 'olga-status',
   templateUrl: './olga-status.component.html',
@@ -11,7 +12,7 @@ import { OlgaService } from '../services/olga.service';
 })
 export class OlgaStatusComponent implements OnInit {
   readonly status = new BehaviorSubject<string>('White to move.');
-  constructor(olga: OlgaService) {
+  constructor(public olga: OlgaService) {
     olga.attachStatus(this);
   }
 
@@ -21,15 +22,15 @@ export class OlgaStatusComponent implements OnInit {
   openEngine(): void {
 
   }
-  updateStatus(turn: string, last?: KNode) {
+  updateStatus(turn: string, last?: KNode, move?: ChessMove) {
     let message = 'White';
-    let move = '';
     if (turn === 'b') {
       message = 'Black';
     }
     message += ' to move. ';
     if (last) {
-      message += 'Last: ' + last.fullMoveNumber() + (turn === 'b' ? '.' : '..') + move + last.notation();
+      let notation = this.olga.getMoveNotation(last);
+      message += 'Last: ' + last.fullMoveNumber() + (turn === 'b' ? '.' : '..') +  notation;
     }
     this.status.next(message);
   }

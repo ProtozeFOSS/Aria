@@ -1,7 +1,7 @@
 <div #olgaContainer id="{{ this.olga.UUID }}-olga-container" class="olga-container" (touchmove)="touchMoved($event)"
   (mousemove)="mouseMoved($event)">
   <canvas-chessboard  (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent
-    id="{{this.olga.UUID}}-ccb" boardID="this.olga.UUID" [theme]="this.colorService.boardTheme()">
+    id="{{this.olga.UUID}}-ccb" boardID="this.olga.UUID" [theme]="this.colorService.boardTheme()" [showLabels]="this.olga.showLabels.value">
   </canvas-chessboard>
   <olga-title></olga-title>
   <app-game-score-ux id="app-gamescore-{{this.olga.UUID}}" (contextmenu)="ignoreEvent($event)" >
@@ -16,5 +16,5 @@
     Set Fen
   </button> -->
   <olga-status id="olga-status-{{this.olga.UUID}}"></olga-status>
-  <settings-menu #settingsMenuComponent id="settings-menu-{{this.olga.UUID}}"  (click)="layout.closeSettings()"></settings-menu>
+  <olga-menu id="olga-menu-{{this.olga.UUID}}" (click)="layout.closeSettings()"></olga-menu>
 </div>

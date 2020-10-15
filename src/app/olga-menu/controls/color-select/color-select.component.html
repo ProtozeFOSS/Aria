@@ -1,0 +1,6 @@
+<div class="control-container">
+    <input #colorHandle type="color" id="color-handle" class="color-input" (input)="updateColor(colorHandle.value)" [value]="color"
+    (blur)="updateColor(colorHandle.value)" />
+    <div class="rgb-row"><label class="red">RED:&nbsp;&nbsp;{{rValue}}</label><label class="green">GREEN:&nbsp;&nbsp;{{gValue}}</label><label class="blue">BLUE:&nbsp;&nbsp;{{bValue}}</label></div>
+    <div class="title-row">{{title}}</div>
+</div>
