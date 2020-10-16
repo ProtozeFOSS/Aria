@@ -42,9 +42,10 @@ mat-divider {
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
+  background: $gsListBackground;
 }
 .gamescore-container {
-  background: $bgContainer;
+  background: $gsBackground;
   height: 100%;
   border: 2px black solid;
   overflow: hidden;

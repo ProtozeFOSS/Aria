@@ -14,7 +14,7 @@ import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
 export class OlgaService {
   @Output() readonly showingPly = new BehaviorSubject<boolean>(true);
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
-  @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(1200);
+  @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(300);
   protected autoIntervalID = -1;
   protected timeLeft = 300;
   public UUID: string = '';
@@ -324,12 +324,7 @@ export class OlgaService {
     return false;
   }
   
-  public setPGN(pgn: string):void {
-    if(this._game) {
-      this._game.setPGN(pgn);
-    }
-  }
-
+  
   public resetEngine(): void {
     if(this._game) {
       this._game.resetEngine();

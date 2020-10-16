@@ -9,12 +9,20 @@
     <br/><br/>
     <h2 class="divider-text">Game Score Colors</h2>
     <mat-divider [vertical]="true"></mat-divider>
-    <color-select class="color-input" title='Text Color' [color]="this.colors.gsTextColor.value" variableName='--gsTextColor'></color-select>
+    <color-select class="color-input" title='Container Text Color' [color]="this.colors.gsTextColor.value" variableName='--gsTextColor'></color-select>
+    <color-select class="color-input" title='Contianer Background Color' [color]="this.colors.gsBackground.value" variableName='--gsBackground'></color-select>
     <color-select class="color-input" title='Annotation Color' [color]="this.colors.gsTextColorAN.value" variableName='--gsTextColorAN'></color-select>
+    <color-select class="color-input" title='Annotation Background Color' [color]="this.colors.gsBackgroundAN.value" variableName='--gsBackgroundAN'></color-select>
+    <color-select class="color-input" title='List Background Color' [color]="this.colors.gsListBackground.value" variableName='--gsListBackground'></color-select>
+    <br/><br/>
+    <h2 class="divider-text">Game Score Highlight Colors</h2>
+    <mat-divider [vertical]="true"></mat-divider>
+    <color-select class="color-input" title='Highlight Color' [color]="this.colors.gsTextColorHG.value" variableName='--gsTextColorHG'></color-select>
+    <color-select class="color-input" title='Highlight Background Color' [color]="this.colors.gsBackgroundHG.value" variableName='--gsBackgroundHG'></color-select>
+    <color-select class="color-input" title='Highlight Annotation Color' [color]="this.colors.gsBackgroundHG.value" variableName='--gsBackgroundHG'></color-select>
     <br/><br/>
     <h2 class="divider-text">Olga Control Colors</h2>
     <mat-divider [vertical]="true"></mat-divider>
     <color-select class="color-input" title='Controls Background' [color]="this.colors.csBackground.value" variableName='--csBackground'></color-select>
     <color-select class="color-input" title='Controls Color' [color]="this.colors.csColor.value" variableName='--csColor'></color-select>
-
 </div>

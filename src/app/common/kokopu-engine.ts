@@ -289,13 +289,6 @@ export class ChessGame {
         }
         return items;
     }
-    setPGN(pgn: string) : void {
-        const games = ChessGame.parsePGN(this.olga, pgn);
-        if(games.length) {
-            const game = games[0];
-            this.setGame(game);
-        }
-    }
 
     setGame(game: KGame): void {
         this.game = game;

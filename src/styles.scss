@@ -39,10 +39,13 @@ $item: var(--item);
 $item-contrast: var(--item-contrast);
 $item-bg: var(--item-bg);
 
+/******************* Menu *****************************************************/
+$meBackground: var(--meBackground);
 
 /******************* Game Score Container Variables ***************************/
 $gsTextColor: var(--gsTextColor); // Text color for game score
 $gsBackground: var(--gsBackground); // background of Containers
+$gsListBackground: var(--gsListBackground); // list background of game score
 $gsBorder: var(--gsBorder); // background of Menus
 $gsTextSize: var(--gsTextSize); // background of Menus
 $gsFontFamily: var(--gsFontFamily); // score font
@@ -61,6 +64,7 @@ $gsTextSizeMB: var(--gsTextSizeMB); // background of Menus
 
 /******************* Game Score Highlight Variables ***************************/
 $gsTextColorHG: var(--gsTextColorHG); // Text color for highlight
+$gsAnnotationColorHG: var(--gsAnnotationColorHG); // Annotation/Comment color for highlight
 $gsBackgroundHG: var(--gsBackgroundHG); // background for highlight
 $gsBorderHG: var(--gsBorderHG); // border for highlight
 

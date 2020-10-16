@@ -92,7 +92,7 @@ export class MainMenuComponent implements OnInit, AfterViewInit {
       case MenuType.PgnMenu: {
         this.index = 1;
         if(this.pgnMenu) {
-          this.pgnMenu.resize(this.size.width, this.size.height);
+          //this.pgnMenu.resize(this.size.width, this.size.height);
           this.pgnMenu.show()
         }
         break;
@@ -208,7 +208,7 @@ export class MainMenuComponent implements OnInit, AfterViewInit {
         default: {menu = null;}
       }
       if(menu) {
-        menu.resize(this.size.width, this.size.height);
+        //menu.resize(this.size.width, this.size.height);
         menu.show();
       }
     }

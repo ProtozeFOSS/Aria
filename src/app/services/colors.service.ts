@@ -24,91 +24,55 @@ export class ColorService {
   @Input() readonly textColorContext = 'white';
   @Input() readonly borderContext = 'solid black 1px';
   @Input() readonly overlayContextBackground = 'rgb(199,199,199)';
-  @Input() readonly overlayContextBackgroundGradient =
-    'linear-gradient(153deg, rgba(199,199,199,0.9051995798319328) 41%, rgba(249,249,249,0.8911939775910365) 83%)';
+  @Input() readonly overlayContextBackgroundGradient='linear-gradient(153deg, rgba(199,199,199,0.9051995798319328) 41%, rgba(249,249,249,0.8911939775910365) 83%)';
 
   // Control Elements (Buttons, sliders, number wheels, toggle switches)
   @Input() @Output() readonly fgItem = '#00ffffff';
   @Input() @Output() readonly fgItemContrast = '#e25400';
 
   // Board Colors
-  @Input() @Output() readonly boardBGDark = new BehaviorSubject<string>(
-    '#81388f'
-  );
-  @Input() @Output() readonly boardBGLight = new BehaviorSubject<string>(
-    '#e0fffb'
-  );
-  @Input() @Output() readonly boardLabelDark = new BehaviorSubject<string>(
-    '#81388f'
-  );
-  @Input() @Output() readonly boardLabelLight = new BehaviorSubject<string>(
-    '#e0fffb'
-  );
-  @Input() @Output() readonly boardPieceSet = new BehaviorSubject<string>(
-    '../../assets/images/pieces/merida/'
-  );
+  @Input() @Output() readonly boardBGDark = new BehaviorSubject<string>('#81388f');
+  @Input() @Output() readonly boardBGLight = new BehaviorSubject<string>('#e0fffb');
+  @Input() @Output() readonly boardLabelDark = new BehaviorSubject<string>('#81388f');
+  @Input() @Output() readonly boardLabelLight = new BehaviorSubject<string>('#e0fffb');
+  @Input() @Output() readonly boardPieceSet = new BehaviorSubject<string>('../../assets/images/pieces/merida/');
+
+
+  // Menu
+  @Input() @Output() readonly meBackground = new BehaviorSubject<string>('#353535');
+  @Input() @Output() readonly meTextColor = new BehaviorSubject<string>('white');
 
   // Game Score Variables
-  @Input() @Output() readonly gsTextColor = new BehaviorSubject<string>(
-    'white'
-  );
-  @Input() @Output() readonly gsBackground = new BehaviorSubject<string>(
-    '#353535'
-  );
+  @Input() @Output() readonly gsTextColor = new BehaviorSubject<string>('white');
+  @Input() @Output() readonly gsBackground = new BehaviorSubject<string>('#353535');
+  @Input() @Output() readonly gsListBackground = new BehaviorSubject<string>('#353535');
   @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('');
   @Input() @Output() readonly gsTextSize = new BehaviorSubject<string>('16px');
 
   // Game Score Highlight Colors
-  @Input() @Output() readonly gsTextColorHG = new BehaviorSubject<string>(
-    'orange'
-  );
-  @Input() @Output() readonly gsBackgroundHG = new BehaviorSubject<string>(
-    '#353535'
-  );
-  @Input() @Output() readonly gsBorderHG = new BehaviorSubject<string>(
-    ''
-  );
+  @Input() @Output() readonly gsTextColorHG = new BehaviorSubject<string>('orange');
+  @Input() @Output() readonly gsAnnotationColorHG = new BehaviorSubject<string>('lightcoral');
+  @Input() @Output() readonly gsBackgroundHG = new BehaviorSubject<string>('#353535');
+  @Input() @Output() readonly gsBorderHG = new BehaviorSubject<string>('');
 
   // Game Score Annotation Colors
-  @Input() @Output() readonly gsTextColorAN = new BehaviorSubject<string>(
-    '#AED6F1'
-  );
-  @Input() @Output() readonly gsBackgroundAN = new BehaviorSubject<string>(
-    '#333333'
-  );
-  @Input() @Output() readonly gsBorderAN = new BehaviorSubject<string>(
-    ''
-  );
+  @Input() @Output() readonly gsTextColorAN = new BehaviorSubject<string>('#AED6F1');
+  @Input() @Output() readonly gsBackgroundAN = new BehaviorSubject<string>('#333333');
+  @Input() @Output() readonly gsBorderAN = new BehaviorSubject<string>('');
   @Input() @Output() readonly gsTextSizeAN = new BehaviorSubject<string>('16px');
 
   // Game Score Variation Colors
-  @Input() @Output() readonly gsTextColorVA = new BehaviorSubject<string>(
-    'white'
-  );
-  @Input() @Output() readonly gsBackgroundVA = new BehaviorSubject<string>(
-    '#353535'
-  );
-  @Input() @Output() readonly gsBorderVA = new BehaviorSubject<string>(
-    'black 1px solid'
-  );
+  @Input() @Output() readonly gsTextColorVA = new BehaviorSubject<string>('white');
+  @Input() @Output() readonly gsBackgroundVA = new BehaviorSubject<string>('#353535');
+  @Input() @Output() readonly gsBorderVA = new BehaviorSubject<string>('black 1px solid');
 
   // Game Score Ply Count
-  @Input() @Output() readonly gsTextColorPC = new BehaviorSubject<string>(
-    'white'
-  );
-  @Input() @Output() readonly gsBackgroundPC = new BehaviorSubject<string>(
-    '#353535'
-  );
-  @Input() @Output() readonly gsBorderPC = new BehaviorSubject<string>(
-    ''
-  );
+  @Input() @Output() readonly gsTextColorPC = new BehaviorSubject<string>('white');
+  @Input() @Output() readonly gsBackgroundPC = new BehaviorSubject<string>('#353535');
+  @Input() @Output() readonly gsBorderPC = new BehaviorSubject<string>('');
 
-  @Input() @Output() readonly csBackground = new BehaviorSubject<string>(
-    '#81388f'
-  );
-  @Input() @Output() readonly csColor = new BehaviorSubject<string>(
-    '#e0fffb'
-  );
+  @Input() @Output() readonly csBackground = new BehaviorSubject<string>('#81388f');
+  @Input() @Output() readonly csColor = new BehaviorSubject<string>('#e0fffb');
 
 
   @Output() propertyMap = new Map<string, BehaviorSubject<string>>();
@@ -116,6 +80,7 @@ export class ColorService {
 
   // Title Colors
   constructor() {
+    // Game Score
     this.propertyMap.set( '--gsTextColorPC', this.gsTextColorPC);
     this.propertyMap.set('--gsTextColor', this.gsTextColor);
     this.propertyMap.set('--gsBackgroundPC', this.gsBackgroundPC);
@@ -128,27 +93,22 @@ export class ColorService {
     this.propertyMap.set('--gsBorderAN', this.gsBorderAN);
     this.propertyMap.set('--gsTextColorHG', this.gsTextColorHG);
     this.propertyMap.set('--gsBackgroundHG', this.gsBackgroundHG);
+    this.propertyMap.set('--gsBackground', this.gsBackground);
+    this.propertyMap.set('--gsListBackground', this.gsListBackground);
     this.propertyMap.set('--gsBorderHG', this.gsBorderHG);
     this.propertyMap.set('--gsTextColorHG', this.gsTextColorHG);
     this.propertyMap.set('--gsBackgroundHG', this.gsBackgroundHG);
+    this.propertyMap.set('--gsAnnotationColorHG', this.gsAnnotationColorHG);
+    // Menu
+    this.propertyMap.set('--meBackground', this.meBackground);
+    // Board
     this.propertyMap.set('--boardLabelDark', this.boardLabelDark);
     this.propertyMap.set('--boardLabelLight', this.boardLabelLight);
     this.propertyMap.set('--boardBGDark', this.boardBGDark);
     this.propertyMap.set('--boardBGLight', this.boardBGLight);
+    // Controls
     this.propertyMap.set('--csBackground', this.csBackground);
     this.propertyMap.set('--csColor', this.csColor);
-    this.boardBGDark.subscribe((dark)=>{
-      document.documentElement.style.setProperty(
-        '--boardBGDark',
-        dark
-      );
-    });
-    this.boardBGLight.subscribe((light)=>{
-      document.documentElement.style.setProperty(
-        '--boardBGLight',
-        light
-      );
-    });
   }
   public setOlga(olga: any) : void {
     this.olga = olga;

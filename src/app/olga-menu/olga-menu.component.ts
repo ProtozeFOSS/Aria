@@ -42,6 +42,9 @@ export class OlgaMenuComponent implements OnInit, AfterViewInit {
     if(this.closeButton && this.overlay) {
       this.closeButton.style.visibility = 'visible';
       this.overlay.style.visibility = 'visible';
+      document.body.style.position = 'fixed';
+      document.body.style.top = '-' + window.scrollY + 'px';
+      document.body.style.overflowY = 'hidden';
     }
     if(type == MenuType.GameVariation) {
       return;
@@ -62,10 +65,14 @@ export class OlgaMenuComponent implements OnInit, AfterViewInit {
     if(this.closeButton && this.overlay) {
       this.closeButton.style.visibility = 'hidden';
       this.overlay.style.visibility = 'hidden';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.overflowY = 'auto';
     }
     if(this.settingsMenu) {
       this.settingsMenu.close();
     }
+    this.layout.resizeLayout();
   }
 
 }

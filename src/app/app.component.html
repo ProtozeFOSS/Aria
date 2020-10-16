@@ -3,18 +3,10 @@
   <canvas-chessboard  (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent
     id="{{this.olga.UUID}}-ccb" boardID="this.olga.UUID" [theme]="this.colorService.boardTheme()" [showLabels]="this.olga.showLabels.value">
   </canvas-chessboard>
-  <olga-title></olga-title>
-  <app-game-score-ux id="app-gamescore-{{this.olga.UUID}}" (contextmenu)="ignoreEvent($event)" >
-  </app-game-score-ux>
+  <!-- <olga-title></olga-title> -->
+  <olga-score id="olga-score-{{this.olga.UUID}}" (contextmenu)="ignoreEvent($event)" >
+  </olga-score>
   <olga-controls id="olga-controls-{{this.olga.UUID}}"></olga-controls>
-  <!-- <app-gamescore-settings #gameScore></app-gamescore-settings>
-  <button mat-button class="fenbutton" (click)="
-      olgaBoard.setFen(
-        'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2'
-      )
-    ">
-    Set Fen
-  </button> -->
   <olga-status id="olga-status-{{this.olga.UUID}}"></olga-status>
   <olga-menu id="olga-menu-{{this.olga.UUID}}" (click)="layout.closeSettings()"></olga-menu>
 </div>

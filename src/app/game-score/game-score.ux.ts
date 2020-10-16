@@ -27,7 +27,7 @@ export enum ScoreViewType {
 
 
 @Component({
-  selector: 'app-game-score-ux',
+  selector: 'olga-score',
   templateUrl: './game-score.ux.html',
   styleUrls: ['./game-score.ux.scss'],
 })
@@ -88,11 +88,13 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   resizeScore(): void {
+    this.olga.toggleAutoPlay();
     if (this.scoreWidth) {
       this.columnCount = Math.floor(this.scoreWidth / this.maxPlySize);
     } else {
       this.columnCount = 3;
     }
+    this.olga.toggleAutoPlay();
   }
 
   openItemMenu(event: MouseEvent, item: GameScoreItemComponent): void {

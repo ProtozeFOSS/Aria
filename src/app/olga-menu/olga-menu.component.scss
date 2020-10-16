@@ -12,7 +12,7 @@
 }
 
 
-general-menu{
+main-menu{
     position: absolute;
     top: 0px;
     bottom:0px;
@@ -20,6 +20,7 @@ general-menu{
     right:0px;
     background: #100c0ce3;
     z-index: 1000;
+    overflow-y: auto;
     visibility: hidden;
 }
 score-item-menu {
@@ -35,8 +36,8 @@ score-item-menu {
 
 .close-button{
     position: absolute;
-    right: 2px;
-    top: 2px;
+    right: 6px;
+    top: 6px;
     color: white;
     background-color: $boardBGDark;
     border-radius:4px;
