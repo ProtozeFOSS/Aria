@@ -124,11 +124,6 @@ export class ColorService {
         color
       );
     }
-    // if(name.indexOf('board') >= 0) {
-    //   if(this.olga && this.olga.reRenderBoard) {
-    //     this.olga.reRenderBoard();
-    //   }
-    // }
   }
 
   boardTheme(): BoardTheme {
@@ -139,15 +134,35 @@ export class ColorService {
     );
   }
 
-  setDarkColorPalette(): void { }
-
-  setLightColorPalette(): void { }
-
-  setStoredColorPalette(): void {
-    // 1.) Read User color palette sent from CG.com
-    // 2.) Look for a cookie on disk (load from disk)
-    // 3.) User default CSS Styled color palette
+  public settings(): object {
+    let settings = {};
+    this.propertyMap.forEach((behavior, key) => {
+        // @ts-ignore
+        settings[key] = behavior.value;
+    });
+    return settings;
   }
+
+  public setSettings(settings: object) : void {
+   for(let key in settings){
+      if(this.propertyMap.has(key)) {
+        const subject = this.propertyMap.get(key);
+        if(subject) {
+          // @ts-ignore
+          subject.next(settings[key]);
+        }
+      }      
+    }
+    this.initializeColorPalette();
+  }
+
+  setDarkColorPalette(): void {
+    // Add hardcoded chessgames dark color pallete
+   }
+
+  setLightColorPalette(): void {
+    // Add hardcoded chessgames dark color pallete
+   }
 
   initializeColorPalette(): void {
     // Main Elements

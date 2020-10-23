@@ -24,8 +24,6 @@ export class GamescoreMenuComponent implements OnInit, AfterViewInit {
   }
   toggleFont(): void {
     this.olga.figurineNotation.next(!this.olga.figurineNotation.value);
-    console.log('Figurine Font:');
-    console.log(this.olga.figurineNotation.value);
   }
   hide():void {
     if(this.olga) {

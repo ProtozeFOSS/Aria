@@ -1,0 +1,48 @@
+.consent-bar{
+    position: absolute;
+    displaY:block;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    border-radius: 2px;
+    height: auto;
+    background: black;
+    padding-top: 4px;
+    color:white;
+    z-index:1001;
+    line-height: 48px;
+    visibility: hidden;
+}
+
+.content-text{
+    left:6px;
+    color:white;
+    background:transparent;
+    font-size: 16px;
+    float:left;
+    margin-left: 4px;
+    text-align:center;
+}
+
+.consent-refuse{
+    margin-right: 16px;
+    height: 42px;
+    background:transparent;
+    font-size:16px;
+    font-weight:bold;
+    color:white;
+    border:none;
+    float:right;
+}
+
+.consent-accept{
+    float:right;
+    margin-right: 8px;
+    height: 42px;
+    width: auto;
+    font-size:16px;
+    font-weight:bold;
+    background: rgb(199, 80, 1);
+    color:black;
+    border-radius: 8px;
+}

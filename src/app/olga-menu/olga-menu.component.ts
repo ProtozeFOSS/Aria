@@ -73,6 +73,7 @@ export class OlgaMenuComponent implements OnInit, AfterViewInit {
       this.settingsMenu.close();
     }
     this.layout.resizeLayout();
+    this.olga.saveSettings();
   }
 
 }

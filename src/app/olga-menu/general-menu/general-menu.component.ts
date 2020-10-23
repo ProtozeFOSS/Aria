@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ColorService } from '../../services/colors.service';
+import { OlgaService } from '../../services/olga.service';
 
 @Component({
   selector: 'general-menu',
@@ -8,7 +9,7 @@ import { ColorService } from '../../services/colors.service';
 })
 export class GeneralMenuComponent implements OnInit {
 
-  constructor(public colors: ColorService) { }
+  constructor(public olga: OlgaService, public colors: ColorService) { }
   @ViewChild('container') container: ElementRef | null = null;
 
   ngOnInit(): void {

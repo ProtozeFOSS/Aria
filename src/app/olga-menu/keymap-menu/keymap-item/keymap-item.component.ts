@@ -16,7 +16,6 @@ export class KeymapItemComponent implements OnInit, AfterViewInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log('Icon ' + this.icon);
   }
 
   ngAfterViewInit(): void {

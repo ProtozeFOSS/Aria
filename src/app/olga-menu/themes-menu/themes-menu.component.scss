@@ -2,12 +2,11 @@
 
 .menu-container{
   position:absolute;
-  margin-bottom: 4px;
-  margin-top:0px;
-  margin-left:10px;
-  margin-right: 0px;
+  height:100%;
   min-width: 240px;
+  overflow-x: hidden;
   overflow-y: auto;
+  clip:auto;
 }
 
 .inner-text{

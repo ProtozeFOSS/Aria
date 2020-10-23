@@ -6,6 +6,7 @@ import { ColorService } from '../services/colors.service';
 import { OlgaService } from '../services/olga.service';
 import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames, Color } from './types';
 
+export type Coordinate = {x: number, y: number};
 
 enum ObjectType {
   Tile = 111,
@@ -1171,6 +1172,17 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.queenButton?.moveTo(510);
       this.queenButton?.setCoords();
     }
+  }
+  
+  public getPieceAnimation(): Coordinate {
+    let x = 0;
+    let y = 0;
+
+    return {x, y} as Coordinate;
+  }
+
+  public updatePieceAnimation(x: number, y: number):void {
+
   }
 
   setDarkTile(color: string): void {

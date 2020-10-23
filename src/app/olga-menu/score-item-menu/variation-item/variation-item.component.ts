@@ -17,7 +17,6 @@ export class VariationItemComponent implements OnInit, AfterViewInit {
     if(this.data) {
       const node = this.data.first();
       this.score = node ? node.notation() : '';
-      console.log('initializing variation item component for ' + this.score);
     }
   }
 
@@ -25,7 +24,6 @@ export class VariationItemComponent implements OnInit, AfterViewInit {
     if(this.data) {
       const node = this.data.first();
       if(node) {
-        console.log('Setting the variation board to');
         window.setTimeout(()=>{
           if(this.board) {
             this.board.setBoardToPosition(node.position());

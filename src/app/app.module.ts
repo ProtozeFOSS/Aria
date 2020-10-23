@@ -39,6 +39,9 @@ import { LayoutModeSelectComponent } from './olga-menu/controls/layout-mode-sele
 import { ColorSelectComponent } from './olga-menu/controls/color-select/color-select.component';
 import { ThemesMenuComponent } from './olga-menu/themes-menu/themes-menu.component';
 import { PgnMenuComponent } from './olga-menu/pgn-menu/pgn-menu.component';
+import { CookieConsentComponent } from './cookie-consent/cookie-consent.component';
+import { ToggleSelectComponent } from './olga-menu/controls/toggle-select/toggle-select.component';
+import { OlgaHeaderComponent } from './olga-header/olga-header.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +67,10 @@ import { PgnMenuComponent } from './olga-menu/pgn-menu/pgn-menu.component';
     LayoutModeSelectComponent,
     ColorSelectComponent,
     ThemesMenuComponent,
-    PgnMenuComponent
+    PgnMenuComponent,
+    CookieConsentComponent,
+    ToggleSelectComponent,
+    OlgaHeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +87,7 @@ import { PgnMenuComponent } from './olga-menu/pgn-menu/pgn-menu.component';
     MatSlideToggleModule,
     MatTabsModule,
   ],
-  providers: [LayoutService, ColorService, OlgaService],
+  providers: [LayoutService, ColorService, OlgaService, Clipboard],
   bootstrap: [Olga],
 })
 export class AppModule { }

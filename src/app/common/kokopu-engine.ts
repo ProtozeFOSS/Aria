@@ -244,6 +244,37 @@ export class ChessGame {
         return items;
     }
 
+    public generateHeaderData(): Map<string, string> {
+        let map = new Map<string, string>();
+        if(this.game) {
+            map.set('Event', this.game.event());
+            const date = this.game.date();
+            if(date) {
+                let dateString = '';
+                if(date.month) {
+                    dateString += date.month;
+                }
+                if(date.year) {
+                    if(dateString.length > 0) {
+                        dateString += ' of ';
+                    }
+                    dateString += date.year;
+                }            
+                map.set('Event Date', dateString);
+            }
+            map.set('White', this.game.playerName('w'));
+            map.set('Black', this.game.playerName('b'));
+            map.set('White Elo', this.game.playerElo('w'));
+            map.set('Black Elo', this.game.playerElo('b'));
+            let variant = this.game.variant();
+            if(variant === 'regular') {
+                variant = "Classical Chess";
+            }
+            map.set('Variant', variant);
+        }
+        return map;
+    }
+
     public generateGameScore(): GameScoreItem[] {
         let items = Array<GameScoreItem>();
         let gItem = null;

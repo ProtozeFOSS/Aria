@@ -13,6 +13,8 @@ import { LayoutService } from './services/layout.service';
 import { OlgaService } from './services/olga.service';
 import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
 import { OlgaMenuComponent } from './olga-menu/olga-menu.component';
+import { CookieConsentComponent } from './cookie-consent/cookie-consent.component';
+import { OlgaHeaderComponent } from './olga-header/olga-header.component';
 
 @Component({
   selector: 'olga',
@@ -31,6 +33,10 @@ export class Olga implements AfterViewInit {
   menuComponent: OlgaMenuComponent | null = null;
   @ViewChild(OlgaControlsComponent)
   controlsComponent: OlgaControlsComponent | null = null;
+  @ViewChild(CookieConsentComponent)
+  cookiesComponent: CookieConsentComponent | null = null;
+  @ViewChild(OlgaHeaderComponent)
+  headerComponent: OlgaHeaderComponent | null = null;
   @Input() pgnString = '';
   @Output() gameScoreWidth: number | null = 389;
   @Output() oldWidth: number | null = 0;
@@ -38,7 +44,7 @@ export class Olga implements AfterViewInit {
   protected doneResizingScore = false;
   constructor(
     public olga: OlgaService,
-    public colorService: ColorService,
+    public colors: ColorService,
     public layout: LayoutService,
   ) {
     const date = new Date();
@@ -59,9 +65,10 @@ export class Olga implements AfterViewInit {
     this.layout.boardElement = document.getElementById(this.olga.UUID + '-ccb');
     this.layout.controlsElement = document.getElementById('olga-controls-' + this.olga.UUID);
     this.layout.statusElement = document.getElementById('olga-status-' + this.olga.UUID);
-    this.colorService.initializeColorPalette();
-    this.colorService.setOlga(this.olga);
-    this.colorService.boardBGDark.subscribe((bgDark) => {
+    this.layout.headerElement = document.getElementById('olga-header-' + this.olga.UUID);
+    this.colors.initializeColorPalette();
+    this.colors.setOlga(this.olga);
+    this.colors.boardBGDark.subscribe((bgDark) => {
       this.canvasBoardComponent?.setDarkTile(bgDark);
     })
     if (this.canvasBoardComponent) {
@@ -80,12 +87,22 @@ export class Olga implements AfterViewInit {
       this.olga.attachBoard(this.canvasBoardComponent);
     }
 
-    this.colorService.boardBGLight.subscribe((light) => {
+    if(this.cookiesComponent) {
+      this.olga.attachCookiesComponent(this.cookiesComponent);
+    }
+    if(this.headerComponent) {
+      this.olga.attachHeader(this.headerComponent);
+    }
+
+    this.olga.attachOlga(this);
+
+
+    this.colors.boardBGLight.subscribe((light) => {
       if (this.canvasBoardComponent) {
         this.canvasBoardComponent.setLightTile(light);
       }
     });
-    this.colorService.boardBGDark.subscribe((dark) => {
+    this.colors.boardBGDark.subscribe((dark) => {
       if (this.canvasBoardComponent) {
         this.canvasBoardComponent.setDarkTile(dark);
       }
@@ -96,6 +113,7 @@ export class Olga implements AfterViewInit {
     }
     window.onkeydown = this.keyEvent.bind(this);
     this.layout.initializeLayout(this);
+    window.setTimeout(()=>{this.olga.loadSettings();},1);
   }
   mouseMoved(event: MouseEvent): void {
     if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
@@ -103,6 +121,39 @@ export class Olga implements AfterViewInit {
       if (event.buttons === 0) {
         this.gameScoreComponent.resizing = false;
       }
+    }
+  }
+
+  public autoPlayActive(): boolean {
+    if(this.controlsComponent) {
+      return this.controlsComponent.playing;
+    }
+    return false;
+  }
+
+  public applyJsonSettings(settings: object) : boolean {
+    if(settings) {
+      // @ts-ignore
+      if(settings['colors']) {
+        // @ts-ignore
+        this.colors.setSettings(settings['colors']);
+      }
+    }
+    return false;
+  }
+
+  public getJsonSettings(): string {
+    const colorSettings = this.colors.settings();
+    const layoutSettings = this.layout.settings();
+    const olgaSettings = this.olga.settings();
+    return JSON.stringify({colors: colorSettings, layout: layoutSettings, olga:olgaSettings});
+  }
+
+
+
+  public toggleAutoPlay(): void {
+    if(this.olga) {
+      this.olga.toggleAutoPlay();
     }
   }
 
@@ -115,9 +166,6 @@ export class Olga implements AfterViewInit {
     this.keymap.set('ArrowLeft', ()=>{this.olga.previous();});
     this.keymap.set('KeyI', ()=>{this.olga.rotateBoardOrientation();});
   }
-
-
-
 
   keyEvent(event: any): void {
     console.log(event);

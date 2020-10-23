@@ -1,1 +1,6 @@
-<p>toggle-switch works!</p>
+<div class="switch" (click)="toggle()">
+  <div class="off">OFF</div>
+  <div [ngClass]="toggled ? 'bar-selected':'bar'"></div>
+  <div [ngClass]="toggled ? 'ball-selected':'ball'"></div>
+  <div class="on">ON</div>
+</div>

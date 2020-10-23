@@ -22,25 +22,17 @@ h3{
 
 .menu-content{
     position:absolute;
-    top:83px;
-    width:calc(100% - 12px);
-    height:calc(100% - 91px);
-    left: 4px;
-    overflow-x:none;
+    top:88px;
+    width:100%;
+    height:calc(100% - 88px);
+    margin-bottom:1px;
+    margin-right: 1px;
+    left: 0px;
+    overflow-x:hidden;
     overflow-y:auto;
     visibility: hidden;
 }
 
-board-menu{
-    position:absolute;
-    top:83px;
-    width:calc(100% - 12px);
-    height:calc(100% - 91px);
-    left: 4px;
-    overflow-x:none;
-    overflow-y:auto;
-    visibility: hidden;
-}
 
 
 .settings{

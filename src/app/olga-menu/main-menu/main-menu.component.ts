@@ -92,15 +92,11 @@ export class MainMenuComponent implements OnInit, AfterViewInit {
       case MenuType.PgnMenu: {
         this.index = 1;
         if(this.pgnMenu) {
-          //this.pgnMenu.resize(this.size.width, this.size.height);
           this.pgnMenu.show()
         }
         break;
       }
     }
-    // if(this.boardMenu){
-    //   this.boardMenu.show();
-    // }
   }
 
   close(): void {
@@ -132,26 +128,6 @@ export class MainMenuComponent implements OnInit, AfterViewInit {
   resize(size: {width: number, height: number}): void {
     let height = Math.floor(size.height * .84) - 66;
     let width = Math.floor(size.width * .9);
-    // Landscape vs Portrait
-    // const menus = document.getElementsByClassName('settings-content') as HTMLCollectionOf<HTMLElement>;
-    // if (this.boardMenu && this.boardMenu.settingsBoard) {
-    //   const boardWidth = width * .5;
-    //   const boardHeight = height * .8;
-    //   if (boardHeight > boardWidth) {
-    //     this.boardMenu.settingsBoard.setSize(boardWidth);
-    //   } else {
-    //     this.boardMenu.settingsBoard.setSize(boardHeight);
-    //   }
-    // }
-    // if (menus) {
-    //   for (let index = 0; index < menus.length; ++index) {
-    //     const item = menus.item(index);
-    //     if (item) {
-    //       item.style.height = height - 2 + 'px';
-
-    //     }
-    //   }
-    // }
     this.size = {height, width};
   }
 
@@ -208,7 +184,6 @@ export class MainMenuComponent implements OnInit, AfterViewInit {
         default: {menu = null;}
       }
       if(menu) {
-        //menu.resize(this.size.width, this.size.height);
         menu.show();
       }
     }

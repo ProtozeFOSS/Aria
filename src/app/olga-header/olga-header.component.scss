@@ -1,0 +1,52 @@
+.container{
+    background:transparent;
+    border: black 1px solid;
+}
+.variant-header{
+    left: 0px;
+    right: 0px;
+    height: 24px;
+    font-size: 24px;
+    background: blanchedalmond;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 8px;
+    line-height: 24px;
+    border: 2px solid black;
+}
+
+.primary-data-box{
+    width:63%;
+    height: 36px;
+    background: rgb(77, 31, 0);
+    color: white;
+    float:left;
+    text-align: center;
+    clear:both;
+    border: 1px solid black;
+    border-radius: 2px;
+    margin-top:2px;
+}
+
+.secondary-data-box{
+    width:34%;
+    height: 36px;
+    background: rgb(246, 125, 44);
+    color: white;
+    float:right;
+    border: 1px solid black;
+    border-radius: 2px;
+    margin-top:2px;
+    text-align: center;
+}
+
+.box-title {
+    color: #fabe0b;
+    text-align: left;
+    margin-left: 2px;
+}
+
+.secondary-box-title {
+    color: #532c00;
+    text-align: right;
+    padding-right: 8px;
+}

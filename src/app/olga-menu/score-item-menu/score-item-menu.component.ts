@@ -25,7 +25,6 @@ export class ScoreItemMenu implements OnInit, AfterViewInit {
   }
 
   ignoreEvent(event: MouseEvent): void {
-    //console.log('Ignoring ' + event);
     event.preventDefault();
     event.stopPropagation();
   }

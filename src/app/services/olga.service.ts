@@ -8,12 +8,16 @@ import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 import {Node as KNode, Variation as KVariation } from 'kokopu';
 import { OlgaControlsComponent } from '../olga-controls/olga-controls.component';
 import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
+import { CookieConsentComponent } from '../cookie-consent/cookie-consent.component';
+import { Olga } from '../app.component';
+import { OlgaHeaderComponent } from '../olga-header/olga-header.component';
 @Injectable({
   providedIn: 'root'
 })
 export class OlgaService {
   @Output() readonly showingPly = new BehaviorSubject<boolean>(true);
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
+  @Output() readonly cookiesAccepted = new BehaviorSubject<boolean>(false);
   @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(300);
   protected autoIntervalID = -1;
   protected timeLeft = 300;
@@ -26,6 +30,7 @@ export class OlgaService {
   @Output() readonly figurineSize = new BehaviorSubject<number>(20);
   @Output() readonly showLabels = new BehaviorSubject<boolean>(true);
 
+
   private _games: ChessGame[] = [];
   private _game: ChessGame | null = null;
 
@@ -34,6 +39,9 @@ export class OlgaService {
   private _status: OlgaStatusComponent | null = null;
   private _controls: OlgaControlsComponent | null = null;
   private _menu: OlgaMenuComponent | null = null;
+  private _cookies: CookieConsentComponent | null = null;
+  private _header: OlgaHeaderComponent | null = null;
+  private _app: Olga | null = null;
   readonly isVariant = new BehaviorSubject<boolean>(false);
 
 
@@ -49,7 +57,19 @@ export class OlgaService {
         '--gsFontFamily',
         this.gsFontFamily.value
       );
-    });    
+    });
+    this.cookiesAccepted.subscribe((cookiesAccepted: boolean)=>{
+      console.log('Cookies Enabled: ' + (cookiesAccepted ? 'True': 'False'));
+    }); 
+  }
+
+  public settings(): object {
+    let settings = {};
+    return settings;
+  }
+
+  public setSettings(settings: object) : void {
+    
   }
 
   public moveToStart(): void {
@@ -95,6 +115,21 @@ export class OlgaService {
     }
   }
 
+  protected createJsonSettings() : string {
+    if(this._app) {
+      return this._app.getJsonSettings();
+    }
+    return '';
+  }
+
+  protected setJsonSettings(json: string): boolean {
+    if(this._app) {
+      const settings = JSON.parse(json);
+      return this._app.applyJsonSettings(settings);
+    }
+    return false;
+  }
+
   public toggleAutoPlay():void {
     
     if(this._score && !this._score.isFinalPosition() && this.autoIntervalID == -1) {
@@ -111,6 +146,12 @@ export class OlgaService {
         this._controls.playing = false;
       }
     }
+  }
+  public getCookiesConsent(): boolean {
+    return this.cookiesAccepted.value;
+  }
+  public setCookieConsent(consent: boolean) : void {
+    this.cookiesAccepted.next(consent);
   }
 
   public openEngine(): void { }
@@ -129,6 +170,10 @@ export class OlgaService {
         this._score?.setGameScoreItems(this._game?.generateGameScore());
         this._board?.setBoardToPosition(this._game?.getPosition());
         this._score?.updateSelection();
+        const headerData = this._game?.generateHeaderData();
+        if(headerData) {
+          this._header?.setHeader(headerData);
+        }
       }, 1);
     }
   }
@@ -150,8 +195,6 @@ export class OlgaService {
     }
   }
 
-  public initializeComponents():void{}
-
   public attachBoard(board: CanvasChessBoard) {
     this._board = board;
   }
@@ -166,6 +209,18 @@ export class OlgaService {
 
   public attachControls(controls: OlgaControlsComponent) {
     this._controls = controls;
+  }
+
+  public attachCookiesComponent(cookies: CookieConsentComponent) {
+    this._cookies = cookies;
+  }
+
+  public attachOlga(olga: Olga) {
+    this._app = olga;
+  }
+
+  public attachHeader(header: OlgaHeaderComponent) {
+    this._header = header;
   }
 
   public editComment(data: GameScoreItem): void {
@@ -331,5 +386,19 @@ export class OlgaService {
     }
   }
 
+  public saveSettings(): void {
+    if(this._cookies) {
+      let settings = this.createJsonSettings();
+      this._cookies.setCookie(settings, 365);
+    }
+  }
 
+  public loadSettings(): string {
+    let settings = '';
+    if(this._cookies){
+      settings = this._cookies.getCookie();
+    }
+    this.setJsonSettings(settings);
+    return settings;
+  }
 }

@@ -8,6 +8,7 @@
   right: 0px;
   width: 100%;
   height: 100%;
+  overflow-y:auto;
 }
 
 .fenbutton {
@@ -22,6 +23,12 @@ olga-score {
    position: absolute;
    right: 1px;
   // height: 40%;
+}
+
+olga-header{
+  position: absolute;
+  right: 2px;
+  top: 2px;
 }
 
 canvas-chessboard {

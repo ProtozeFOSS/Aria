@@ -4,6 +4,7 @@ import { Olga } from '../app.component';
 import { GamescoreUxComponent } from '../game-score/game-score.ux';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
 import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
+import { OlgaService } from './olga.service';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
 
@@ -29,9 +30,14 @@ export class LayoutService {
   public boardElement: HTMLElement | null = null;
   public controlsElement: HTMLElement | null = null;
   public statusElement: HTMLElement | null = null;
+  public headerElement: HTMLElement | null = null;
   public menuComponent: OlgaMenuComponent | null = null;
-  boardRatio = 1;
   constructor() { }
+
+  public settings() : object {
+    let settings = {};
+    return settings;
+  }
 
   private rtl(width: number, height: number, gsSize?: number) {
     if (this.mobileView.value) {
@@ -66,18 +72,22 @@ export class LayoutService {
     }
   }
 
-
   private resizeToLandscape(width: number, height: number, gsSize?: number) {
     if (
       this.olga &&
       this.gameScoreElement &&
       this.controlsElement &&
       this.statusElement &&
+      this.headerElement &&
       this.menuComponent
     ) {
       let boardSize = 0;
-      const titleSize = 80;
+      const titleSize = 200;
       width = (this.preferredWidthPercentage * width);
+      
+      if (this.boardElement) {
+        this.boardElement.style.left = '0px';
+      }
       if (this.resizeElement) {
         this.resizeElement.style.left = '-10px';
         this.resizeElement.style.top = 'calc(50% - 3em)';
@@ -99,6 +109,8 @@ export class LayoutService {
         this.board?.setSize(boardSize);
         let gsHeight = boardSize - 200 - controlsHeight;
         // game score
+        this.headerElement.style.height = titleSize + 'px';
+        this.headerElement.style.width = gsWidth + 'px';
         this.gameScoreElement.style.left = '';
         this.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
         this.gameScoreElement.style.width = gsWidth + 'px';
@@ -160,7 +172,7 @@ export class LayoutService {
   }
   private resizeToPortrait(width: number, height: number, gsSize?: number) {
     if (this.olga) {
-      const boardSize = width * this.boardRatio - 6;
+      const boardSize = Math.floor((1 - this.preferredRatioPortrait) * width);
       this.board?.setSize(boardSize);
       if (this.statusElement) {
         this.statusElement.style.top = (boardSize - 32).toString() + 'px'; // 64 represents the controls ux
@@ -169,16 +181,20 @@ export class LayoutService {
         this.statusElement.style.height = '52px';
       }
       if (this.boardElement) {
-        this.boardElement.style.left =
-          width * ((1 - this.boardRatio) / 2) + 'px';
+        this.boardElement.style.left = ((width-boardSize)/2) + 'px';
       }
       if (this.gameScoreElement) {
         this.gameScoreElement.style.top = boardSize + 129 + 'px'; // 64 represents the controls ux
         this.gameScoreElement.style.left = 'calc(1% - 1px)';
         this.gameScoreElement.style.width = 'calc(98%  + 2px)';
+        this.gameScoreElement.style.bottom = '6px';
         // MUST MOVE TO DYNAMICALLY RESIZING TO GAME SCORE
-        this.gameScoreElement.style.height = height * .55 + 'px';
-        this.gameScoreElement.style.overflow = 'visible ';
+        
+        let scoreHeight = (window.innerHeight - (boardSize + 174));
+        if(scoreHeight < 225) {
+          scoreHeight = 225;
+        }
+        this.gameScoreElement.style.height = scoreHeight +'px';
         //  (boardSize / 3 > 425 ? 425 : boardSize / 3).toString() + 'px';
       }
       if (this.controlsElement) {
@@ -216,20 +232,22 @@ export class LayoutService {
   }
 
   public increaseBoardSize(): void {
-    if(this.preferredRatioLandscape > .3) {
+    const landscape = this.landscapeOrientation.value;
+    if(landscape &&  this.preferredRatioLandscape > .1) {
       this.preferredRatioLandscape -= .025;
     }
-    if(this.preferredRatioPortrait > .3) {
+    if(!landscape && this.preferredRatioPortrait > .1) {
       this.preferredRatioPortrait -= .025;
     }
     this.resizeLayout();
   }
 
   public decreaseBoardSize(): void {
-    if(this.preferredRatioLandscape < .7) {
+    const landscape = this.landscapeOrientation.value;
+    if(landscape && this.preferredRatioLandscape < .7) {
       this.preferredRatioLandscape += .025;
     }
-    if(this.preferredRatioPortrait < .7) {
+    if(!landscape && this.preferredRatioPortrait < .7) {
       this.preferredRatioPortrait += .025;
     }
     this.resizeLayout();
@@ -238,14 +256,19 @@ export class LayoutService {
   onSliderTouch(event: TouchEvent): void {
     if (
       event.touches.length > 0 &&
-      this.landscapeOrientation &&
+      this.landscapeOrientation.value &&
       event &&
       event.touches[0].clientX > 64
     ) {
       if (this.olga && this.appContainer) {
         let gsSize = window.innerWidth - event.touches[0].clientX;
-        const width = this.appContainer.nativeElement.clientWidth;
-        const height = this.appContainer.nativeElement.clientHeight;
+        const width = window.innerWidth
+        || document.documentElement.clientWidth
+        || document.body.clientWidth;
+        
+        const height = window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
 
         switch (this.preferredLayout) {
           case 'auto': {
@@ -268,14 +291,19 @@ export class LayoutService {
       }
     } else {
       if (
-        !this.landscapeOrientation &&
+        !this.landscapeOrientation.value &&
         event &&
         event.touches[0].clientY > 64
       ) {
         if (this.olga && this.appContainer) {
           let gsSize = window.innerHeight - event.touches[0].clientY;
-          const width = this.appContainer.nativeElement.clientWidth;
-          const height = this.appContainer.nativeElement.clientHeight;
+          const width = window.innerWidth
+          || document.documentElement.clientWidth
+          || document.body.clientWidth;
+          
+          const height = window.innerHeight
+          || document.documentElement.clientHeight
+          || document.body.clientHeight;
           switch (this.preferredLayout) {
             case 'auto': {
               if (width > height) {
@@ -300,11 +328,16 @@ export class LayoutService {
   }
 
   onSliderDrag(event: DragEvent): void {
-    if (this.landscapeOrientation && event && event.clientX > 64) {
+    if (this.landscapeOrientation.value && event && event.clientX > 64) {
       if (this.olga && this.appContainer) {
         let gsSize = window.innerWidth - event.clientX;
-        const width = this.appContainer.nativeElement.clientWidth;
-        const height = this.appContainer.nativeElement.clientHeight;
+        const width = window.innerWidth
+        || document.documentElement.clientWidth
+        || document.body.clientWidth;
+        
+        const height = window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
 
         switch (this.preferredLayout) {
           case 'auto': {
@@ -329,8 +362,13 @@ export class LayoutService {
       if (!this.landscapeOrientation && event && event.clientY > 64) {
         if (this.olga && this.appContainer) {
           let gsSize = window.innerHeight - event.clientY;
-          const width = this.appContainer.nativeElement.clientWidth;
-          const height = this.appContainer.nativeElement.clientHeight;
+          const width = window.innerWidth
+          || document.documentElement.clientWidth
+          || document.body.clientWidth;
+          
+          const height = window.innerHeight
+          || document.documentElement.clientHeight
+          || document.body.clientHeight;
           switch (this.preferredLayout) {
             case 'auto': {
               if (width > height) {
@@ -358,11 +396,19 @@ export class LayoutService {
     if (!this.appContainer) {
       console.log('Invalid (Null) App Container %$@');
     } else {
-      const width = this.appContainer.nativeElement.clientWidth;
-      const height = this.appContainer.nativeElement.clientHeight;
+      const width = window.innerWidth
+      || document.documentElement.clientWidth
+      || document.body.clientWidth;
+      
+      const height = window.innerHeight
+      || document.documentElement.clientHeight
+      || document.body.clientHeight;
+      const landscape = (width >= height);
+      this.landscapeOrientation.next(landscape);
       switch (this.preferredLayout) {
         case 'auto': {
-          if (width > height) {
+          if (landscape) {
+            this.landscapeOrientation.next(true);
             this.resizeToLandscape(width, height);
           } else {
             this.resizeToPortrait(width, height);
@@ -384,7 +430,7 @@ export class LayoutService {
   
   public shrink() {
     if(this.appContainer){
-      if(this.landscapeOrientation) {
+      if(this.landscapeOrientation.value) {
         if(this.preferredWidthPercentage >= .3) {
           this.preferredWidthPercentage -= .1;
           this.appContainer.nativeElement.clientWidth = (window.innerWidth  * this.preferredWidthPercentage);
@@ -401,7 +447,7 @@ export class LayoutService {
 
   public grow() {
     if(this.appContainer){
-      if(this.landscapeOrientation) {
+      if(this.landscapeOrientation.value) {
         if(this.preferredWidthPercentage <= .9) {
           this.preferredWidthPercentage += .1;
           this.appContainer.nativeElement.clientWidth = (window.innerWidth  * this.preferredWidthPercentage);
