@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { ColorService } from '../../services/colors.service';
+import { ThemeService } from '../../services/themes.service';
 import { LayoutService } from '../../services/layout.service';
 import { MatTabChangeEvent } from '@angular/material/tabs/tab-group';
 import { OlgaService } from '../../services/olga.service';
@@ -27,7 +27,7 @@ export enum MenuType {
 })
 export class MainMenuComponent implements OnInit, AfterViewInit {
   public index: number = 0;
-  constructor(public colorService: ColorService, public layout: LayoutService, public olga: OlgaService) { }
+  constructor(public themes: ThemeService, public layout: LayoutService, public olga: OlgaService) { }
   menus: HTMLCollectionOf<HTMLElement> | null = null;
   @ViewChild(KeymapMenuComponent)
   keymapMenu: KeymapMenuComponent | null = null;

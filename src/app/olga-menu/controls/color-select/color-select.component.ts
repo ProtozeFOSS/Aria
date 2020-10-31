@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
-import { ColorService } from '../../../services/colors.service';
+import { ThemeService } from '../../../services/themes.service';
 
 @Component({
   selector: 'color-select',
@@ -8,7 +8,7 @@ import { ColorService } from '../../../services/colors.service';
 })
 export class ColorSelectComponent implements OnInit, OnChanges {
 
-  constructor(public colors: ColorService) { }
+  constructor(public themes: ThemeService) { }
   @Input() title = '';
   @Input() variableName = '';
   @Input() color = '#000000000';
@@ -43,10 +43,6 @@ export class ColorSelectComponent implements OnInit, OnChanges {
       this.gValue = parseInt(g, 16);
       this.bValue = parseInt(b, 16);
     }
-    // const bigint = parseInt(c,16);
-    // this.rValue = (bigint >> 16) & 255;
-    // this.gValue = (bigint >> 8) & 255;
-    // this.bValue = bigint & 255;
 }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -57,7 +53,7 @@ export class ColorSelectComponent implements OnInit, OnChanges {
 
   updateColor(color: string) {
     this.color = color;
-    this.colors.updateColor(this.variableName, color);
+    this.themes.updateColor(this.variableName, color);
   }
 
 }

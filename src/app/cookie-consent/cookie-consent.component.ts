@@ -36,7 +36,19 @@ export class CookieConsentComponent implements OnInit, AfterViewInit {
       }
       return '';
   }
+  public show(): void {
+    if(this.container) {
+    this.container.nativeElement.style.visibility = 'visible';
+    }    
+  }
+  public hide(): void {
+    if(this.container) {
+      this.container.nativeElement.style.visibility = 'hidden';
+      this.container.nativeElement.style.height = '0px';
+      this.container.nativeElement.style.width = '0px';
+    }    
 
+  }
   private deleteCookie(name: string): void {
       this.setCookie('', 0);
   }
@@ -54,9 +66,7 @@ export class CookieConsentComponent implements OnInit, AfterViewInit {
     if (consent) {
         this.setCookie('1', 7);
     }
-    if(this.container) {
-      this.container.nativeElement.style.visibility = 'hidden';
-    }
+    this.hide();
   }
 
 }

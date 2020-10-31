@@ -22,6 +22,8 @@ export class OlgaService {
   protected autoIntervalID = -1;
   protected timeLeft = 300;
   public UUID: string = '';
+  public setName: string = '';
+  public setDate: string = '';
   @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(
     true
   );
@@ -59,7 +61,7 @@ export class OlgaService {
       );
     });
     this.cookiesAccepted.subscribe((cookiesAccepted: boolean)=>{
-      console.log('Cookies Enabled: ' + (cookiesAccepted ? 'True': 'False'));
+        this.setCookieConsent(cookiesAccepted);
     }); 
   }
 
@@ -124,8 +126,11 @@ export class OlgaService {
 
   protected setJsonSettings(json: string): boolean {
     if(this._app) {
-      const settings = JSON.parse(json);
-      return this._app.applyJsonSettings(settings);
+      if(json.length > 0 ) {
+        const settings = JSON.parse(json);
+        return this._app.applyJsonSettings(settings);
+      }
+      return this._app.applyDefaultSettings();
     }
     return false;
   }
@@ -151,7 +156,12 @@ export class OlgaService {
     return this.cookiesAccepted.value;
   }
   public setCookieConsent(consent: boolean) : void {
-    this.cookiesAccepted.next(consent);
+    if(this.cookiesAccepted.value != consent){
+      this.cookiesAccepted.next(consent);
+    }
+    if(consent && this._cookies) {
+      this._cookies.hide();
+    }
   }
 
   public openEngine(): void { }
@@ -161,6 +171,22 @@ export class OlgaService {
   }
 
   public loadPGN(pgn: string) {
+    let fIndex = pgn.indexOf('[Set ');
+    if(fIndex >= 0) {
+        const endSet = pgn.indexOf(']', fIndex);
+        if(endSet >= 0 && endSet - fIndex <= 86) {
+            this.setName = pgn.substr(fIndex + 6, endSet - fIndex - 7);
+
+        }
+    }
+    fIndex = pgn.indexOf('[SetDate ');
+    if(fIndex >= 0) {
+        const endSet = pgn.indexOf(']', fIndex);
+        if(endSet >= 0 && endSet - fIndex <= 86) {
+            this.setDate = pgn.substr(fIndex + 10, endSet - fIndex - 11);
+
+        }
+    }
     this._games = ChessGame.parsePGN(this, pgn);
     this._score?.setGameScoreItems([]);
     if(this._games.length > 0){
@@ -172,7 +198,11 @@ export class OlgaService {
         this._score?.updateSelection();
         const headerData = this._game?.generateHeaderData();
         if(headerData) {
-          this._header?.setHeader(headerData);
+          if(this._header) {
+            this._header.gameCount = this._games.length;
+            this._header.currentGame = 0;
+            this._header.setHeader(headerData);
+          }
         }
       }, 1);
     }
@@ -191,32 +221,30 @@ export class OlgaService {
   public selectGame(index: number) {
     if (index >= 0 && index <= this._games.length && this._score) {
       this._game = this._games[index];
-      this._score._items = this._game.generateGameScore();
+      window.setTimeout( () => {
+        this._score?.setGameScoreItems(this._game?.generateGameScore());
+        this._board?.setBoardToPosition(this._game?.getPosition());
+        this._score?.updateSelection();
+        const headerData = this._game?.generateHeaderData();
+        if(headerData) {
+          if(this._header) {
+            this._header.gameCount = this._games.length;
+            this._header.setHeader(headerData);
+          }
+        }
+      }, 1);
     }
-  }
-
-  public attachBoard(board: CanvasChessBoard) {
-    this._board = board;
-  }
-
-  public attachScore(score: GamescoreUxComponent) {
-    this._score = score;
-  }
-
-  public attachStatus(status: OlgaStatusComponent) {
-    this._status = status;
-  }
-
-  public attachControls(controls: OlgaControlsComponent) {
-    this._controls = controls;
-  }
-
-  public attachCookiesComponent(cookies: CookieConsentComponent) {
-    this._cookies = cookies;
   }
 
   public attachOlga(olga: Olga) {
     this._app = olga;
+    this._board = olga.canvasBoardComponent;
+    this._header = olga.headerComponent;
+    this._score = olga.gameScoreComponent;
+    this._controls = olga.controlsComponent;
+    this._cookies = olga.cookiesComponent;
+    this._menu = olga.menuComponent;
+    this._status = olga.statusComponent;
   }
 
   public attachHeader(header: OlgaHeaderComponent) {
@@ -388,8 +416,12 @@ export class OlgaService {
 
   public saveSettings(): void {
     if(this._cookies) {
-      let settings = this.createJsonSettings();
-      this._cookies.setCookie(settings, 365);
+      if(this.cookiesAccepted.value) {
+        let settings = this.createJsonSettings();
+        this._cookies.setCookie(settings, 365);
+      } else {
+        this._cookies.setCookie('', 0);
+      }
     }
   }
 

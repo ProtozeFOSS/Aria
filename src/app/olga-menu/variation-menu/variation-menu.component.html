@@ -1,0 +1,10 @@
+<div class="settings-background" (click)="ignoreInnerClicks($event)">
+  <h3>Variations</h3>
+  <div class="menu-content" *ngIf="visible">
+    <game-score-item class="display-item" [data]="data" ></game-score-item>
+    <div class="variation-list">
+      <variation-item #scoreItem *ngFor="let variation of variations; index as i;" [data]="variation">
+      </variation-item>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { CanvasChessBoard } from '../../../canvas-chessboard/canvas-chessboard.component';
-import { ColorService } from '../../../services/colors.service';
+import { ThemeService } from '../../../services/themes.service';
 @Component({
   selector: 'variation-item',
   templateUrl: './variation-item.component.html',
@@ -11,7 +11,7 @@ export class VariationItemComponent implements OnInit, AfterViewInit {
   @Input() data: any | null = null;
   @Output() score = '';
   @ViewChild ('board') board: CanvasChessBoard | null = null;
-  constructor(public colorService: ColorService) { }
+  constructor(public themes: ThemeService) { }
 
   ngOnInit(): void {
     if(this.data) {

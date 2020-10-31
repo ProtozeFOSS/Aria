@@ -1,0 +1,39 @@
+@import "../../../styles.scss";
+.olga-slider{
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  left:5%;
+  width: 90%; /* Full-width */
+  height: 26%; /* Specified height */
+  border-radius: 8px;
+  background: $csBackground; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+.olga-slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.olga-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: $csFill; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 50%;
+    border: 1px solid black;
+}
+  
+.olga-slider::-moz-range-thumb {
+width: 25px; /* Set a specific slider handle width */
+height: 25px; /* Slider handle height */
+background: $csFill; /* Green background */
+cursor: pointer; /* Cursor on hover */
+border-radius: 50%;
+border: 1px solid $csAccent;
+}
+  

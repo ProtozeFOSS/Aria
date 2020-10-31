@@ -26,6 +26,7 @@ export class LayoutService {
   preferredRatioPortrait = 0.4;
   preferredWidthPercentage = 1.0;
   preferredHeightPercentage = 1.0
+  layoutDirection = true;
   public gameScoreElement: HTMLElement | null = null;
   public boardElement: HTMLElement | null = null;
   public controlsElement: HTMLElement | null = null;
@@ -79,15 +80,12 @@ export class LayoutService {
       this.controlsElement &&
       this.statusElement &&
       this.headerElement &&
-      this.menuComponent
+      this.menuComponent &&
+      this.boardElement
     ) {
       let boardSize = 0;
       const titleSize = 200;
       width = (this.preferredWidthPercentage * width);
-      
-      if (this.boardElement) {
-        this.boardElement.style.left = '0px';
-      }
       if (this.resizeElement) {
         this.resizeElement.style.left = '-10px';
         this.resizeElement.style.top = 'calc(50% - 3em)';
@@ -103,30 +101,42 @@ export class LayoutService {
         if (boardSize > height) {
           boardSize = height - padding / 2;
         }
-        let controlsHeight = boardSize / 7;
-        controlsHeight = controlsHeight > 62 ? 62 : controlsHeight;
+        let controlsHeight = 100;
         let gsWidth = width - boardSize - padding;
         this.board?.setSize(boardSize);
-        let gsHeight = boardSize - 200 - controlsHeight;
+        let gsHeight = (boardSize - (titleSize + controlsHeight + 48));
         // game score
+        if(this.layoutDirection) { // RTL
+          this.headerElement.style.right = '2px';
+          this.headerElement.style.left = '';
+          this.boardElement.style.left = '2px';
+          this.boardElement.style.right = '';
+        }else {
+          this.headerElement.style.left = '2px';
+          this.headerElement.style.right = '';
+          this.boardElement.style.right = '2px';
+          this.boardElement.style.left = '';
+        }
+        this.boardElement.style.top = '2px';
         this.headerElement.style.height = titleSize + 'px';
         this.headerElement.style.width = gsWidth + 'px';
         this.gameScoreElement.style.left = '';
-        this.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
+        this.gameScoreElement.style.top = titleSize + 'px'; // 64 represents the controls ux
         this.gameScoreElement.style.width = gsWidth + 'px';
         this.gameScoreElement.style.height = gsHeight + 'px';
         // controls
         this.controlsElement.style.left = '';
         this.controlsElement.style.top =
-          (gsHeight + (titleSize + 10)).toString() + 'px'; // 64 represents the
+          (titleSize + gsHeight + 2).toString() + 'px'; // 64 represents the
         this.controlsElement.style.width = (gsWidth - 2).toString() + 'px';
         this.controlsElement.style.height = controlsHeight + 'px';
         this.controlsElement.style.right = '1px';
         this.statusElement.style.left = '';
+        let statusTop = titleSize + gsHeight +  controlsHeight  - 24;
         this.statusElement.style.top =
-          (gsHeight + titleSize + controlsHeight + 62).toString() + 'px'; // 64 represents the
+          statusTop.toString() + 'px'; // 64 represents the
         this.statusElement.style.width = gsWidth.toString() + 'px';
-        this.statusElement.style.height = controlsHeight + 'px';
+        this.statusElement.style.height = (boardSize - statusTop) + 'px';
         this.statusElement.style.right = '1px';
         this.scoreSize.next(gsWidth);
       } else {
@@ -142,8 +152,8 @@ export class LayoutService {
           gsSize = window.innerWidth - boardSize + padding;
         }
         this.board?.setSize(boardSize);
-        let controlsHeight = boardSize / 7;
-        controlsHeight = controlsHeight > 62 ? 62 : controlsHeight;
+        
+        let controlsHeight = 100;
         let gsHeight = boardSize - 200 - controlsHeight;
         // game score
         this.gameScoreElement.style.left = '';
@@ -158,8 +168,9 @@ export class LayoutService {
         this.controlsElement.style.width = (gsSize - 2).toString() + 'px';
         this.controlsElement.style.right = '1px';
         this.statusElement.style.left = '';
-        this.statusElement.style.top =
-          (gsHeight + titleSize + controlsHeight + 62).toString() + 'px'; // 64 represents the
+        
+        let statusTop = titleSize + gsHeight +  controlsHeight  - 24;
+        this.statusElement.style.top = statusTop + 'px'; // 64 represents the
         this.statusElement.style.width = gsSize.toString() + 'px';
         this.statusElement.style.right = '1px';
         this.scoreSize.next(gsSize);
@@ -171,20 +182,40 @@ export class LayoutService {
     }
   }
   private resizeToPortrait(width: number, height: number, gsSize?: number) {
-    if (this.olga) {
+    if (this.olga && this.boardElement && this.headerElement) {
       const boardSize = Math.floor((1 - this.preferredRatioPortrait) * width);
       this.board?.setSize(boardSize);
+      let yOffset = 0;
+      if((width - boardSize) > 320) { // side by side
+          this.boardElement.style.top = '1px';
+        if(this.layoutDirection) { // RTL
+          this.headerElement.style.right = '2px';
+          this.headerElement.style.left = '';
+          this.boardElement.style.left = '2px';
+        }else {
+          this.headerElement.style.left = '2px';
+          this.headerElement.style.right = '';
+          this.boardElement.style.right = '2px';
+        }
+        this.headerElement.style.width = ((width-boardSize)-2) + 'px';
+        this.headerElement.style.height = boardSize + 'px';
+      } else { // Header above board
+        this.boardElement.style.top = '200px';
+        this.headerElement.style.height = '240px';
+        this.headerElement.style.width = '100%';
+        this.boardElement.style.left = ((width-boardSize)/2) + 'px';
+        yOffset = 200;
+      }
+     
       if (this.statusElement) {
-        this.statusElement.style.top = (boardSize - 32).toString() + 'px'; // 64 represents the controls ux
+        this.statusElement.style.top = (yOffset +boardSize - 32).toString() + 'px'; // 64 represents the controls ux
         this.statusElement.style.left = 'calc(1% - 1px)';
         this.statusElement.style.width = '98%';
         this.statusElement.style.height = '52px';
       }
-      if (this.boardElement) {
-        this.boardElement.style.left = ((width-boardSize)/2) + 'px';
-      }
+
       if (this.gameScoreElement) {
-        this.gameScoreElement.style.top = boardSize + 129 + 'px'; // 64 represents the controls ux
+        this.gameScoreElement.style.top = (yOffset + boardSize + 129) + 'px'; // 64 represents the controls ux
         this.gameScoreElement.style.left = 'calc(1% - 1px)';
         this.gameScoreElement.style.width = 'calc(98%  + 2px)';
         this.gameScoreElement.style.bottom = '6px';
@@ -199,7 +230,7 @@ export class LayoutService {
       }
       if (this.controlsElement) {
         this.controlsElement.style.top =
-          (boardSize + 30).toString() + 'px'; // 64 represents the controls ux
+          (yOffset +boardSize + 30).toString() + 'px'; // 64 represents the controls ux
         this.controlsElement.style.left = 'calc(1% - 1px)';
         this.controlsElement.style.width = '98%';
         this.controlsElement.style.height = '99px';

@@ -8,30 +8,34 @@ import { OlgaService } from '../services/olga.service';
   styleUrls: ['./olga-header.component.scss']
 })
 export class OlgaHeaderComponent implements OnInit {
-  @Input() variant: string = 'Classic';
-  @Input() event: string = 'Norway Chess';
-  @Input() eventDate: string = '10/05/2020';
-  @Input() match: string = 'Game 2 Semi-Final';
-  @Input() matchDate: string = '10/05/2020';
-  @Input() white: string = 'Aryan Tari';
-  @Input() black: string = 'Fabiano Caruana';
-  @Input() whiteElo: string | number = '2633';
-  @Input() blackElo: string | number = '2688';
+  @Input() variant: string = 'Classical';
+  @Input() event: string = '';
+  @Input() eventDate: string = '';
+  @Input() match: string = '';
+  @Input() matchDate: string = '';
+  @Input() white: string = '';
+  @Input() black: string = '';
+  @Input() whiteElo: string | number = '';
+  @Input() blackElo: string | number = '';
+  @Input() gameCount: number = 1;
+  @Input() currentGame: number = 0;
   constructor(public olga: OlgaService, public layout: LayoutService) { }
 
   ngOnInit(): void {
   }
 
   setHeader(map: Map<string,string>) :void {
-    console.log(map);
+    this.event = this.olga.setName;
+    this.eventDate = this.olga.setDate;
     const event = map.get('Event');
     if(event) {
-      this.event = event;
+      this.match = event;
     }
-    const eventDate = map.get('Event Date');
-    if(eventDate) {
-      this.eventDate = eventDate;
-      this.matchDate = eventDate;
+    const matchDate = map.get('Match Date');
+    if(matchDate) {
+      this.matchDate = matchDate;
+    } else {
+      this.matchDate = '';
     }
     const white = map.get('White');
     if(white) {
@@ -50,5 +54,21 @@ export class OlgaHeaderComponent implements OnInit {
       this.blackElo = blackElo;
     }
     const variant = map.get('Variant');
+    if(variant) {
+      this.variant = variant;
+    }
+  }
+  previousGame(): void {
+    if(this.currentGame > 0){
+      --this.currentGame;
+    }
+    if(this.currentGame >= 0) {
+      this.olga.selectGame(this.currentGame)
+    }
+  }
+  nextGame(): void {
+    if(this.currentGame < this.gameCount) {
+      this.olga.selectGame(++this.currentGame)
+    }
   }
 }

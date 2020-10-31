@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, Input, Output, ViewChild, ElementRef 
 import { fabric } from 'fabric';
 import { BehaviorSubject } from 'rxjs';
 import { ChessMove } from '../common/kokopu-engine';
-import { ColorService } from '../services/colors.service';
+import { ThemeService } from '../services/themes.service';
 import { OlgaService } from '../services/olga.service';
 import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames, Color } from './types';
 
@@ -51,7 +51,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @ViewChild('boardCanvas', {static: false}) boardCanvas: ElementRef | null = null;
   constructor(
     public olga: OlgaService,
-    public colorService: ColorService
+    public themes: ThemeService
   ) {}
 
 
@@ -262,13 +262,13 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       const bg = new fabric.Rect({
         height: height,
         width: width,
-        fill: this.colorService.bgMenu,
+        fill: this.themes.bgMenu,
         left: (this.size - width) / 2,
         top: (this.size - height) / 2,
         rx: width * 0.02,
         ry: width * 0.02,
       });
-      bg.setColor(this.colorService.bgMenu);
+      bg.setColor(this.themes.bgMenu);
       bg.set('lockMovementX', true);
       bg.set('lockMovementY', true);
       bg.set('lockRotation', true);
@@ -401,7 +401,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         tileToClone.tile.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
-          tile.set('stroke', this.colorService.gsTextColorHG.value);
+          tile.set('stroke', this.themes.gsTextColorHG.value);
           tile.set('strokeWidth', 2);
           tile.set('top', 0);
           tile.set('left', 0);
@@ -451,7 +451,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         tileToClone.tile.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
-          tile.set('stroke', this.colorService.gsTextColorHG.value);
+          tile.set('stroke', this.themes.gsTextColorHG.value);
           tile.set('strokeWidth', 2);
           tile.set('top', 0);
           tile.set('left', 0);
@@ -500,7 +500,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         tileToClone.tile.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
-          tile.set('stroke', this.colorService.gsTextColorHG.value);
+          tile.set('stroke', this.themes.gsTextColorHG.value);
           tile.set('strokeWidth', 2);
           tile.set('top', 0);
           tile.set('left', 0);
@@ -548,7 +548,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         tileToClone.tile.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
-          tile.set('stroke', this.colorService.gsTextColorHG.value);
+          tile.set('stroke', this.themes.gsTextColorHG.value);
           tile.set('strokeWidth', 2);
           tile.set('top', 0);
           tile.set('left', 0);
@@ -954,7 +954,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         }) as fabric.Object;
         
         if(isDark !== undefined && isDark !== null) {
-          object.setColor(isDark ? this.colorService.boardLabelDark.value : this.colorService.boardLabelLight.value);
+          object.setColor(isDark ? this.themes.boardLabelDark.value : this.themes.boardLabelLight.value);
         }
         break;
       }
@@ -964,7 +964,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           height: this.tileSize,
         });
         if(isDark !== undefined && isDark !== null) {
-          object.setColor(isDark ? this.colorService.boardBGDark.value : this.colorService.boardBGLight.value);
+          object.setColor(isDark ? this.themes.boardBGDark.value : this.themes.boardBGLight.value);
         }
         break;
       }

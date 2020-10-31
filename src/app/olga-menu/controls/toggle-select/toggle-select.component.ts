@@ -10,6 +10,8 @@ export class ToggleSelectComponent implements OnInit{
   @Input() title = '';
   @Input() thumbnail = '';
   @Input() value: BehaviorSubject<boolean> | null = null;
+  @Input() off = 'OFF';
+  @Input() on = 'ON';
 
   constructor() { }
 

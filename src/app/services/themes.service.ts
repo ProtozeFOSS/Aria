@@ -5,10 +5,10 @@ import {  BoardTheme } from '../canvas-chessboard/types';
 @Injectable({
   providedIn: 'root',
 })
-export class ColorService {
+export class ThemeService {
+
   // DEFAULTING TO DARK COLOR PALLETE
   // Main Elements (background, sub containers, context menu)
-  protected olga: any | null = null;
   @Input() @Output() readonly textColor = 'white'; // Main Text Color
   @Input() @Output() readonly textColorAttention = 'purple'; // Attention text
   @Input() @Output() readonly textColorRemove = 'red'; // Remove/Delete/Close
@@ -26,9 +26,6 @@ export class ColorService {
   @Input() readonly overlayContextBackground = 'rgb(199,199,199)';
   @Input() readonly overlayContextBackgroundGradient='linear-gradient(153deg, rgba(199,199,199,0.9051995798319328) 41%, rgba(249,249,249,0.8911939775910365) 83%)';
 
-  // Control Elements (Buttons, sliders, number wheels, toggle switches)
-  @Input() @Output() readonly fgItem = '#00ffffff';
-  @Input() @Output() readonly fgItemContrast = '#e25400';
 
   // Board Colors
   @Input() @Output() readonly boardBGDark = new BehaviorSubject<string>('#81388f');
@@ -71,16 +68,56 @@ export class ColorService {
   @Input() @Output() readonly gsBackgroundPC = new BehaviorSubject<string>('#353535');
   @Input() @Output() readonly gsBorderPC = new BehaviorSubject<string>('');
 
-  @Input() @Output() readonly csBackground = new BehaviorSubject<string>('#81388f');
-  @Input() @Output() readonly csColor = new BehaviorSubject<string>('#e0fffb');
+  
+  // Control Elements (Buttons, sliders, number wheels, toggle switches)
+  readonly csBackground = new BehaviorSubject<string>('#81388f');
+  readonly csColor = new BehaviorSubject<string>('#e0fffb');
+  readonly csFill = new BehaviorSubject<string>('#00ffffff');
+  readonly csFill2 = new BehaviorSubject<string>('#00ffffff');
+  readonly csAccent = new BehaviorSubject<string>('#e25400');
+  readonly csAccent2 = new BehaviorSubject<string>('#e25400');
 
 
-  @Output() propertyMap = new Map<string, BehaviorSubject<string>>();
+
+  // Font Sizes
+  readonly gsFontSize = new BehaviorSubject<number>(14);
+  readonly gsFontSizeHG = new BehaviorSubject<number>(14);
+  readonly gsFontSizeAN = new BehaviorSubject<number>(14);
+  readonly gsFontSizeVA = new BehaviorSubject<number>(14);
+  readonly gsFontSizePC = new BehaviorSubject<number>(14);
+
+  @Output() propertyMap = new Map<string, BehaviorSubject<string> | BehaviorSubject<number>>();
   // Menu specific Colors
 
   // Title Colors
   constructor() {
     // Game Score
+    this.createColorMap();
+  }
+
+  updateColor(name: string, color: string) : void {
+    if(this.propertyMap.has(name)) {
+      const subject = this.propertyMap.get(name) as BehaviorSubject<string>;
+      if(subject) {
+        subject.next(color);
+      }
+      document.documentElement.style.setProperty(
+        name,
+        color
+      );
+    }
+  }
+
+  boardTheme(): BoardTheme {
+    return new BoardTheme(
+      this.boardBGLight.value,
+      this.boardBGDark.value,
+      this.boardPieceSet.value
+    );
+  }
+
+  private createColorMap(): void {
+    this.propertyMap.clear();
     this.propertyMap.set( '--gsTextColorPC', this.gsTextColorPC);
     this.propertyMap.set('--gsTextColor', this.gsTextColor);
     this.propertyMap.set('--gsBackgroundPC', this.gsBackgroundPC);
@@ -106,34 +143,35 @@ export class ColorService {
     this.propertyMap.set('--boardLabelLight', this.boardLabelLight);
     this.propertyMap.set('--boardBGDark', this.boardBGDark);
     this.propertyMap.set('--boardBGLight', this.boardBGLight);
+
     // Controls
     this.propertyMap.set('--csBackground', this.csBackground);
     this.propertyMap.set('--csColor', this.csColor);
-  }
-  public setOlga(olga: any) : void {
-    this.olga = olga;
-  }
-  updateColor(name: string, color: string) : void {
-    if(this.propertyMap.has(name)) {
-      const subject = this.propertyMap.get(name);
-      if(subject) {
-        subject.next(color);
+    this.propertyMap.set('--csFill', this.csFill);
+    this.propertyMap.set('--csFill2', this.csFill2);
+    this.propertyMap.set('--csAccent', this.csAccent);
+    this.propertyMap.set('--csAccent2', this.csAccent2);
+
+
+    // Font Sizes
+    this.propertyMap.set('--gsFontSize', this.gsFontSize);
+
+    this.propertyMap.set('--gsFontSizeAN', this.gsFontSizeAN);
+    this.propertyMap.set('--gsFontSizeHG', this.gsFontSizeHG);
+    this.propertyMap.set('--gsFontSizeVA', this.gsFontSizeVA);
+    this.propertyMap.set('--gsFontSizePC', this.gsFontSizePC);
+    this.propertyMap.forEach((value, key) => {
+      if(typeof value.value == "string") {
+        (value as BehaviorSubject<string>).subscribe((newVal)=>{
+          document.documentElement.style.setProperty(key,newVal);
+        });
+      } else {
+        (value as BehaviorSubject<number>).subscribe((newVal)=>{
+          document.documentElement.style.setProperty(key,newVal + "px");
+        });
       }
-      document.documentElement.style.setProperty(
-        name,
-        color
-      );
-    }
+    });
   }
-
-  boardTheme(): BoardTheme {
-    return new BoardTheme(
-      this.boardBGLight.value,
-      this.boardBGDark.value,
-      this.boardPieceSet.value
-    );
-  }
-
   public settings(): object {
     let settings = {};
     this.propertyMap.forEach((behavior, key) => {
@@ -165,71 +203,12 @@ export class ColorService {
    }
 
   initializeColorPalette(): void {
-    // Main Elements
-    document.documentElement.style.setProperty('--textCoolor', this.textColor);
-    document.documentElement.style.setProperty(
-      '--textColorAttention',
-      this.textColorAttention
-    );
-    document.documentElement.style.setProperty(
-      '--textColorRemove',
-      this.textColorRemove
-    );
-    document.documentElement.style.setProperty(
-      '--textColorAdd',
-      this.textColorAdd
-    );
-    document.documentElement.style.setProperty(
-      '--textColorActive',
-      this.textColorActive
-    );
-    document.documentElement.style.setProperty('--background', this.background);
-    document.documentElement.style.setProperty('--bgItem', this.bgItem);
-    document.documentElement.style.setProperty(
-      '--bgContainer',
-      this.bgContainer
-    );
-    document.documentElement.style.setProperty('--bgMenu', this.bgMenu);
-
-    // Context Menu
-    document.documentElement.style.setProperty('--bgContext', this.bgContext);
-    document.documentElement.style.setProperty(
-      '--overlayContextBackground',
-      this.overlayContextBackground
-    );
-    document.documentElement.style.setProperty(
-      '--textColorContext',
-      this.textColorContext
-    );
-    document.documentElement.style.setProperty('--bgContext', this.bgContext);
-    document.documentElement.style.setProperty(
-      '--overlayContextBackgroundGradient',
-      this.overlayContextBackgroundGradient
-    );
-    document.documentElement.style.setProperty(
-      '--borderContext',
-      this.borderContext
-    );
-
-    // Game Score
-    document.documentElement.style.setProperty('--gsBackground', this.gsBackground.value);
-    document.documentElement.style.setProperty(
-      '--gsTextSize',
-      this.gsTextSize.value
-    );
-    document.documentElement.style.setProperty(
-      '--gsBackground',
-      this.gsBackground.value
-    );
-    document.documentElement.style.setProperty(
-      '--gsBorder',
-      this.gsBorder.value
-    );
     this.propertyMap.forEach((value, key) => {
-      document.documentElement.style.setProperty(
-        key,
-        value.value
-      );
-    })
+      if(typeof value.value == "string") {
+        document.documentElement.style.setProperty(key,value.value);
+      } else {
+        document.documentElement.style.setProperty(key,value.value + "px");
+      }
+    });
   }
 }

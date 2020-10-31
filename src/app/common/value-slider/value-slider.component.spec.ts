@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OlgaTitleComponent } from './olga-title.component';
+import { ValueSliderComponent } from './value-slider.component';
 
-describe('OlgaTitleComponent', () => {
-  let component: OlgaTitleComponent;
-  let fixture: ComponentFixture<OlgaTitleComponent>;
+describe('ValueSliderComponent', () => {
+  let component: ValueSliderComponent;
+  let fixture: ComponentFixture<ValueSliderComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OlgaTitleComponent ]
+      declarations: [ ValueSliderComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OlgaTitleComponent);
+    fixture = TestBed.createComponent(ValueSliderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

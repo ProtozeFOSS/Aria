@@ -19,7 +19,7 @@ export class GameScoreItem {
         this.type ^= type;
     } 
     getType(previous: GameScoreItem | null = null): number {
-        if (this.move) {
+        if (this.move && this.move.variations) {
             let variations = this.move.variations();
             if (previous) {
                 if (previous.move.moveColor() == 'w') {
@@ -111,7 +111,6 @@ export class ChessGame {
     protected currentNode: KNode | null = null;
     protected lastNode: KNode | null = null;
     protected currentIndex = 0;
-
     protected static compareKNode(left: KNode, right: KNode): boolean {
         if (left !== null &&
             right !== null &&
@@ -251,16 +250,25 @@ export class ChessGame {
             const date = this.game.date();
             if(date) {
                 let dateString = '';
-                if(date.month) {
-                    dateString += date.month;
-                }
-                if(date.year) {
-                    if(dateString.length > 0) {
-                        dateString += ' of ';
+                if(date.toDateString){
+                    dateString = date.toDateString();
+                } else {
+                    if(date.month) {
+                        dateString += date.month;
                     }
-                    dateString += date.year;
-                }            
-                map.set('Event Date', dateString);
+                    if(date.year) {
+                        if(dateString.length > 0) {
+                            dateString += ' of ';
+                        }
+                        dateString += date.year;
+                    }
+                }
+                if(dateString.length == 0) {
+                    if(date.toString) {
+                        dateString = date.toString();
+                    }
+                }                      
+                map.set('Match Date', dateString);
             }
             map.set('White', this.game.playerName('w'));
             map.set('Black', this.game.playerName('b'));
@@ -268,7 +276,9 @@ export class ChessGame {
             map.set('Black Elo', this.game.playerElo('b'));
             let variant = this.game.variant();
             if(variant === 'regular') {
-                variant = "Classical Chess";
+                variant = "Chess";
+            } else {
+                variant = "Fischer Random"
             }
             map.set('Variant', variant);
         }

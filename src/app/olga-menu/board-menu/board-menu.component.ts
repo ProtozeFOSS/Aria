@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { OlgaService } from '../../services/olga.service';
-import { ColorService } from '../..//services/colors.service';
+import { ThemeService } from '../..//services/themes.service';
 import { CanvasChessBoard } from '../../canvas-chessboard/canvas-chessboard.component';
 
 @Component({
@@ -11,7 +11,7 @@ import { CanvasChessBoard } from '../../canvas-chessboard/canvas-chessboard.comp
 export class BoardMenuComponent implements OnInit, AfterViewInit {
   constructor(
     public olga: OlgaService,
-    public colorService: ColorService
+    public themes: ThemeService
   ) { }
   @ViewChild(CanvasChessBoard)
   settingsBoard: CanvasChessBoard | null = null;
@@ -24,20 +24,20 @@ export class BoardMenuComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     const menus = document.getElementsByClassName('settings-content');
-    this.colorService.boardBGDark.subscribe((color) => {
+    this.themes.boardBGDark.subscribe((color) => {
       this.settingsBoard?.setDarkTile(color);
     });
-    this.colorService.boardBGLight.subscribe((color) => {
+    this.themes.boardBGLight.subscribe((color) => {
       this.settingsBoard?.setLightTile(color);
     });
   }
 
   ngAfterViewInit(): void {
     if (this.lightBGHandle) {
-      this.lightBGHandle.nativeElement.value = this.colorService.boardBGLight.value;
+      this.lightBGHandle.nativeElement.value = this.themes.boardBGLight.value;
     }
     if (this.darkBGHandle) {
-      this.darkBGHandle.nativeElement.value = this.colorService.boardBGDark.value;
+      this.darkBGHandle.nativeElement.value = this.themes.boardBGDark.value;
     }
   }
 
@@ -45,7 +45,7 @@ export class BoardMenuComponent implements OnInit, AfterViewInit {
     const board = this.olga.getBoard();
     if (board) {
       board.setLightTile(color);
-      this.colorService.boardBGLight.next(color);
+      this.themes.boardBGLight.next(color);
     }
   }
 
@@ -53,7 +53,7 @@ export class BoardMenuComponent implements OnInit, AfterViewInit {
     const board = this.olga.getBoard();
     if (board) {
       board.setDarkTile(color);
-      this.colorService.boardBGDark.next(color);
+      this.themes.boardBGDark.next(color);
     }
   }
 

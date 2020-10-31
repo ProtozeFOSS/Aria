@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, Output, ViewChild, ElementRef, ComponentFactoryResolver } from '@angular/core';
 import { GameScoreType, GameScoreItem } from '../../common/kokopu-engine';
 import { OlgaService } from '../../services/olga.service';
-import { ColorService } from '../../services/colors.service';
+import { ThemeService } from '../../services/themes.service';
 
 @Component({
   selector: 'game-score-item',
@@ -11,13 +11,12 @@ import { ColorService } from '../../services/colors.service';
 export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() @Output() data: GameScoreItem = new GameScoreItem(null, -1);
   @Output() typeName = '';
-
   // visual nodes
   @Output() ply = '';
   @Output() score = '';
   GameScoreType = GameScoreType;
   @ViewChild('gsiPly') gsiPly: ElementRef | null = null;
-  constructor(public olga: OlgaService, public colors:ColorService) {
+  constructor(public olga: OlgaService, public themes:ThemeService) {
     // use data to actually set type
 
   }
@@ -43,19 +42,21 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
           this.ply = this.data.move.fullMoveNumber().toString() + '.';
         }
       }
-      if(this.data.move._info.moveDescriptor && typeof this.data.move._info.moveDescriptor != 'string'){ 
-        this.score = this.data.move.notation();
-      } else {
-        this.score = this.data.move._info.moveDescriptor;
+      if(this.data.move){
+        if(this.data.move._info.moveDescriptor && typeof this.data.move._info.moveDescriptor != 'string'){ 
+          this.score = this.data.move.notation();
+        } else {
+          this.score = this.data.move._info.moveDescriptor;
+        }
+        this.data.getType();
+        this.updateTypeName();
       }
-      this.data.getType();
-      this.updateTypeName();
     }
   }
 
   ngAfterViewInit(): void {
     this.updateTypeName();
-    if(this.gsiPly) {
+    if(this.gsiPly && this.data.move) {
       let showing = false;
       if (this.isFullPly()) {
         showing = this.olga.showingPly.value;
@@ -131,12 +132,14 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   clickMove(): void {
-    const variations = this.data.move.variations();
-    if (variations.length > 0) {
-      this.olga.displayVariations(this.data);
-      // show variation 
-      console.log('Taking first variation');
-      console.log(variations[0]);
+    if(this.data.move) {
+      const variations = this.data.move.variations();
+      if (variations.length > 0) {
+        this.olga.displayVariations(this.data);
+        // show variation 
+        console.log('Taking first variation');
+        console.log(variations[0]);
+      }
     }
   }
 
@@ -156,12 +159,15 @@ export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges 
       if ((this.data.type & GameScoreType.HalfPly) == GameScoreType.HalfPly) {
         this.typeName += ' HalfPly ';
       }
-      const variations = this.data.move.variations();
-      if (variations && variations.length > 0) {
-          this.typeName += ' Variation ';
-      }
-      if ((this.data.type & GameScoreType.Branched) == GameScoreType.Branched) { // must have a variation to be branched
-          this.typeName += ' Branched';
+      if(this.data.move) {
+        const variations = this.data.move.variations();
+        if (variations && variations.length > 0) {
+            this.typeName += ' Variation ';
+        }
+      
+        if ((this.data.type & GameScoreType.Branched) == GameScoreType.Branched) { // must have a variation to be branched
+            this.typeName += ' Branched';
+        }
       }
     }
   }

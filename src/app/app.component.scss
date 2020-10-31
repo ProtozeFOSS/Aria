@@ -19,6 +19,14 @@
   bottom: 1%;
 }
 
+cookie-consent{
+  position: fixed;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  z-index: 1200;
+}
+
 olga-score {
    position: absolute;
    right: 1px;
@@ -27,7 +35,6 @@ olga-score {
 
 olga-header{
   position: absolute;
-  right: 2px;
   top: 2px;
 }
 

@@ -1,0 +1,48 @@
+@import "../../../../styles.scss";
+.control-container {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-height: 64px;
+    max-height: 64px;
+    line-height:32px;
+}
+
+.thumb-image{
+    height: 64px;
+    width: 64px;
+    order: 0;
+}
+.min-val{
+    margin-left: 8px;
+    font-size: 13pt;
+    height: 32px;
+    line-height:32px;
+    order: 1;
+    color: $gsTextColor;
+}
+.slider{
+    height: 32px;
+    min-width:72px;
+    order: 2;
+    margin-left: 4px;
+}
+.max-val{
+    font-size: 13pt;
+    margin-left: 4px;
+    height: 32px;
+    line-height:32px;
+    order: 3;
+    color: $gsTextColor;
+}
+.title{
+  color: white;
+  position:absolute;
+  bottom: 2px;
+  height: 32px;
+  left: 74px;
+  width: calc(100%-74px);
+  font-size: 15pt;
+  text-align: left;
+  color: $gsTextColor;
+}

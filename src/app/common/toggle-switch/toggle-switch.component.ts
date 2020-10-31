@@ -8,17 +8,19 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ToggleSwitchComponent implements OnInit {
   @Input() value: BehaviorSubject<boolean> | null = null;
+  @Input() off:string = '';
+  @Input() on:string = '';
   public toggled: boolean = false;
   constructor() { }
 
   ngOnInit(): void {
     if(this.value) {
       this.toggled = this.value.value;
+      this.value.subscribe((state)=>{this.toggled = state;});
     }
   }
 
   toggle(): void {
-    this.toggled = !this.toggled;
     if(this.value) {
       this.value.next(!this.value.value);
     }

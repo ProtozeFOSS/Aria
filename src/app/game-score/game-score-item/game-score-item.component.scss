@@ -2,7 +2,7 @@
 
 .gsi-container {  
   display: inline-flex;
-  line-height: $gsTextSize;
+  line-height: $gsFontSize;
   margin: 2px;
   padding-left:2px;
 }
@@ -10,27 +10,31 @@
 .gsi-move{
   white-space: nowrap;
   color: $gsTextColor;
-  font-size:16px;
+  font-size: $gsFontSize;
   font-family: $gsFontFamily;
+  background: $gsBackground;
 }
 
 .gsi-ply{
   color: $gsTextColor;
-  font-size:18px;
   font-weight: bold;
+  font-size: $gsFontSizePC;
+  background: $gsBackgroundPC;
 }
 
 .gsi-comment{
   color: $gsTextColorAN;
   margin-left: 4px;
-  font-size: 13px;
+  font-size: $gsFontSizeAN;
+  background: $gsBackgroundAN;
 }
 
 .Current{
   background: $gsBackgroundHG;
   color: $gsTextColorHG;
   border:$gsBorderHG;
-  line-height: $gsTextSize;
+  font-size: $gsFontSizeHG;
+  line-height: $gsFontSizeHG;
 }
 
 .Current.gsi-comment{
@@ -64,27 +68,27 @@
 .Group.gsi-container-hg{
   background: $gsBackgroundHG;
   border: $gsBorderHG;
-  line-height: $gsTextSize;
+  line-height: $gsFontSize;
 }
 .Group.gsi-move {
   padding-left: 2px;
-  line-height: $gsTextSize;
+  line-height: $gsFontSize;
 }
 
 .Group.gsi-ply {
-  background: $gsBackgroundAN;
+  background: $gsBackgroundPC;
   border-radius: 2px;
   margin-right: 2px;
   border: $gsBorderAN;
-  font-size: $gsTextSize;
-  line-height: $gsTextSize;
+  font-size: $gsFontSize;
+  line-height: $gsFontSize;
 }
 
 .Group.gsi-ply-highlight {
   background: $gsBackgroundHG;
   color: $gsTextColorHG;
   border:$gsBorderHG;
-  line-height: $gsTextSize;
+  line-height: $gsFontSize;
 }
 
 

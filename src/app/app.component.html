@@ -1,7 +1,7 @@
 <div #olgaContainer id="{{ this.olga.UUID }}-olga-container" class="olga-container" (touchmove)="touchMoved($event)"
   (mousemove)="mouseMoved($event)">
   <canvas-chessboard  (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent
-    id="{{this.olga.UUID}}-ccb" boardID="this.olga.UUID" [theme]="this.colors.boardTheme()" [showLabels]="this.olga.showLabels.value">
+    id="{{this.olga.UUID}}-ccb" boardID="this.olga.UUID" [theme]="this.themes.boardTheme()" [showLabels]="this.olga.showLabels.value">
   </canvas-chessboard>
   <!-- <olga-title></olga-title> -->
   <olga-header id="olga-header-{{this.olga.UUID}}"></olga-header>
@@ -11,4 +11,9 @@
   <olga-status id="olga-status-{{this.olga.UUID}}"></olga-status>
   <olga-menu id="olga-menu-{{this.olga.UUID}}" (click)="layout.closeSettings()"></olga-menu>
   <cookie-consent></cookie-consent>
+  <!-- https://www.chessgames.com/perl/chessgame?gid=1067289 Game 1 -->
+  <!-- https://www.chessgames.com/perl/chessgame?gid=1935550 Game 2 -->
+  <!-- https://www.chessgames.com/perl/nph-chesspgn?text=1&gid=1008418  Game 3-->
+  <!-- http://chess960jungle.blogspot.com/2014/02/chess960-database-complete-games-2001.html Chess960 Games -->
+  <!-- Game 7 is the original game that I was using for testing, I lost the source -->
 </div>

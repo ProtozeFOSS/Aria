@@ -7,33 +7,28 @@ import { GamescoreUxComponent } from './game-score/game-score.ux';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatSliderModule } from '@angular/material/slider';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { GameScoreItemComponent } from './game-score/game-score-item/game-score-item.component';
-import { ColorService } from './services/colors.service';
+import { ThemeService } from './services/themes.service';
 import { ToggleSwitchComponent } from './common/toggle-switch/toggle-switch.component';
-import { LabeledSliderComponent } from './common/labeled-slider/labeled-slider.component';
 import { MainMenuComponent } from './olga-menu/main-menu/main-menu.component';
 import { BoardMenuComponent } from './olga-menu/board-menu/board-menu.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { ScoreItemMenu } from './olga-menu/score-item-menu/score-item-menu.component';
-
+import { VariationMenu } from './olga-menu/variation-menu/variation-menu.component';
 import { OlgaService } from './services/olga.service';
 import { LayoutService } from './services/layout.service';
 import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.component';
 import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
 import { OlgaStatusComponent } from './olga-status/olga-status.component';
-import { OlgaTitleComponent } from './olga-title/olga-title.component';
 import { KeymapMenuComponent } from './olga-menu/keymap-menu/keymap-menu.component';
 import { GeneralMenuComponent } from './olga-menu/general-menu/general-menu.component';
 import { OlgaMenuComponent } from './olga-menu/olga-menu.component';
 import { KeymapItemComponent } from './olga-menu/keymap-menu/keymap-item/keymap-item.component';
-import { VariationItemComponent } from './olga-menu/score-item-menu/variation-item/variation-item.component';
+import { VariationItemComponent } from './olga-menu/variation-menu/variation-item/variation-item.component';
 import { MenuSectionComponent } from './olga-menu/common/menu-section/menu-section.component';
 import { LayoutModeSelectComponent } from './olga-menu/controls/layout-mode-select/layout-mode-select.component';
 import { ColorSelectComponent } from './olga-menu/controls/color-select/color-select.component';
@@ -42,7 +37,8 @@ import { PgnMenuComponent } from './olga-menu/pgn-menu/pgn-menu.component';
 import { CookieConsentComponent } from './cookie-consent/cookie-consent.component';
 import { ToggleSelectComponent } from './olga-menu/controls/toggle-select/toggle-select.component';
 import { OlgaHeaderComponent } from './olga-header/olga-header.component';
-
+import { ValueSliderComponent } from './common/value-slider/value-slider.component';
+import { ValueSelectComponent } from './olga-menu/controls/value-select/value-select.component';
 @NgModule({
   declarations: [
     Olga,
@@ -50,14 +46,12 @@ import { OlgaHeaderComponent } from './olga-header/olga-header.component';
     GamescoreUxComponent,
     GameScoreItemComponent,
     ToggleSwitchComponent,
-    LabeledSliderComponent,
     MainMenuComponent,
     BoardMenuComponent,
-    ScoreItemMenu,
+    VariationMenu,
     CanvasChessBoard,
     OlgaControlsComponent,
     OlgaStatusComponent,
-    OlgaTitleComponent,
     KeymapMenuComponent,
     GeneralMenuComponent,
     KeymapItemComponent,
@@ -70,7 +64,9 @@ import { OlgaHeaderComponent } from './olga-header/olga-header.component';
     PgnMenuComponent,
     CookieConsentComponent,
     ToggleSelectComponent,
-    OlgaHeaderComponent
+    OlgaHeaderComponent,
+    ValueSliderComponent,
+    ValueSelectComponent
   ],
   imports: [
     BrowserModule,
@@ -83,11 +79,9 @@ import { OlgaHeaderComponent } from './olga-header/olga-header.component';
     MatInputModule,
     MatGridListModule,
     MatMenuModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatTabsModule,
+    MatTabsModule
   ],
-  providers: [LayoutService, ColorService, OlgaService, Clipboard],
+  providers: [LayoutService, ThemeService, OlgaService, Clipboard],
   bootstrap: [Olga],
 })
 export class AppModule { }

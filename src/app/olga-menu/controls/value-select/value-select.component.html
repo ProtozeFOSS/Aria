@@ -1,0 +1,7 @@
+<div class="control-container">
+    <img class="thumb-image" [src]="thumbnail">
+    <div class="min-val">{{minimum}}</div>
+    <value-slider class="slider" (input)="updateValue($event)" [max]="max" [minimum]="minimum" [value]="value ? value.value: 50"></value-slider>
+    <div class="max-val">{{max}}</div>
+    <div class="title">{{title}}: {{value? value.value: 0}}</div>
+</div>

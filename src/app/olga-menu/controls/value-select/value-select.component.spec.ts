@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LabeledSliderComponent } from './labeled-slider.component';
+import { ValueSelectComponent } from './value-select.component';
 
-describe('LabeledSliderComponent', () => {
-  let component: LabeledSliderComponent;
-  let fixture: ComponentFixture<LabeledSliderComponent>;
+describe('ValueSelectComponent', () => {
+  let component: ValueSelectComponent;
+  let fixture: ComponentFixture<ValueSelectComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LabeledSliderComponent ]
+      declarations: [ ValueSelectComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LabeledSliderComponent);
+    fixture = TestBed.createComponent(ValueSelectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -23,7 +23,7 @@ main-menu{
     overflow-y: auto;
     visibility: hidden;
 }
-score-item-menu {
+variation-menu{
     position: absolute;
     top: 0px;
     bottom:0px;
@@ -31,7 +31,10 @@ score-item-menu {
     right:0px;
     background: #100c0ce3;
     z-index: 1000;
+    overflow-y: auto;
     visibility: hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
 }
 
 .close-button{

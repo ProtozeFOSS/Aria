@@ -13,7 +13,6 @@ import { ChessMove } from '../common/kokopu-engine';
 export class OlgaStatusComponent implements OnInit {
   readonly status = new BehaviorSubject<string>('White to move.');
   constructor(public olga: OlgaService) {
-    olga.attachStatus(this);
   }
 
   ngOnInit(): void {

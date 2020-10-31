@@ -35,12 +35,15 @@ $overlayContextBackgroundGradient: var(
   --overlayContextBackgroundGradient
 ); // Context Menu background gradient
 
-$item: var(--item);
-$item-contrast: var(--item-contrast);
-$item-bg: var(--item-bg);
+
 
 /******************* Menu *****************************************************/
 $meBackground: var(--meBackground);
+
+/************************ Menu Controls ******************************************/
+$csFill: var(--csFill);
+$csAccent: var(--csAccent);
+$csAccent2: var(--csAccent2);
 
 /******************* Game Score Container Variables ***************************/
 $gsTextColor: var(--gsTextColor); // Text color for game score
@@ -92,6 +95,16 @@ $boardBGDark: var(--boardBGDark); // board dark tile
 $boardBGLight: var(--boardBGLight); // board light tile
 $boardLabelLight: var(--boardLabelLight); // board light label
 $boardLabelDark: var(--boardLabelDark); // board dark label
+
+
+
+/******************** Font Sizes ************************************/
+$gsFontSize: var(--gsFontSize); // board dark tile
+$gsFontSizeAN: var(--gsFontSizeAN); // board light tile
+$gsFontSizeHG: var(--gsFontSizeHG); // board light label
+$gsFontSizeVA: var(--gsFontSizeVA); // board dark label
+$gsFontSizePC: var(--gsFontSizePC); // board dark label
+
 
 // General stuff
 $text-color: var(--text-color);

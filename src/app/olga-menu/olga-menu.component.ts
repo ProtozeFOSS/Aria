@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { GameScoreItem } from '../common/kokopu-engine';
-import { ColorService } from '../services/colors.service';
+import { ThemeService } from '../services/themes.service';
 import { LayoutService } from '../services/layout.service';
 import { OlgaService } from '../services/olga.service';
 import { MenuType, MainMenuComponent } from './main-menu/main-menu.component';
-import { ScoreItemMenu } from './score-item-menu/score-item-menu.component';
+import { VariationMenu } from './variation-menu/variation-menu.component';
 
 
 // OLGAS Global Menu system
@@ -16,11 +16,11 @@ import { ScoreItemMenu } from './score-item-menu/score-item-menu.component';
 export class OlgaMenuComponent implements OnInit, AfterViewInit {
   public visible = false;
   @ViewChild(MainMenuComponent) settingsMenu: MainMenuComponent | null = null;
-  @ViewChild(ScoreItemMenu) variationMenu: ScoreItemMenu | null = null;
+  @ViewChild(VariationMenu) variationMenu: VariationMenu | null = null;
   closeButton: HTMLElement | null = null;
   overlay: HTMLElement | null = null;
   protected size: {width: number, height: number} = {width:0, height: 0};
-  constructor(public olga: OlgaService, public layout: LayoutService, public colors: ColorService) { }
+  constructor(public olga: OlgaService, public layout: LayoutService, public themes: ThemeService) { }
 
   ngOnInit(): void {
 
@@ -56,6 +56,13 @@ export class OlgaMenuComponent implements OnInit, AfterViewInit {
 
   openVariationMenu(data: GameScoreItem) : void {
     if(this.variationMenu) {
+      if(this.closeButton && this.overlay) {
+        this.closeButton.style.visibility = 'visible';
+        this.overlay.style.visibility = 'visible';
+        document.body.style.position = 'fixed';
+        document.body.style.top = '-' + window.scrollY + 'px';
+        document.body.style.overflowY = 'hidden';
+      }
       this.variationMenu.resize(this.size);
       this.variationMenu.openAt(data);
     }
@@ -70,10 +77,14 @@ export class OlgaMenuComponent implements OnInit, AfterViewInit {
       document.body.style.overflowY = 'auto';
     }
     if(this.settingsMenu) {
-      this.settingsMenu.close();
+      if(this.settingsMenu.visible){
+        this.layout.resizeLayout();
+        this.olga.saveSettings();
+        this.settingsMenu.close();
+      }
     }
-    this.layout.resizeLayout();
-    this.olga.saveSettings();
+    if(this.variationMenu) {
+      this.variationMenu.close();
+    }
   }
-
 }

@@ -8,13 +8,18 @@ import {
 } from '@angular/core';
 import { GamescoreUxComponent } from './game-score/game-score.ux';
 import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.component';
-import { ColorService } from './services/colors.service';
+import { ThemeService } from './services/themes.service';
 import { LayoutService } from './services/layout.service';
 import { OlgaService } from './services/olga.service';
 import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
 import { OlgaMenuComponent } from './olga-menu/olga-menu.component';
 import { CookieConsentComponent } from './cookie-consent/cookie-consent.component';
 import { OlgaHeaderComponent } from './olga-header/olga-header.component';
+import { TestPGNData } from './test';
+import { OlgaStatusComponent } from './olga-status/olga-status.component';
+const THEMES = 'themes';
+const LAYOUT = 'layout';
+const OLGA = 'olga';
 
 @Component({
   selector: 'olga',
@@ -37,15 +42,16 @@ export class Olga implements AfterViewInit {
   cookiesComponent: CookieConsentComponent | null = null;
   @ViewChild(OlgaHeaderComponent)
   headerComponent: OlgaHeaderComponent | null = null;
-  @Input() pgnString = '';
+  @ViewChild(OlgaStatusComponent)
+  statusComponent: OlgaStatusComponent | null = null;
   @Output() gameScoreWidth: number | null = 389;
   @Output() oldWidth: number | null = 0;
   @Output() keymap: Map<string, any> = new Map<string, any>();
   protected doneResizingScore = false;
   constructor(
     public olga: OlgaService,
-    public colors: ColorService,
-    public layout: LayoutService,
+    public themes: ThemeService,
+    public layout: LayoutService
   ) {
     const date = new Date();
     this.olga.UUID = 'OLGA-' + date.getTime().toString();
@@ -59,61 +65,40 @@ export class Olga implements AfterViewInit {
     // })
   }
 
+ 
   // tslint:disable-next-line: typedef
   ngAfterViewInit() {
+
     this.layout.gameScoreElement = document.getElementById('olga-score-' + this.olga.UUID);
     this.layout.boardElement = document.getElementById(this.olga.UUID + '-ccb');
     this.layout.controlsElement = document.getElementById('olga-controls-' + this.olga.UUID);
     this.layout.statusElement = document.getElementById('olga-status-' + this.olga.UUID);
     this.layout.headerElement = document.getElementById('olga-header-' + this.olga.UUID);
-    this.colors.initializeColorPalette();
-    this.colors.setOlga(this.olga);
-    this.colors.boardBGDark.subscribe((bgDark) => {
-      this.canvasBoardComponent?.setDarkTile(bgDark);
-    })
-    if (this.canvasBoardComponent) {
-      this.olga.attachBoard(this.canvasBoardComponent);
-    }
-    if(this.controlsComponent) {
-      this.olga.attachControls(this.controlsComponent);
-    }
+    
+    this.olga.attachOlga(this);
     if (this.gameScoreComponent) {
-      this.olga.attachScore(this.gameScoreComponent);
       this.gameScoreComponent.resizeHandleEvent = this.layout.onSliderDrag.bind(this.layout);
       this.gameScoreComponent.resizeTouchEvent = this.layout.onSliderTouch.bind(this.layout);
     }
-
-    if (this.canvasBoardComponent) {
-      this.olga.attachBoard(this.canvasBoardComponent);
-    }
-
-    if(this.cookiesComponent) {
-      this.olga.attachCookiesComponent(this.cookiesComponent);
-    }
-    if(this.headerComponent) {
-      this.olga.attachHeader(this.headerComponent);
-    }
-
-    this.olga.attachOlga(this);
-
-
-    this.colors.boardBGLight.subscribe((light) => {
+    this.themes.boardBGLight.subscribe((light) => {
       if (this.canvasBoardComponent) {
         this.canvasBoardComponent.setLightTile(light);
       }
     });
-    this.colors.boardBGDark.subscribe((dark) => {
+    this.themes.boardBGDark.subscribe((dark) => {
       if (this.canvasBoardComponent) {
         this.canvasBoardComponent.setDarkTile(dark);
       }
     });
-    const pgn = this.gameScoreComponent?.getPGN();
-    if (pgn) {
-      this.olga.loadPGN(pgn);
-    }
+    this.olga.loadPGN(TestPGNData + this.gameScoreComponent?.getPGN());
     window.onkeydown = this.keyEvent.bind(this);
-    this.layout.initializeLayout(this);
-    window.setTimeout(()=>{this.olga.loadSettings();},1);
+    window.setTimeout(()=>{ 
+      this.olga.loadSettings();
+      this.layout.initializeLayout(this);
+      this.themes.initializeColorPalette();
+    },1);
+
+
   }
   mouseMoved(event: MouseEvent): void {
     if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
@@ -134,19 +119,25 @@ export class Olga implements AfterViewInit {
   public applyJsonSettings(settings: object) : boolean {
     if(settings) {
       // @ts-ignore
-      if(settings['colors']) {
+      if(settings[THEMES]) {
         // @ts-ignore
-        this.colors.setSettings(settings['colors']);
+        this.themes.setSettings(settings[THEMES]);
       }
+      return true;
     }
     return false;
   }
 
+  public applyDefaultSettings(): boolean {
+    this.themes.initializeColorPalette();
+    return true;
+  }
+
   public getJsonSettings(): string {
-    const colorSettings = this.colors.settings();
+    const themeSettings = this.themes.settings();
     const layoutSettings = this.layout.settings();
     const olgaSettings = this.olga.settings();
-    return JSON.stringify({colors: colorSettings, layout: layoutSettings, olga:olgaSettings});
+    return JSON.stringify({themes: themeSettings, layout: layoutSettings, olga:olgaSettings});
   }
 
 
