@@ -1,13 +1,7 @@
-<mat-card class="gamescore-container">
-  <h1 class="score-title">Score</h1>
-  <mat-card-content class="score-list">
-    <div>
-      <game-score-item #scoreItem *ngFor="let item of _items; index as i;" [data]="item" (click)="navigateToNode(i)">
-      </game-score-item>
-    </div>
-  </mat-card-content>
-</mat-card>
-<div>
+<div class="score-list">
+    <game-score-item #scoreItem *ngFor="let item of _items; index as i;" [data]="item" (click)="navigateToNode(i)">
+    </game-score-item>
+</div>
   <input style="visibility: hidden; display: none;" #pgnData value='[Event "GMA, Wijk aan Zee NED"]
 [Site "?"]
 [Date "2003.??.??"]
@@ -91,7 +85,6 @@
 { Fritz7 }) 28. Nd4
 { Black created the weakness (Pa5) and cant quite defend it, so Anand forces a draw. }
 1/2-1/2' class="input-box" #pgnBox type="text" />
-</div>
 
 <div #resizeHandle id="resize-handle-{{this.olga.UUID}}" class="resize-handle" (touchstart)="startTouch($event)"
   (touchend)="stopTouch($event)" (mouseup)="resetResizeHandle($event)" (mousedown)="setGrabCursor($event)"

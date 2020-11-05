@@ -1,10 +1,9 @@
 import { Injectable, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Olga } from '../app.component';
-import { GamescoreUxComponent } from '../game-score/game-score.ux';
+import { GamescoreUxComponent } from '../olga-score/olga-score.component';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
 import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
-import { OlgaService } from './olga.service';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
 
@@ -132,11 +131,11 @@ export class LayoutService {
         this.controlsElement.style.height = controlsHeight + 'px';
         this.controlsElement.style.right = '1px';
         this.statusElement.style.left = '';
-        let statusTop = titleSize + gsHeight +  controlsHeight  - 24;
+        let statusTop = titleSize + gsHeight +  controlsHeight + 4;
         this.statusElement.style.top =
           statusTop.toString() + 'px'; // 64 represents the
         this.statusElement.style.width = gsWidth.toString() + 'px';
-        this.statusElement.style.height = (boardSize - statusTop) + 'px';
+        this.statusElement.style.height = '42px';
         this.statusElement.style.right = '1px';
         this.scoreSize.next(gsWidth);
       } else {
@@ -154,7 +153,7 @@ export class LayoutService {
         this.board?.setSize(boardSize);
         
         let controlsHeight = 100;
-        let gsHeight = boardSize - 200 - controlsHeight;
+        let gsHeight = boardSize - (titleSize + controlsHeight + 64);
         // game score
         this.gameScoreElement.style.left = '';
         this.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
@@ -169,10 +168,11 @@ export class LayoutService {
         this.controlsElement.style.right = '1px';
         this.statusElement.style.left = '';
         
-        let statusTop = titleSize + gsHeight +  controlsHeight  - 24;
+        let statusTop = titleSize + gsHeight +  controlsHeight;
         this.statusElement.style.top = statusTop + 'px'; // 64 represents the
         this.statusElement.style.width = gsSize.toString() + 'px';
         this.statusElement.style.right = '1px';
+        this.statusElement.style.height = '64px';
         this.scoreSize.next(gsSize);
       }
       if(this.menuComponent && this.menuComponent.visible) {
@@ -186,7 +186,7 @@ export class LayoutService {
       const boardSize = Math.floor((1 - this.preferredRatioPortrait) * width);
       this.board?.setSize(boardSize);
       let yOffset = 0;
-      if((width - boardSize) > 320) { // side by side
+      if((width - boardSize) > 340) { // side by side
           this.boardElement.style.top = '1px';
         if(this.layoutDirection) { // RTL
           this.headerElement.style.right = '2px';
@@ -207,13 +207,6 @@ export class LayoutService {
         yOffset = 200;
       }
      
-      if (this.statusElement) {
-        this.statusElement.style.top = (yOffset +boardSize - 32).toString() + 'px'; // 64 represents the controls ux
-        this.statusElement.style.left = 'calc(1% - 1px)';
-        this.statusElement.style.width = '98%';
-        this.statusElement.style.height = '52px';
-      }
-
       if (this.gameScoreElement) {
         this.gameScoreElement.style.top = (yOffset + boardSize + 129) + 'px'; // 64 represents the controls ux
         this.gameScoreElement.style.left = 'calc(1% - 1px)';
@@ -230,10 +223,16 @@ export class LayoutService {
       }
       if (this.controlsElement) {
         this.controlsElement.style.top =
-          (yOffset +boardSize + 30).toString() + 'px'; // 64 represents the controls ux
+          (yOffset + boardSize + 30).toString() + 'px'; // 64 represents the controls ux
         this.controlsElement.style.left = 'calc(1% - 1px)';
         this.controlsElement.style.width = '98%';
-        this.controlsElement.style.height = '99px';
+        this.controlsElement.style.height = '100px';
+      }
+      if (this.statusElement) {
+        this.statusElement.style.top = (yOffset + boardSize).toString() + 'px'; // 64 represents the controls ux
+        this.statusElement.style.left = 'calc(1% - 1px)';
+        this.statusElement.style.width = '98%';
+        this.statusElement.style.height = '42px';
       }
       if (this.resizeElement) {
         this.resizeElement.style.left = 'calc(50% - 3em)';

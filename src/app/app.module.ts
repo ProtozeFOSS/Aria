@@ -3,14 +3,14 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { Olga } from './app.component';
 import { GamescoreMenuComponent } from './olga-menu/gamescore-menu/gamescore-menu.component';
-import { GamescoreUxComponent } from './game-score/game-score.ux';
+import { GamescoreUxComponent } from './olga-score/olga-score.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
-import { GameScoreItemComponent } from './game-score/game-score-item/game-score-item.component';
+import { GameScoreItemComponent } from './olga-score/game-score-item/game-score-item.component';
 import { ThemeService } from './services/themes.service';
 import { ToggleSwitchComponent } from './common/toggle-switch/toggle-switch.component';
 import { MainMenuComponent } from './olga-menu/main-menu/main-menu.component';
@@ -39,6 +39,7 @@ import { ToggleSelectComponent } from './olga-menu/controls/toggle-select/toggle
 import { OlgaHeaderComponent } from './olga-header/olga-header.component';
 import { ValueSliderComponent } from './common/value-slider/value-slider.component';
 import { ValueSelectComponent } from './olga-menu/controls/value-select/value-select.component';
+import { PlayerShowcaseComponent } from './olga-header/player-showcase/player-showcase.component';
 @NgModule({
   declarations: [
     Olga,
@@ -66,7 +67,8 @@ import { ValueSelectComponent } from './olga-menu/controls/value-select/value-se
     ToggleSelectComponent,
     OlgaHeaderComponent,
     ValueSliderComponent,
-    ValueSelectComponent
+    ValueSelectComponent,
+    PlayerShowcaseComponent
   ],
   imports: [
     BrowserModule,

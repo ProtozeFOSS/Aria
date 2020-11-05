@@ -28,8 +28,8 @@ export enum ScoreViewType {
 
 @Component({
   selector: 'olga-score',
-  templateUrl: './game-score.ux.html',
-  styleUrls: ['./game-score.ux.scss'],
+  templateUrl: './olga-score.html',
+  styleUrls: ['./olga-score.scss'],
 })
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
   // Settings For Game Score Font
@@ -69,7 +69,10 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     this.layout.resizeElement = document.getElementById('resize-handle-' + this.olga.UUID);
   }
 
-
+  public clearGameScore(): void {
+    this._items = []
+    this.clearSelection();
+  }
   public setGameScoreItems(items: GameScoreItem[] | undefined): void {
     if(items) {
       this._items = items;
@@ -81,6 +84,10 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   public updateSelection(): void {
     window.setTimeout(()=>{this.selectGameScoreItem(this.currentIndex);}, 75);
+  }
+  public clearSelection(): void {
+    this.currentIndex = -1;
+    window.setTimeout(()=>{this.selectGameScoreItem(-1);}, 75);
   }
 
   protected navigateToItem(index: number):void {

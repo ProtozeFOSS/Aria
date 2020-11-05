@@ -2,7 +2,7 @@ import { Injectable, Output, Input } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GameScoreItem, ChessGame, GameScoreType, ChessMove } from '../common/kokopu-engine';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
-import { GamescoreUxComponent } from '../game-score/game-score.ux';
+import { GamescoreUxComponent } from '../olga-score/olga-score.component';
 import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 // @ts-ignore
 import {Node as KNode, Variation as KVariation } from 'kokopu';
@@ -188,14 +188,13 @@ export class OlgaService {
         }
     }
     this._games = ChessGame.parsePGN(this, pgn);
-    this._score?.setGameScoreItems([]);
     if(this._games.length > 0){
       const game = this._games[0];
       this._game = game;
       window.setTimeout( () => {
-        this._score?.setGameScoreItems(this._game?.generateGameScore());
-        this._board?.setBoardToPosition(this._game?.getPosition());
-        this._score?.updateSelection();
+        // this._score?.setGameScoreItems(this._game?.generateGameScore());
+        // this._board?.setBoardToPosition(this._game?.getPosition());
+        // this._score?.updateSelection();
         const headerData = this._game?.generateHeaderData();
         if(headerData) {
           if(this._header) {
@@ -204,6 +203,7 @@ export class OlgaService {
             this._header.setHeader(headerData);
           }
         }
+        this.selectGame(0);
       }, 1);
     }
   }
@@ -222,6 +222,7 @@ export class OlgaService {
     if (index >= 0 && index <= this._games.length && this._score) {
       this._game = this._games[index];
       window.setTimeout( () => {
+        this._score?.clearGameScore();
         this._score?.setGameScoreItems(this._game?.generateGameScore());
         this._board?.setBoardToPosition(this._game?.getPosition());
         this._score?.updateSelection();

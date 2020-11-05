@@ -7,54 +7,12 @@
   float: left;
   text-align: left;
   color:black;
-  line-height: 64px;
-  font-size: 130%;
-  vertical-align: bottom;
-  margin-top: 20px;
+  font-size: 18px;
   margin-left: 4px;
+  margin-top: 2px;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-}
-
-.button {
-  position: absolute;
-  border: black 2px solid;
-  background: $gsBackground;
-  border-radius: 2px;
-  float:right;
-  display:flexbox;
-  width: 30%;
-  height: 48px;
-  right: 0px;
-  top: 14px;
-  font-size: 28px;
-  line-height:48px;
-  max-width: 240px;
-  min-width: 120px;
-}
-
-
-.feather  {
-  left: 8px;
-  margin-top: 8px;
-  width: 33%;
-  height: 75%;
-  stroke: $boardBGDark;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
-}
-.buttontext{
-  position: absolute;
-  width: 42%;
-  height: 48px;
-  right: 20%;
-  top: 1%;
-  line-height: 48px;
-  color: $boardBGDark;
-  font-family: Cambria, Cochin, Georgia;
 }

@@ -6,7 +6,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { GamescoreUxComponent } from './game-score/game-score.ux';
+import { GamescoreUxComponent } from './olga-score/olga-score.component';
 import { CanvasChessBoard } from './canvas-chessboard/canvas-chessboard.component';
 import { ThemeService } from './services/themes.service';
 import { LayoutService } from './services/layout.service';

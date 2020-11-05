@@ -1,15 +1,20 @@
-<div class="container">
-    <div class="variant-header">{{variant}}</div>
-    <div class="game-controls"><button [ngClass]="{disabled : currentGame == 0}" (click)="previousGame()"><</button><button [ngClass]="{disabled : currentGame >= gameCount-1}" (click)="nextGame()">></button> </div>
-    <div class="primary-data-box"><div class="box-title">Event</div>{{event}}</div>
+<img class="background" src="/assets/images/header-background.svg">
+<div class="container">   
+    <img src="/assets/images/{{variant}}.svg" class="variant">
+    <div class="title-header">
+        <button [ngClass]="{disabled : currentGame == 0}" (click)="previousGame()" class="prev-game"><</button> 
+        <div class="match-title">{{match}}<div class="match-date">{{matchDate}}</div></div>
+        <button [ngClass]="{disabled : currentGame >= gameCount-1}" class="next-game" (click)="nextGame()">></button>
+    </div>
+    <!-- <div class="primary-data-box"><div class="box-title">Event</div>{{event}}</div>
     <div class="secondary-data-box"><div class="secondary-box-title">Event Date</div>{{eventDate}}</div>
-    
+
     <div class="primary-data-box"><div class="box-title">Match</div>{{match}}</div>
     <div class="secondary-data-box"><div class="secondary-box-title">Match Date</div>{{matchDate}}</div>
-    
+
     <div class="primary-data-box"><div class="box-title">White</div>{{white}}</div>
     <div class="secondary-data-box"><div class="secondary-box-title">Elo</div>{{whiteElo}}</div>
-    
+
     <div class="primary-data-box"><div class="box-title">Black</div>{{black}}</div>
-    <div class="secondary-data-box"><div class="secondary-box-title">Elo</div>{{blackElo}}</div>
+    <div class="secondary-data-box"><div class="secondary-box-title">Elo</div>{{blackElo}}</div> -->
 </div>

@@ -1,11 +1,72 @@
+.background{
+    position:absolute;
+    top:-2px;
+    left:-2px;
+    width:100%;
+    height:100%;
+    border: grey 2px solid;
+    border-radius:2px;
+    z-index:0;
+}
+
 .container{
     background:transparent;
-    border: black 1px solid;
+    border:none;
+    height:100%;
+    border-radius:0px;
+    display:flex;
+    flex-wrap:wrap;
+    flex-basis: auto;
+    z-index: 8;
+    justify-content: space-evenly;
+    align-items:flex-start;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
+
+.title-header{
+    height:32px;
+    flex-grow:3;
+    display:flex;
+    z-index:4;
+    order:1;
+}
+.variant{
+    min-height:32px;
+    min-width:166px;
+    height: 36px;
+    flex-grow:2;
+    order:0;
+    z-index:10;
+}
+.match-title{
+    order:1;
+    height: 42px;
+    line-height:42px;
+    font-size:16px;
+    text-align:center;
+    margin-right:6px;
+    font-weight: bolder;
+    width:calc(100% - 64px);
+    min-height:42px;
+    padding-bottom:4px;
+    font-family: 'Comfortaa';
+    .match-date{
+        height: 22px;
+        font-size:10px;
+        margin-bottom:18px;
+        text-align: center;
+        line-height:22px;
+    }
+}
+
+
 .variant-header{
-    left: 0px;
-    right: 0px;
     height: 24px;
+    width:217px;
     font-size: 24px;
     background: blanchedalmond;
     font-family: Arial, Helvetica, sans-serif;
@@ -13,11 +74,19 @@
     line-height: 24px;
     border: 2px solid black;
 }
-
-.game-controls{
-    position: absolute;
-    right:8px;
-    top:5px;
+.prev-game{
+    order:0;
+    height:36px;
+    width:36px;
+    border-radius: 2px;
+    margin-top: 3px;
+}
+.next-game{
+    order:2;
+    margin-top: 3px;
+    height:36px;
+    width:36px;
+    border-radius: 2px;
 }
 
 .disabled{
@@ -30,11 +99,13 @@
     background: rgb(77, 31, 0);
     color: white;
     float:left;
+    margin-top:8px;
     text-align: center;
-    clear:both;
     border: 1px solid black;
     border-radius: 2px;
-    margin-top:2px;
+    padding-top:2px;
+    z-index: 10;
+    order:6;
 }
 
 .secondary-data-box{
@@ -47,16 +118,20 @@
     border-radius: 2px;
     margin-top:2px;
     text-align: center;
+    z-index: 4;
+    order:7;
 }
 
 .box-title {
     color: #fabe0b;
     text-align: left;
     margin-left: 2px;
+    z-index: 4;
 }
 
 .secondary-box-title {
     color: #532c00;
     text-align: right;
     padding-right: 8px;
+    z-index: 4;
 }

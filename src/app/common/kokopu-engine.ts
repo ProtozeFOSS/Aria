@@ -278,7 +278,7 @@ export class ChessGame {
             if(variant === 'regular') {
                 variant = "Chess";
             } else {
-                variant = "Fischer Random"
+                variant = "Chess960"
             }
             map.set('Variant', variant);
         }
@@ -293,6 +293,7 @@ export class ChessGame {
         let current = this.startNode;
         if(traversals == 0) {
             items = this.generateRootScore();
+            return items;
         }
         for(let index = 0; index < traversals; ++index) {
             const traversal = this.scorePath[index] as Traversal;
@@ -302,7 +303,6 @@ export class ChessGame {
                 items.push(gItem);
                 previous = gItem;
                 current = current.next();
-                // go down
             }
             if(traversal.down > 0) {
                 const variations = current.variations() as KVariation[];
