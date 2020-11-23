@@ -12,29 +12,53 @@ import { ChessMove } from '../common/kokopu-engine';
 })
 export class OlgaStatusComponent implements OnInit {
   readonly status = new BehaviorSubject<string>('White to move.');
+  lastNode: KNode | null = null;
+  lastMove: ChessMove | undefined = undefined;
   constructor(public olga: OlgaService) {
   }
 
   ngOnInit(): void {
-  }
-
-  openEngine(): void {
 
   }
-  updateStatus(turn: string, last?: KNode, move?: ChessMove) {
-    let message = 'White';
-    if (turn === 'b') {
-      message = 'Black';
+
+  sendForAnalysis(): void {
+    if (this.lastNode) {
+      let fen = this.olga.gameFEN();
+      var addr = 'http://www.chessgames.com/perl/nph-analysis_prereq?atype=FEN&fen=';
+      addr += fen.split(" ").join("%20");
+      addr += '&move=';
+      addr += ((this.lastNode.fullMoveNumber() - 1) * 2) - (this.lastNode.moveColor() === 'b' ? 1 : 0);
+      addr += '&session_id=';
+      addr += this.olga.UUID;
+      window.open(addr);
     }
-    message += ' to move. ';
+  }
+
+  updateStatus(turn: string, last?: KNode, move?: ChessMove) {
+    let message = '';
     if (last) {
+      this.lastNode = last;
+      this.lastMove = move;
+      let position = last.position();
+      if (position) {
+        if (position.isCheckmate()) {
+          message = (turn === 'b' ? 'White' : 'Black') + ' wins by checkmate. ';
+        } else {
+          if (position.isCheck()) {
+            message += 'Check. '
+          }
+          message += (turn === 'w' ? 'White' : 'Black') + ' to move. ';
+        }
+      }
       let notation = this.olga.getMoveNotation(last);
-      message += 'Last: ' + last.fullMoveNumber() + (turn === 'b' ? '.' : '..') +  notation;
+      message += '' + last.fullMoveNumber() + (turn === 'b' ? '.' : '..') + notation;
     }
     this.status.next(message);
   }
 
   resetStatus(): void {
     this.status.next('White to move.');
+    this.lastNode = null;
+    this.lastMove = undefined;
   }
 }

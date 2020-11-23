@@ -5,12 +5,20 @@ import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.compone
 import { GamescoreUxComponent } from '../olga-score/olga-score.component';
 import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 // @ts-ignore
-import {Node as KNode, Variation as KVariation } from 'kokopu';
+import { Node as KNode, Variation as KVariation } from 'kokopu';
 import { OlgaControlsComponent } from '../olga-controls/olga-controls.component';
 import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
 import { CookieConsentComponent } from '../cookie-consent/cookie-consent.component';
 import { Olga } from '../app.component';
 import { OlgaHeaderComponent } from '../olga-header/olga-header.component';
+
+export interface PlayerData{
+  born?: string;
+  elo?: number;
+  image?: string;
+}
+export const STOCK_IMAGE = '/assets/images/player.png';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,11 +27,13 @@ export class OlgaService {
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
   @Output() readonly cookiesAccepted = new BehaviorSubject<boolean>(false);
   @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(300);
+  @Output() readonly gameScoreAsTable = new BehaviorSubject<boolean>(false);
   protected autoIntervalID = -1;
   protected timeLeft = 300;
   public UUID: string = '';
   public setName: string = '';
   public setDate: string = '';
+  public playerData: object = {};
   @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(
     true
   );
@@ -48,7 +58,7 @@ export class OlgaService {
 
 
   // Visual Settings
-  constructor() { 
+  constructor() {
     this.figurineNotation.subscribe((figurineNotation: boolean) => {
       if (figurineNotation) {
         this.gsFontFamily.next('FigurineSymbolT1');
@@ -60,9 +70,9 @@ export class OlgaService {
         this.gsFontFamily.value
       );
     });
-    this.cookiesAccepted.subscribe((cookiesAccepted: boolean)=>{
-        this.setCookieConsent(cookiesAccepted);
-    }); 
+    this.cookiesAccepted.subscribe((cookiesAccepted: boolean) => {
+      this.setCookieConsent(cookiesAccepted);
+    });
   }
 
   public settings(): object {
@@ -70,8 +80,8 @@ export class OlgaService {
     return settings;
   }
 
-  public setSettings(settings: object) : void {
-    
+  public setSettings(settings: object): void {
+
   }
 
   public moveToStart(): void {
@@ -96,19 +106,19 @@ export class OlgaService {
   }
 
   public getNodeIndex(): number {
-    if(this._score) {
+    if (this._score) {
       return this._score.currentIndex;
     }
     return -1;
   }
-  
-  protected autoAdvance():void {
+
+  protected autoAdvance(): void {
     this.timeLeft -= 100;
-    if(this._controls) {
+    if (this._controls) {
       this._controls.setTimer(this.timeLeft);
     }
-    if(this.timeLeft <= 0) {
-      if(this._score && !this._score.isFinalPosition()){
+    if (this.timeLeft <= 0) {
+      if (this._score && !this._score.isFinalPosition()) {
         this.advance();
       } else {
         this.toggleAutoPlay();
@@ -117,16 +127,16 @@ export class OlgaService {
     }
   }
 
-  protected createJsonSettings() : string {
-    if(this._app) {
+  protected createJsonSettings(): string {
+    if (this._app) {
       return this._app.getJsonSettings();
     }
     return '';
   }
 
   protected setJsonSettings(json: string): boolean {
-    if(this._app) {
-      if(json.length > 0 ) {
+    if (this._app) {
+      if (json.length > 0) {
         const settings = JSON.parse(json);
         return this._app.applyJsonSettings(settings);
       }
@@ -135,19 +145,19 @@ export class OlgaService {
     return false;
   }
 
-  public toggleAutoPlay():void {
-    
-    if(this._score && !this._score.isFinalPosition() && this.autoIntervalID == -1) {
+  public toggleAutoPlay(): void {
+
+    if (this._score && !this._score.isFinalPosition() && this.autoIntervalID == -1) {
       this.autoIntervalID = window.setInterval(this.autoAdvance.bind(this), 100);
-      if(this._controls) {
+      if (this._controls) {
         this._controls.playing = true;
       }
     } else {
       window.clearInterval(this.autoIntervalID);
       this.autoIntervalID = -1;
       this.timeLeft = this.autoPlaySpeed.value;
-      if(this._controls) {
-      this._controls.setTimer(this.timeLeft);
+      if (this._controls) {
+        this._controls.setTimer(this.timeLeft);
         this._controls.playing = false;
       }
     }
@@ -155,11 +165,11 @@ export class OlgaService {
   public getCookiesConsent(): boolean {
     return this.cookiesAccepted.value;
   }
-  public setCookieConsent(consent: boolean) : void {
-    if(this.cookiesAccepted.value != consent){
+  public setCookieConsent(consent: boolean): void {
+    if (this.cookiesAccepted.value != consent) {
       this.cookiesAccepted.next(consent);
     }
-    if(consent && this._cookies) {
+    if (consent && this._cookies) {
       this._cookies.hide();
     }
   }
@@ -167,37 +177,71 @@ export class OlgaService {
   public openEngine(): void { }
 
   public toggleGameScoreViewType(): void {
-
+    this.gameScoreAsTable.next(!this.gameScoreAsTable);
   }
 
   public loadPGN(pgn: string) {
     let fIndex = pgn.indexOf('[Set ');
-    if(fIndex >= 0) {
-        const endSet = pgn.indexOf(']', fIndex);
-        if(endSet >= 0 && endSet - fIndex <= 86) {
-            this.setName = pgn.substr(fIndex + 6, endSet - fIndex - 7);
-
-        }
+    if (fIndex >= 0) {
+      const endSet = pgn.indexOf(']', fIndex);
+      const setName = pgn.slice(fIndex, endSet + 1);
+      if (setName.length > 0 && setName.length < 240) {
+        this.setName = setName.substr(6, -2);
+      }
+      pgn = pgn.replace(setName, '');
     }
     fIndex = pgn.indexOf('[SetDate ');
-    if(fIndex >= 0) {
-        const endSet = pgn.indexOf(']', fIndex);
-        if(endSet >= 0 && endSet - fIndex <= 86) {
-            this.setDate = pgn.substr(fIndex + 10, endSet - fIndex - 11);
-
+    if (fIndex >= 0) {
+      const endSet = pgn.indexOf(']', fIndex);
+      const setDate = pgn.slice(fIndex, endSet + 1);
+      if (setDate.length > 0 && setDate.length < 60) {
+        this.setDate = setDate.substr(10, -2);
+      }
+      pgn = pgn.replace(setDate, '');
+    }
+    fIndex = pgn.indexOf('[ImagePath ');
+    let imagePath = '';
+    if (fIndex >= 0) {
+      const endSet = pgn.indexOf(']', fIndex);
+      const iPath = pgn.slice(fIndex, endSet + 1);
+      if (endSet >= 0 && endSet - fIndex <= 120) {
+        imagePath = iPath.slice(12, -2);
+      }
+      pgn = pgn.replace(iPath, '');
+    }
+    fIndex = pgn.indexOf('[PlayerData ');
+    this.playerData = {};
+    if (fIndex >= 0) {
+      const endSet = pgn.indexOf(']', fIndex);
+      const pData = pgn.slice(fIndex, endSet + 1);
+      if (endSet >= 0 && endSet - fIndex <= 1500) {
+        const data = pData.slice(13, -2);
+        if (data.length > 0) {
+          this.playerData = JSON.parse(data) as object;
+          if(this.playerData) {
+            for(let k in this.playerData) {
+              // @ts-ignore
+              let pdata = this.playerData[k];
+              if(pdata.image) {
+                pdata.image = imagePath + pdata.image;
+              }
+            }
+          }
         }
+      }
+      pgn = pgn.replace(pData, '');
     }
     this._games = ChessGame.parsePGN(this, pgn);
-    if(this._games.length > 0){
+    if (this._games.length > 0) {
       const game = this._games[0];
       this._game = game;
-      window.setTimeout( () => {
+      window.setTimeout(() => {
         // this._score?.setGameScoreItems(this._game?.generateGameScore());
         // this._board?.setBoardToPosition(this._game?.getPosition());
         // this._score?.updateSelection();
         const headerData = this._game?.generateHeaderData();
-        if(headerData) {
-          if(this._header) {
+        if (headerData) {
+          if (this._header) {
             this._header.gameCount = this._games.length;
             this._header.currentGame = 0;
             this._header.setHeader(headerData);
@@ -209,7 +253,7 @@ export class OlgaService {
   }
 
   public clearItems(): void {
-    if(this._score) {
+    if (this._score) {
       this._score._items = [];
     }
   }
@@ -221,14 +265,14 @@ export class OlgaService {
   public selectGame(index: number) {
     if (index >= 0 && index <= this._games.length && this._score) {
       this._game = this._games[index];
-      window.setTimeout( () => {
+      window.setTimeout(() => {
         this._score?.clearGameScore();
         this._score?.setGameScoreItems(this._game?.generateGameScore());
         this._board?.setBoardToPosition(this._game?.getPosition());
         this._score?.updateSelection();
         const headerData = this._game?.generateHeaderData();
-        if(headerData) {
-          if(this._header) {
+        if (headerData) {
+          if (this._header) {
             this._header.gameCount = this._games.length;
             this._header.setHeader(headerData);
           }
@@ -241,11 +285,13 @@ export class OlgaService {
     this._app = olga;
     this._board = olga.canvasBoardComponent;
     this._header = olga.headerComponent;
-    this._score = olga.gameScoreComponent;
     this._controls = olga.controlsComponent;
     this._cookies = olga.cookiesComponent;
     this._menu = olga.menuComponent;
     this._status = olga.statusComponent;
+  }
+  public attachScore(score: GamescoreUxComponent): void {
+    this._score = score;
   }
 
   public attachHeader(header: OlgaHeaderComponent) {
@@ -258,10 +304,10 @@ export class OlgaService {
 
   public openVariation(data: GameScoreItem): void {
     const variations = data.move.variations();
-    if(this._score && variations && variations.length) {
+    if (this._score && variations && variations.length) {
       console.log('Editing Variations on: ' + data.move.notation());
       console.log(variations);
-      if(this._menu) {
+      if (this._menu) {
         this._menu.openVariationMenu(data);
       }
     }
@@ -272,19 +318,19 @@ export class OlgaService {
     console.log(data.move.notation());
     const variations = data.move.variations();
     let previous = data;
-    variations.forEach((variation: KVariation) =>{
+    variations.forEach((variation: KVariation) => {
       console.log(variation);
       let current = variation.first();
-      if(current) {
+      if (current) {
         console.log('Variation chain :');
         let chain = current.notation();
-        if(previous) {
+        if (previous) {
           chain = previous.move.notation() + '->' + chain;
         }
-        while(current){
+        while (current) {
           current = current.next();
-          if(current) {
-            chain += '->'+ current.notation();
+          if (current) {
+            chain += '->' + current.notation();
           }
         }
         console.log(chain);
@@ -300,8 +346,8 @@ export class OlgaService {
   // Board interface
 
   public rotateBoardOrientation(): void {
-    if(this._board){
-      if(this._board.settings.orientation == 'white'){
+    if (this._board) {
+      if (this._board.settings.orientation == 'white') {
         this._board.settings.orientation = 'black';
       } else {
         this._board.settings.orientation = 'white';
@@ -310,14 +356,14 @@ export class OlgaService {
     }
   }
   public reRenderBoard(): void {
-    if(this._board) {
+    if (this._board) {
       this._board.requestRedraw();
     }
   }
   public redrawBoard(): void {
-    if(this._game && this._board) {
-    const position = this._game.getPosition();
-      if(position) {
+    if (this._game && this._board) {
+      const position = this._game.getPosition();
+      if (position) {
         this._board.setBoardToPosition(position);
       }
     }
@@ -335,7 +381,7 @@ export class OlgaService {
     this._board?.makeMove(move);
   }
 
-  public reverseBoardMove(move: ChessMove) : void {
+  public reverseBoardMove(move: ChessMove): void {
     this._board?.unMakeMove(move);
   }
 
@@ -359,7 +405,7 @@ export class OlgaService {
     this._game?.performPromotion(move);
   }
 
-  public getGame(): ChessGame | null{
+  public getGame(): ChessGame | null {
     return this._game;
   }
 
@@ -367,57 +413,70 @@ export class OlgaService {
     return this._board;
   }
 
+  public getPlayerData(player: string): PlayerData | null {
+    // @ts-ignore
+    return this.playerData[player] as PlayerData;
+  }
+
 
 
   // engine interface
-  public isMoveDescriptor(move: any) : boolean {
+  public isMoveDescriptor(move: any): boolean {
     return ChessGame.isMoveDescriptor(move);
   }
 
+  public gameFEN(): string {
+    let fen = '';
+    if (this._game) {
+      return this._game.getPosition().fen();
+    }
+    return fen;
+  }
+
   public getMoveNotation(node: KNode): string {
-    if(this._game) {
+    if (this._game) {
       return this._game.getMoveNotation(node);
     }
     return '';
   }
 
   public play(next: GameScoreItem): boolean {
-    if(this._game) {
+    if (this._game) {
       return this._game.play(next);
     }
     return false;
   }
   public unPlay(current: KNode, previous = null): boolean {
-    if(this._game) {
+    if (this._game) {
       return this._game.unPlay(current, previous);
     }
     return false;
   }
 
   public makeEngineMove(next: ChessMove): boolean | null {
-    if(this._game) {
+    if (this._game) {
       return this._game.makeMove(next);
     }
     return null;
   }
 
   public makeVariantMove(index: number, move: KNode): boolean {
-    if(this._game) {
+    if (this._game) {
       return this._game.makeVariantMove(index, move);
     }
     return false;
   }
-  
-  
+
+
   public resetEngine(): void {
-    if(this._game) {
+    if (this._game) {
       this._game.resetEngine();
     }
   }
 
   public saveSettings(): void {
-    if(this._cookies) {
-      if(this.cookiesAccepted.value) {
+    if (this._cookies) {
+      if (this.cookiesAccepted.value) {
         let settings = this.createJsonSettings();
         this._cookies.setCookie(settings, 365);
       } else {
@@ -428,7 +487,7 @@ export class OlgaService {
 
   public loadSettings(): string {
     let settings = '';
-    if(this._cookies){
+    if (this._cookies) {
       settings = this._cookies.getCookie();
     }
     this.setJsonSettings(settings);

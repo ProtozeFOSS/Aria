@@ -783,7 +783,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           }
           pieceObject.setCoords();
           this.pieces[tile] = { tile: tile, object: pieceObject };
-          this.tiles[tile].piece = { role, color } as Piece;
+          // @ts-ignore
+          this.tiles[tile]['piece'] = { role, color } as Piece;
           if (this.canvas) {
             this.canvas?.add(pieceObject);
             pieceObject.moveTo(10);

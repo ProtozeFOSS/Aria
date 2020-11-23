@@ -34,7 +34,7 @@ export class LayoutService {
   public menuComponent: OlgaMenuComponent | null = null;
   constructor() { }
 
-  public settings() : object {
+  public settings(): object {
     let settings = {};
     return settings;
   }
@@ -61,18 +61,19 @@ export class LayoutService {
   }
 
   public openSettings(): void {
-    if(this.menuComponent){
+    if (this.menuComponent) {
       this.menuComponent.open();
     }
   }
 
   public closeSettings(): void {
-    if(this.menuComponent){
+    if (this.menuComponent) {
       this.menuComponent.close();
     }
   }
 
   private resizeToLandscape(width: number, height: number, gsSize?: number) {
+    
     if (
       this.olga &&
       this.gameScoreElement &&
@@ -105,23 +106,23 @@ export class LayoutService {
         this.board?.setSize(boardSize);
         let gsHeight = (boardSize - (titleSize + controlsHeight + 48));
         // game score
-        if(this.layoutDirection) { // RTL
+        if (this.layoutDirection) { // RTL
           this.headerElement.style.right = '2px';
           this.headerElement.style.left = '';
           this.boardElement.style.left = '2px';
           this.boardElement.style.right = '';
-        }else {
+        } else {
           this.headerElement.style.left = '2px';
           this.headerElement.style.right = '';
           this.boardElement.style.right = '2px';
           this.boardElement.style.left = '';
         }
         this.boardElement.style.top = '2px';
-        this.headerElement.style.height = titleSize + 'px';
+        this.headerElement.style.height = (titleSize + gsHeight) + 'px';
         this.headerElement.style.width = gsWidth + 'px';
-        this.gameScoreElement.style.left = '';
-        this.gameScoreElement.style.top = titleSize + 'px'; // 64 represents the controls ux
-        this.gameScoreElement.style.width = gsWidth + 'px';
+        // this.gameScoreElement.style.left = '';
+        // this.gameScoreElement.style.top = titleSize + 'px'; // 64 represents the controls ux
+        // this.gameScoreElement.style.width = gsWidth + 'px';
         this.gameScoreElement.style.height = gsHeight + 'px';
         // controls
         this.controlsElement.style.left = '';
@@ -131,7 +132,7 @@ export class LayoutService {
         this.controlsElement.style.height = controlsHeight + 'px';
         this.controlsElement.style.right = '1px';
         this.statusElement.style.left = '';
-        let statusTop = titleSize + gsHeight +  controlsHeight + 4;
+        let statusTop = titleSize + gsHeight + controlsHeight + 4;
         this.statusElement.style.top =
           statusTop.toString() + 'px'; // 64 represents the
         this.statusElement.style.width = gsWidth.toString() + 'px';
@@ -151,15 +152,15 @@ export class LayoutService {
           gsSize = window.innerWidth - boardSize + padding;
         }
         this.board?.setSize(boardSize);
-        
+
         let controlsHeight = 100;
         let gsHeight = boardSize - (titleSize + controlsHeight + 64);
         // game score
-        this.gameScoreElement.style.left = '';
-        this.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
-        this.gameScoreElement.style.width = gsSize + 'px';
-        this.gameScoreElement.style.height = gsHeight + 'px';
-        this.gameScoreElement.style.overflow = 'visible';
+        // this.gameScoreElement.style.left = '';
+        // this.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
+        // this.gameScoreElement.style.width = gsSize + 'px';
+        // this.gameScoreElement.style.height = gsHeight + 'px';
+        // this.gameScoreElement.style.overflow = 'visible';
         // controls
         this.controlsElement.style.left = '';
         this.controlsElement.style.top =
@@ -167,58 +168,59 @@ export class LayoutService {
         this.controlsElement.style.width = (gsSize - 2).toString() + 'px';
         this.controlsElement.style.right = '1px';
         this.statusElement.style.left = '';
-        
-        let statusTop = titleSize + gsHeight +  controlsHeight;
+
+        let statusTop = titleSize + gsHeight + controlsHeight;
         this.statusElement.style.top = statusTop + 'px'; // 64 represents the
         this.statusElement.style.width = gsSize.toString() + 'px';
         this.statusElement.style.right = '1px';
         this.statusElement.style.height = '64px';
         this.scoreSize.next(gsSize);
       }
-      if(this.menuComponent && this.menuComponent.visible) {
+      if (this.menuComponent && this.menuComponent.visible) {
         this.menuComponent.resize(width, height);
       }
       this.boardSize.next(boardSize);
     }
+    this.landscapeOrientation.next(true);
   }
   private resizeToPortrait(width: number, height: number, gsSize?: number) {
     if (this.olga && this.boardElement && this.headerElement) {
       const boardSize = Math.floor((1 - this.preferredRatioPortrait) * width);
       this.board?.setSize(boardSize);
       let yOffset = 0;
-      if((width - boardSize) > 340) { // side by side
-          this.boardElement.style.top = '1px';
-        if(this.layoutDirection) { // RTL
+      if ((width - boardSize) > 340) { // side by side
+        this.boardElement.style.top = '1px';
+        if (this.layoutDirection) { // RTL
           this.headerElement.style.right = '2px';
           this.headerElement.style.left = '';
           this.boardElement.style.left = '2px';
-        }else {
+        } else {
           this.headerElement.style.left = '2px';
           this.headerElement.style.right = '';
           this.boardElement.style.right = '2px';
         }
-        this.headerElement.style.width = ((width-boardSize)-2) + 'px';
-        this.headerElement.style.height = boardSize + 'px';
+        this.headerElement.style.width = ((width - boardSize) - 2) + 'px';
+        //this.headerElement.style.height = boardSize + 'px';
       } else { // Header above board
         this.boardElement.style.top = '200px';
-        this.headerElement.style.height = '240px';
+        //this.headerElement.style.height = '240px';
         this.headerElement.style.width = '100%';
-        this.boardElement.style.left = ((width-boardSize)/2) + 'px';
+        this.boardElement.style.left = ((width - boardSize) / 2) + 'px';
         yOffset = 200;
       }
-     
+
       if (this.gameScoreElement) {
         this.gameScoreElement.style.top = (yOffset + boardSize + 129) + 'px'; // 64 represents the controls ux
         this.gameScoreElement.style.left = 'calc(1% - 1px)';
         this.gameScoreElement.style.width = 'calc(98%  + 2px)';
         this.gameScoreElement.style.bottom = '6px';
         // MUST MOVE TO DYNAMICALLY RESIZING TO GAME SCORE
-        
+
         let scoreHeight = (window.innerHeight - (boardSize + 174));
-        if(scoreHeight < 225) {
+        if (scoreHeight < 225) {
           scoreHeight = 225;
         }
-        this.gameScoreElement.style.height = scoreHeight +'px';
+        this.gameScoreElement.style.height = scoreHeight + 'px';
         //  (boardSize / 3 > 425 ? 425 : boardSize / 3).toString() + 'px';
       }
       if (this.controlsElement) {
@@ -240,10 +242,11 @@ export class LayoutService {
         this.resizeElement.style.width = '6em';
         this.resizeElement.style.height = '1.2em';
       }
-      if(this.menuComponent && this.menuComponent.visible) {
+      if (this.menuComponent && this.menuComponent.visible) {
         this.menuComponent.resize(width, height);
       }
     }
+    this.landscapeOrientation.next(false);
   }
   initializeLayout(olga: Olga, autoResize = true): void {
     this.olga = olga;
@@ -263,10 +266,10 @@ export class LayoutService {
 
   public increaseBoardSize(): void {
     const landscape = this.landscapeOrientation.value;
-    if(landscape &&  this.preferredRatioLandscape > .1) {
+    if (landscape && this.preferredRatioLandscape > .1) {
       this.preferredRatioLandscape -= .025;
     }
-    if(!landscape && this.preferredRatioPortrait > .1) {
+    if (!landscape && this.preferredRatioPortrait > .1) {
       this.preferredRatioPortrait -= .025;
     }
     this.resizeLayout();
@@ -274,10 +277,10 @@ export class LayoutService {
 
   public decreaseBoardSize(): void {
     const landscape = this.landscapeOrientation.value;
-    if(landscape && this.preferredRatioLandscape < .7) {
+    if (landscape && this.preferredRatioLandscape < .7) {
       this.preferredRatioLandscape += .025;
     }
-    if(!landscape && this.preferredRatioPortrait < .7) {
+    if (!landscape && this.preferredRatioPortrait < .7) {
       this.preferredRatioPortrait += .025;
     }
     this.resizeLayout();
@@ -293,12 +296,12 @@ export class LayoutService {
       if (this.olga && this.appContainer) {
         let gsSize = window.innerWidth - event.touches[0].clientX;
         const width = window.innerWidth
-        || document.documentElement.clientWidth
-        || document.body.clientWidth;
-        
+          || document.documentElement.clientWidth
+          || document.body.clientWidth;
+
         const height = window.innerHeight
-        || document.documentElement.clientHeight
-        || document.body.clientHeight;
+          || document.documentElement.clientHeight
+          || document.body.clientHeight;
 
         switch (this.preferredLayout) {
           case 'auto': {
@@ -328,12 +331,12 @@ export class LayoutService {
         if (this.olga && this.appContainer) {
           let gsSize = window.innerHeight - event.touches[0].clientY;
           const width = window.innerWidth
-          || document.documentElement.clientWidth
-          || document.body.clientWidth;
-          
+            || document.documentElement.clientWidth
+            || document.body.clientWidth;
+
           const height = window.innerHeight
-          || document.documentElement.clientHeight
-          || document.body.clientHeight;
+            || document.documentElement.clientHeight
+            || document.body.clientHeight;
           switch (this.preferredLayout) {
             case 'auto': {
               if (width > height) {
@@ -362,12 +365,12 @@ export class LayoutService {
       if (this.olga && this.appContainer) {
         let gsSize = window.innerWidth - event.clientX;
         const width = window.innerWidth
-        || document.documentElement.clientWidth
-        || document.body.clientWidth;
-        
+          || document.documentElement.clientWidth
+          || document.body.clientWidth;
+
         const height = window.innerHeight
-        || document.documentElement.clientHeight
-        || document.body.clientHeight;
+          || document.documentElement.clientHeight
+          || document.body.clientHeight;
 
         switch (this.preferredLayout) {
           case 'auto': {
@@ -393,12 +396,12 @@ export class LayoutService {
         if (this.olga && this.appContainer) {
           let gsSize = window.innerHeight - event.clientY;
           const width = window.innerWidth
-          || document.documentElement.clientWidth
-          || document.body.clientWidth;
-          
+            || document.documentElement.clientWidth
+            || document.body.clientWidth;
+
           const height = window.innerHeight
-          || document.documentElement.clientHeight
-          || document.body.clientHeight;
+            || document.documentElement.clientHeight
+            || document.body.clientHeight;
           switch (this.preferredLayout) {
             case 'auto': {
               if (width > height) {
@@ -427,12 +430,12 @@ export class LayoutService {
       console.log('Invalid (Null) App Container %$@');
     } else {
       const width = window.innerWidth
-      || document.documentElement.clientWidth
-      || document.body.clientWidth;
-      
+        || document.documentElement.clientWidth
+        || document.body.clientWidth;
+
       const height = window.innerHeight
-      || document.documentElement.clientHeight
-      || document.body.clientHeight;
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
       const landscape = (width >= height);
       this.landscapeOrientation.next(landscape);
       switch (this.preferredLayout) {
@@ -457,18 +460,18 @@ export class LayoutService {
     }
   }
 
-  
+
   public shrink() {
-    if(this.appContainer){
-      if(this.landscapeOrientation.value) {
-        if(this.preferredWidthPercentage >= .3) {
+    if (this.appContainer) {
+      if (this.landscapeOrientation.value) {
+        if (this.preferredWidthPercentage >= .3) {
           this.preferredWidthPercentage -= .1;
-          this.appContainer.nativeElement.clientWidth = (window.innerWidth  * this.preferredWidthPercentage);
+          this.appContainer.nativeElement.clientWidth = (window.innerWidth * this.preferredWidthPercentage);
         }
-      }else {
-        if(this.preferredHeightPercentage >= .3) {
+      } else {
+        if (this.preferredHeightPercentage >= .3) {
           this.preferredHeightPercentage -= .1;
-          this.appContainer.nativeElement.clientHeight = (window.innerHeight  * this.preferredHeightPercentage);
+          this.appContainer.nativeElement.clientHeight = (window.innerHeight * this.preferredHeightPercentage);
         }
       }
       this.resizeLayout();
@@ -476,19 +479,19 @@ export class LayoutService {
   }
 
   public grow() {
-    if(this.appContainer){
-      if(this.landscapeOrientation.value) {
-        if(this.preferredWidthPercentage <= .9) {
+    if (this.appContainer) {
+      if (this.landscapeOrientation.value) {
+        if (this.preferredWidthPercentage <= .9) {
           this.preferredWidthPercentage += .1;
-          this.appContainer.nativeElement.clientWidth = (window.innerWidth  * this.preferredWidthPercentage);
+          this.appContainer.nativeElement.clientWidth = (window.innerWidth * this.preferredWidthPercentage);
         }
-      }else {
-        if(this.preferredHeightPercentage <= .9) {
+      } else {
+        if (this.preferredHeightPercentage <= .9) {
           this.preferredHeightPercentage += .1;
-          this.appContainer.nativeElement.clientHeight = (window.innerHeight  * this.preferredHeightPercentage);
+          this.appContainer.nativeElement.clientHeight = (window.innerHeight * this.preferredHeightPercentage);
         }
       }
       this.resizeLayout();
-    } 
+    }
   }
 }

@@ -1,13 +1,18 @@
-<div class="score-list">
+<div *ngIf="!(olga.gameScoreAsTable | async)" class="score-list">
     <game-score-item #scoreItem *ngFor="let item of _items; index as i;" [data]="item" (click)="navigateToNode(i)">
     </game-score-item>
 </div>
+
+<div *ngIf="(olga.gameScoreAsTable | async)" class="score-table">
+
+</div>
+
   <input style="visibility: hidden; display: none;" #pgnData value='[Event "GMA, Wijk aan Zee NED"]
 [Site "?"]
 [Date "2003.??.??"]
 [Round "1"]
-[White "Anand,V"]
-[Black "Radjabov,T"]
+[White "V Anand"]
+[Black "T Radjabov"]
 [Result "1/2"]
 [WhiteElo "2750"]
 [BlackElo "2620"]

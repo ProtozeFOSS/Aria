@@ -5,12 +5,14 @@
     display: flex;
 }
 .color-input{
-    height:5.5em;
-    width: 5.5em;
+    height:3.5em;
+    width: 3.5em;
     margin-top:4px;
     margin-left:4px;
     margin-bottom:4px;
     float:left;
+    border-radius: 10px;
+    border: 2px black solid;
 }
 .red{
     float:right;

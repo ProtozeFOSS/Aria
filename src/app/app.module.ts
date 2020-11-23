@@ -40,6 +40,9 @@ import { OlgaHeaderComponent } from './olga-header/olga-header.component';
 import { ValueSliderComponent } from './common/value-slider/value-slider.component';
 import { ValueSelectComponent } from './olga-menu/controls/value-select/value-select.component';
 import { PlayerShowcaseComponent } from './olga-header/player-showcase/player-showcase.component';
+import { ColorSketchModule } from 'ngx-color/sketch';
+import { ResultShowcaseComponent } from './olga-header/result-showcase/result-showcase.component';
+
 @NgModule({
   declarations: [
     Olga,
@@ -68,7 +71,8 @@ import { PlayerShowcaseComponent } from './olga-header/player-showcase/player-sh
     OlgaHeaderComponent,
     ValueSliderComponent,
     ValueSelectComponent,
-    PlayerShowcaseComponent
+    PlayerShowcaseComponent,
+    ResultShowcaseComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +85,8 @@ import { PlayerShowcaseComponent } from './olga-header/player-showcase/player-sh
     MatInputModule,
     MatGridListModule,
     MatMenuModule,
-    MatTabsModule
+    MatTabsModule,
+    ColorSketchModule
   ],
   providers: [LayoutService, ThemeService, OlgaService, Clipboard],
   bootstrap: [Olga],

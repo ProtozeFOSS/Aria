@@ -34,3 +34,19 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'SanctuaryPlayground';
+  src: url('../../fonts/3rd Party/SanctuaryPlayground.woff2') format('woff2'),
+      url('../../fonts/3rd Party/SanctuaryPlayground.woff') format('woff');
+  font-style: normal;
+  font-display: swap;
+}
+
+
+@font-face {
+  font-family: 'Amita';
+  src: url('../../fonts/3rd Party/Amita/Amita-Regular.woff2') format('woff2'),
+      url('../../fonts/3rd Party/Amita/Amita-Regular.woff2') format('woff');
+  font-style: normal;
+  font-display: swap;
+}

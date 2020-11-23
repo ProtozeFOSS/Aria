@@ -17,7 +17,7 @@ export class GameScoreItem {
     }
     removeType(type: GameScoreType): void {
         this.type ^= type;
-    } 
+    }
     getType(previous: GameScoreItem | null = null): number {
         if (this.move && this.move.variations) {
             let variations = this.move.variations();
@@ -64,17 +64,17 @@ export class ChessMove {
     color: string = '';
     capture?: { role: string; color: string };
     promotion?: { role: string };
-    castle?: {type:string, to:number, from: number};
+    castle?: { type: string, to: number, from: number };
     promoteFunction?: any;
     static fromNode(node: KNode, descriptor: MoveDescriptor = null): ChessMove | null {
-        if(!node || !node._info) {
+        if (!node || !node._info) {
             return null;
         }
         const move = new ChessMove();
-        if(descriptor == null) {
-            if(isMoveDescriptor(node._info.moveDescriptor)) {
+        if (descriptor == null) {
+            if (isMoveDescriptor(node._info.moveDescriptor)) {
                 descriptor = node._info.moveDescriptor;
-            }else {
+            } else {
                 descriptor = node.positionBefore().notation(node._info.moveDescriptor);
             }
         }
@@ -85,7 +85,7 @@ export class ChessMove {
                 move.capture = { role: descriptor.capturedPiece().toUpperCase(), color: descriptor.capturedColoredPiece()[0] };
             }
             if (descriptor.isCastling()) {
-                move.castle = {type: node.notation(), to: SquareNames.indexOf(descriptor.rookTo()), from: SquareNames.indexOf(descriptor.rookFrom())};
+                move.castle = { type: node.notation(), to: SquareNames.indexOf(descriptor.rookTo()), from: SquareNames.indexOf(descriptor.rookFrom()) };
             }
             if (descriptor.isPromotion()) {
                 move.promotion = { role: descriptor.promotion() };
@@ -96,14 +96,14 @@ export class ChessMove {
     }
     compareMoveToNode(node: KNode): boolean {
         const mDescriptor = node._info.moveDescriptor;
-        if(mDescriptor) {
+        if (mDescriptor) {
             return (this.to === SquareNames.indexOf(mDescriptor.to()) && this.from === SquareNames.indexOf(mDescriptor.from()));
         }
         return false;
     }
 }
-export type GameScorePath = {active: number, paths:GameScoreItem[]};
-export type Traversal = {right: number, down: number};
+export type GameScorePath = { active: number, paths: GameScoreItem[] };
+export type Traversal = { right: number, down: number };
 export class ChessGame {
     protected position: KPosition | null = null;
     protected scorePath: Array<Traversal> = [];
@@ -145,15 +145,15 @@ export class ChessGame {
     static parsePGN(olga: any, pgn: string): ChessGame[] {
         const games = [];
         const state = pgnRead(pgn) as KDatabase;
-        if(state) {
+        if (state) {
             const gameCount = state.gameCount();
-            for(let index = 0; index < gameCount; ++index) {
+            for (let index = 0; index < gameCount; ++index) {
                 games.push(new ChessGame(olga, state.game(index)));
-            }            
+            }
         }
         return games;
     }
-    static isMoveDescriptor(move: any) : boolean {
+    static isMoveDescriptor(move: any): boolean {
         return isMoveDescriptor(move);
     }
     protected getLastNode(): KNode {
@@ -181,18 +181,18 @@ export class ChessGame {
     }
 
     public getMoveNotation(node: KNode): string {
-        if(isMoveDescriptor(node._info.moveDescriptor)) {
+        if (isMoveDescriptor(node._info.moveDescriptor)) {
             return node.notation();
         }
         const positionBefore = node.positionBefore();
-        if( positionBefore) {
+        if (positionBefore) {
             return node._info.moveDescriptor
         }
         return '';
     }
     public onVariant(): boolean {
-        this.scorePath.forEach((traversal:Traversal)=>{
-            if(traversal.down > 0) {
+        this.scorePath.forEach((traversal: Traversal) => {
+            if (traversal.down > 0) {
                 return true;
             }
             return false;
@@ -233,7 +233,7 @@ export class ChessGame {
         let node = variation.first();
         let previous = null;
         let gItem = null;
-        while(node) {
+        while (node) {
             gItem = new GameScoreItem(this, node);
             gItem.getType(previous);
             items.push(gItem);
@@ -244,38 +244,49 @@ export class ChessGame {
     }
 
     public generateHeaderData(): Map<string, string> {
+        this.game
         let map = new Map<string, string>();
-        if(this.game) {
+        if (this.game) {
             map.set('Event', this.game.event());
             const date = this.game.date();
-            if(date) {
+            if (date) {
                 let dateString = '';
-                if(date.toDateString){
+                if (date.toDateString) {
                     dateString = date.toDateString();
                 } else {
-                    if(date.month) {
+                    if (date.month) {
                         dateString += date.month;
                     }
-                    if(date.year) {
-                        if(dateString.length > 0) {
+                    if (date.year) {
+                        if (dateString.length > 0) {
                             dateString += ' of ';
                         }
                         dateString += date.year;
                     }
                 }
-                if(dateString.length == 0) {
-                    if(date.toString) {
+                if (dateString.length == 0) {
+                    if (date.toString) {
                         dateString = date.toString();
                     }
-                }                      
+                }
                 map.set('Match Date', dateString);
             }
             map.set('White', this.game.playerName('w'));
             map.set('Black', this.game.playerName('b'));
-            map.set('White Elo', this.game.playerElo('w'));
-            map.set('Black Elo', this.game.playerElo('b'));
+            let elo = this.game.playerElo('w');
+            if(elo != '?') {
+                map.set('White Elo', elo);
+            } 
+            elo =  this.game.playerElo('b');
+            if(elo !== '?') { 
+                map.set('Black Elo', elo);
+            }
+            map.set('Site', this.game.site());
+            map.set('Round', this.game.round());
+            map.set('Result', this.game.result());
+
             let variant = this.game.variant();
-            if(variant === 'regular') {
+            if (variant === 'regular') {
                 variant = "Chess";
             } else {
                 variant = "Chess960"
@@ -291,23 +302,23 @@ export class ChessGame {
         let previous = null;
         const traversals = this.scorePath.length;
         let current = this.startNode;
-        if(traversals == 0) {
+        if (traversals == 0) {
             items = this.generateRootScore();
             return items;
         }
-        for(let index = 0; index < traversals; ++index) {
+        for (let index = 0; index < traversals; ++index) {
             const traversal = this.scorePath[index] as Traversal;
-            for(let j = 0; j < traversal.right; ++j){
+            for (let j = 0; j < traversal.right; ++j) {
                 gItem = new GameScoreItem(this, current);
                 gItem.getType(previous);
                 items.push(gItem);
                 previous = gItem;
                 current = current.next();
             }
-            if(traversal.down > 0) {
+            if (traversal.down > 0) {
                 const variations = current.variations() as KVariation[];
-                if(variations.length > (traversal.down-1)) {
-                    const variation = variations[traversal.down-1];
+                if (variations.length > (traversal.down - 1)) {
+                    const variation = variations[traversal.down - 1];
                     current = variation.first();
                     console.log('Branching at ' + current.notation());
                     gItem = new GameScoreItem(this, current);
@@ -318,14 +329,14 @@ export class ChessGame {
                 }
             }
         }
-        while(current) {
+        while (current) {
             gItem = new GameScoreItem(this, current);
             gItem.getType(previous);
             items.push(gItem);
             previous = gItem;
             current = current.next();
         }
-        if(items.length > 0) {
+        if (items.length > 0) {
             this.lastNode = items[items.length - 1].move;
         }
         return items;
@@ -342,9 +353,9 @@ export class ChessGame {
 
 
     public moveToPrevious(previousNode: KNode, current: KNode): ChessMove | null {
-        if(this.currentNode) {
+        if (this.currentNode) {
             const previousPosition = this.currentNode.positionBefore();
-            if(previousPosition && this.currentNode) {
+            if (previousPosition && this.currentNode) {
                 const moveToBeUndone = ChessMove.fromNode(this.currentNode) as ChessMove;
                 this.olga.updateStatus(this.position.turn(), previousNode);
                 return moveToBeUndone;
@@ -355,7 +366,7 @@ export class ChessGame {
         }
         return null;
     }
-    
+
     public isGameOver(): boolean {
         return (this.position.isLegal() && this.position.moves().length == 0);
     }
@@ -370,7 +381,7 @@ export class ChessGame {
         return false;
     }
     public unPlay(current: KNode, previous: KNode): boolean {
-        if(previous) {
+        if (previous) {
             this.position = previous.position();
             this.currentNode = previous;
             --this.currentIndex;
@@ -381,12 +392,12 @@ export class ChessGame {
     }
 
     public createVariation(move: MoveDescriptor | string): boolean {
-        if(this.currentNode){
+        if (this.currentNode) {
             const variationsBefore = this.currentNode.variations();
             const variation = this.currentNode.addVariation(false);
             this.currentNode = variation.play(move);
             this.position = this.currentNode.position();
-            this.scorePath.push({right:this.currentIndex, down: variationsBefore.length + 1});
+            this.scorePath.push({ right: this.currentIndex, down: variationsBefore.length + 1 });
             this.currentIndex = 0;
             this.olga.updateStatus(this.position.turn(), this.currentNode, move);
             // tell it to restore gamescore
@@ -398,7 +409,7 @@ export class ChessGame {
     }
 
     public addMoveToEnd(move: MoveDescriptor): boolean {
-        if(this.currentNode && this.position.play(move)) {
+        if (this.currentNode && this.position.play(move)) {
             const next = this.currentNode.play(move);
             this.currentNode = next;
             this.position = this.currentNode.position();
@@ -412,16 +423,16 @@ export class ChessGame {
         return false;
     }
 
-    public makeVariantMove(index: number, node: KNode, updateBoard = false) : boolean {
-        const variations= node.variations();
-        if(index >= 0 && index < variations.length) {
+    public makeVariantMove(index: number, node: KNode, updateBoard = false): boolean {
+        const variations = node.variations();
+        if (index >= 0 && index < variations.length) {
             const variation = variations[index];
             this.currentNode = variation.first();
             this.position = this.currentNode.position();
             this.olga.updateStatus(this.position.turn(), this.currentNode);
-            this.scorePath.push({right:this.currentIndex, down: index + 1});
+            this.scorePath.push({ right: this.currentIndex, down: index + 1 });
             this.currentIndex = 0;
-            if(updateBoard) {
+            if (updateBoard) {
                 this.olga.makeBoardMove(ChessMove.fromNode(this.currentNode));
             }
             this.olga.updateStatus(this.position.turn(), this.currentNode);
@@ -435,20 +446,20 @@ export class ChessGame {
 
     public makeMoveOrVariation(nextMove: KNode, moveToBeMade: ChessMove, legalMove: MoveDescriptor | string): boolean {
         let valid = false;
-        if(nextMove && moveToBeMade.compareMoveToNode(nextMove)) {
+        if (nextMove && moveToBeMade.compareMoveToNode(nextMove)) {
             valid = this.position.play(legalMove);
             this.olga.incrementGameScoreSelection();
             this.currentNode = nextMove;
             ++this.currentIndex;
-        }else {
+        } else {
             // search through all the variant moves, if
-            if(nextMove) {
+            if (nextMove) {
                 const variations = nextMove.variations();
-                for(let index = 1; index <= variations.length; ++index){
-                    const variation = variations[index-1];
+                for (let index = 1; index <= variations.length; ++index) {
+                    const variation = variations[index - 1];
                     const variantMove = variation.first();
-                    if(moveToBeMade.compareMoveToNode(variantMove)){
-                        return this.makeVariantMove(index-1, nextMove);
+                    if (moveToBeMade.compareMoveToNode(variantMove)) {
+                        return this.makeVariantMove(index - 1, nextMove);
                     }
                 }
             }
@@ -465,35 +476,35 @@ export class ChessGame {
         // at the end of variation but game isnt over ( Create New Move)
         // move of separate variation that does not exist ( Create Move/Variation)  
 
-       
+
         const legal = this.position.isMoveLegal(SquareNames[move.from], SquareNames[move.to]);
         let lastNode = null;
-        if(legal) {  
+        if (legal) {
             if (legal.status == 'promotion') {
                 move.promoteFunction = legal;
                 this.olga.showPromotionDialog(move);
                 return true;
             }
             const legalMove = legal();
-            if(this.currentNode == null) {
+            if (this.currentNode == null) {
                 this.currentNode = this.startNode;
                 return this.makeMoveOrVariation(this.currentNode, move, legalMove);
             }
             const nextMove = this.currentNode.next();
-            if(!nextMove) {
+            if (!nextMove) {
                 return this.addMoveToEnd(legalMove);
             }
             console.log("Next Move ->" + nextMove.notation());
             lastNode = this.currentNode;
-            return this.makeMoveOrVariation(nextMove, move, legalMove);  
+            return this.makeMoveOrVariation(nextMove, move, legalMove);
 
-        } 
+        }
         return false;
     }
-    
+
 
     public resetEngine(): void {
-        this.position.reset();
+        this.position = this.game.initialPosition();
         this.currentNode = null;
         this.olga.updateStatus(this.position.turn());
     }

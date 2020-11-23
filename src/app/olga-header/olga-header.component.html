@@ -1,11 +1,25 @@
-<img class="background" src="/assets/images/header-background.svg">
-<div class="container">   
+<div class="container" #topContainer>
     <img src="/assets/images/{{variant}}.svg" class="variant">
     <div class="title-header">
-        <button [ngClass]="{disabled : currentGame == 0}" (click)="previousGame()" class="prev-game"><</button> 
-        <div class="match-title">{{match}}<div class="match-date">{{matchDate}}</div></div>
-        <button [ngClass]="{disabled : currentGame >= gameCount-1}" class="next-game" (click)="nextGame()">></button>
+        <button [ngClass]="{disabled : currentGame == 0}" (click)="previousGame()" class="prev-game">
+            < </button>
+                <div class="match-header"><a href="{{matchURL}}" class="match-title">{{match}}</a>
+                    <div class="match-date" (click)="searchDate()">{{matchDate}}</div>
+                </div>
+                <button [ngClass]="{disabled : currentGame >= gameCount-1}" class="next-game" (click)="nextGame()"> >
+                </button>
     </div>
+    <div class="player-section">
+        <player-showcase [name]="white" [elo]="whiteElo" [playerData]="whiteData" [searchURL]="searchURL">
+        </player-showcase>
+        <player-showcase [name]="black" [color]="true" [elo]="blackElo" [playerData]="blackData" [searchURL]="searchURL">
+        </player-showcase>
+    </div>
+    <div class="result-section">
+        <result-showcase *ngIf="layout.landscapeOrientation" ></result-showcase>
+    </div>
+    
+    <olga-score *ngIf="layout.landscapeOrientation | async" id="olga-score-{{this.olga.UUID}}" ></olga-score>
     <!-- <div class="primary-data-box"><div class="box-title">Event</div>{{event}}</div>
     <div class="secondary-data-box"><div class="secondary-box-title">Event Date</div>{{eventDate}}</div>
 

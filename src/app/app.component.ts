@@ -69,7 +69,6 @@ export class Olga implements AfterViewInit {
   // tslint:disable-next-line: typedef
   ngAfterViewInit() {
 
-    this.layout.gameScoreElement = document.getElementById('olga-score-' + this.olga.UUID);
     this.layout.boardElement = document.getElementById(this.olga.UUID + '-ccb');
     this.layout.controlsElement = document.getElementById('olga-controls-' + this.olga.UUID);
     this.layout.statusElement = document.getElementById('olga-status-' + this.olga.UUID);

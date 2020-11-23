@@ -1,1 +1,17 @@
-<p>player-showcase works!</p>
+<div class="showcase-box">
+    <div class="player-frame">
+        <img [src]="playerData.image" class="player-image">
+        <img src="/assets/images/picture-frame.png" class="photo-frame">
+    </div>
+    <div class="player-details">
+        <div class="player-header">
+            <img *ngIf="color" src="./assets/images/pieces/bpawn.png" class="color-image">
+            <img *ngIf="!color" src="./assets/images/pieces/wpawn.png" class="color-image">
+            {{color ? 'Black':'White'}}
+        </div>
+        <div class="player-name" (click)="search(name)">{{name}}</div>
+        <div *ngIf="playerData.born !== undefined" class="player-data" (click)="search(playerData.born)"><b>Born: </b>{{playerData.born}}</div>
+        <div *ngIf="playerData.elo !== undefined" class="player-data"><b>FIDE Elo: </b>{{playerData.elo}}</div>
+        <div *ngIf="elo.length" class="player-data"><b>Match Elo: </b>{{elo}}</div>
+    </div>
+</div>

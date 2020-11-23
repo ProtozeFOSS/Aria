@@ -58,11 +58,14 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   constructor(public olga: OlgaService, public layout: LayoutService) {
     this.resetCursor();
+    this.layout.gameScore = this;
+    this.olga.attachScore(this);
 
   }
 
   ngOnInit(): void {
     //console.log(this.gameScore);
+    this.layout.gameScoreElement = document.getElementById('olga-score-' + this.olga.UUID);
   }
 
   ngAfterViewInit(): void {
