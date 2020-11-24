@@ -1,25 +1,25 @@
-<div class="container" #topContainer>
-    <img src="/assets/images/{{variant}}.svg" class="variant">
-    <div class="title-header">
-        <button [ngClass]="{disabled : currentGame == 0}" (click)="previousGame()" class="prev-game">
+<div class="container" #containerElement>
+    <div class="top-header" #topHeaderElement>
+    <img src="/assets/images/{{variant}}.svg" class="variant" #variantElement>
+        <button [ngClass]="{disabled : currentGame == 0}" (click)="previousGame()" class="prev-game" #prevButtonElement>
             < </button>
-                <div class="match-header"><a href="{{matchURL}}" class="match-title">{{match}}</a>
-                    <div class="match-date" (click)="searchDate()">{{matchDate}}</div>
+                <div class="match-header" #matchHeaderElement><a href="{{matchURL}}" class="match-title">{{match}}</a>
+                    <div class="match-date" (click)="searchDate()" >{{matchDate}}</div>
                 </div>
-                <button [ngClass]="{disabled : currentGame >= gameCount-1}" class="next-game" (click)="nextGame()"> >
+                <button [ngClass]="{disabled : currentGame >= gameCount-1}" class="next-game" (click)="nextGame()" #nextButtonElement> >
                 </button>
     </div>
-    <div class="player-section">
-        <player-showcase [name]="white" [elo]="whiteElo" [playerData]="whiteData" [searchURL]="searchURL">
-        </player-showcase>
-        <player-showcase [name]="black" [color]="true" [elo]="blackElo" [playerData]="blackData" [searchURL]="searchURL">
-        </player-showcase>
+    <div class="player-section" #playerSectionElement>
+        <player-showcase [name]="white" [elo]="whiteElo" [playerData]="whiteData" [searchURL]="searchURL" #whiteShowcaseElement>
+        </player-showcase >
+        <player-showcase [name]="black" [color]="true" [elo]="blackElo" [playerData]="blackData" [searchURL]="searchURL" #blackShowcaseElement>
+        </player-showcase >
     </div>
-    <div class="result-section">
-        <result-showcase *ngIf="layout.landscapeOrientation" ></result-showcase>
+    <div class="result-section" #resultSectionElement>
+
     </div>
     
-    <olga-score *ngIf="layout.landscapeOrientation | async" id="olga-score-{{this.olga.UUID}}" ></olga-score>
+    <olga-score *ngIf="layout.landscapeOrientation | async" id="olga-score-{{this.olga.UUID}}" #scoreElement></olga-score>
     <!-- <div class="primary-data-box"><div class="box-title">Event</div>{{event}}</div>
     <div class="secondary-data-box"><div class="secondary-box-title">Event Date</div>{{eventDate}}</div>
 

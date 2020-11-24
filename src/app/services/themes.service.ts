@@ -40,8 +40,8 @@ export class ThemeService {
   @Input() @Output() readonly meTextColor = new BehaviorSubject<string>('white');
 
   // Game Score Variables
-  @Input() @Output() readonly gsTextColor = new BehaviorSubject<string>('white');
-  @Input() @Output() readonly gsBackground = new BehaviorSubject<string>('#353535');
+  @Input() @Output() readonly gsTextColor = new BehaviorSubject<string>('black');
+  @Input() @Output() readonly gsBackground = new BehaviorSubject<string>('transparent');
   @Input() @Output() readonly gsListBackground = new BehaviorSubject<string>('#353535');
   @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('');
   @Input() @Output() readonly gsTextSize = new BehaviorSubject<string>('16px');

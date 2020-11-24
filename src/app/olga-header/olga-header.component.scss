@@ -27,7 +27,7 @@
     user-select: none;
 }
 
-.title-header{
+.top-header{
     height:auto;
     flex-grow:3;
     display:flex;
@@ -59,15 +59,7 @@ player-showcase{
     justify-content: space-around;
 }
 
-.variant{
-    min-height:32px;
-    min-width:166px;
-    margin-top:2px;
-    height: 48px;
-    flex-grow:2;
-    order:0;
-    z-index:10;
-}
+
 
 .match-header{
     order:1;
@@ -82,10 +74,10 @@ player-showcase{
     font-family: Candara;
     .match-date{
         height: 22px;
-        font-size:72%;
+        font-size:12px;
         font-weight: bold;
         text-align: center;
-        line-height:4px;
+        line-height:16px;
     }
 }
 

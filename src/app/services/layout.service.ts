@@ -1,6 +1,7 @@
 import { Injectable, ElementRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Olga } from '../app.component';
+import { OlgaHeaderComponent } from '../olga-header/olga-header.component';
 import { GamescoreUxComponent } from '../olga-score/olga-score.component';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
 import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
@@ -13,9 +14,8 @@ export declare type Layout = 'auto' | 'landscape' | 'portrait';
 export class LayoutService {
   readonly landscapeOrientation = new BehaviorSubject<boolean>(true);
   readonly mobileView = new BehaviorSubject<boolean>(false);
-  readonly boardSize = new BehaviorSubject<number>(480);
-  readonly scoreSize = new BehaviorSubject<number>(340);
   olga: Olga | null = null;
+  header: OlgaHeaderComponent | null = null;
   appContainer: ElementRef | null = null;
   gameScore: GamescoreUxComponent | null = null;
   board: CanvasChessBoard | null = null;
@@ -39,25 +39,28 @@ export class LayoutService {
     return settings;
   }
 
-  private rtl(width: number, height: number, gsSize?: number) {
-    if (this.mobileView.value) {
-      // perform mobile setup
-      //this.olga.rtlComponentsMobile(width, height, gsSize)
-    } else {
-      // prepare desktop view
-      // determine the size of Olga and preferred ratio (unless we have already )
-      //this.olga.rtlComponents(width, height, gsSize)
-    }
+  public attachHeader(header: OlgaHeaderComponent) {
+    this.header = header;
   }
 
-  private rtp(width: number, height: number, gsSize?: number) {
-    if (this.mobileView.value) {
-      // perform mobile setup
-      //this.olga.rtpComponentsMobile(width, height, gsSize)
-    } else {
-      // prepare desktop view
-      //this.olga.rtpComponents(width, height, gsSize)
-    }
+  private rtl(boundingRect: DOMRectReadOnly) {
+    let state = this.preferredRatioLandscape > .5 ? 4:3;
+    let boardWidth = (boundingRect.width * this.preferredRatioLandscape);
+    boardWidth = boardWidth > boundingRect.height ? boundingRect.height:boardWidth;    
+    boardWidth = boardWidth < 192 ? 192: boardWidth;
+    let c2width = boundingRect.width - (boardWidth + 4);
+    let hheight = (boundingRect.height * .4);
+    hheight = hheight > 320 ? 320: hheight;
+    this.board.setSize(boardWidth);
+    this.header?.resize(c2width, hheight, state);
+    this.headerElement.style.height = '800px';
+    this.headerElement.style.width = c2width + 'px';
+    this.headerElement.style.right = '0px';
+  }
+
+  private rtp(boundingRect: DOMRectReadOnly) {
+    let state = this.preferredRatioLandscape > .5 ? 2:1;
+
   }
 
   public openSettings(): void {
@@ -81,8 +84,11 @@ export class LayoutService {
       this.statusElement &&
       this.headerElement &&
       this.menuComponent &&
-      this.boardElement
+      this.boardElement &&
+      this.header
     ) {
+      
+
       let boardSize = 0;
       const titleSize = 200;
       width = (this.preferredWidthPercentage * width);
@@ -107,17 +113,18 @@ export class LayoutService {
         let gsHeight = (boardSize - (titleSize + controlsHeight + 48));
         // game score
         if (this.layoutDirection) { // RTL
-          this.headerElement.style.right = '2px';
-          this.headerElement.style.left = '';
+          //this.headerElement.style.right = '2px';
+          //this.headerElement.style.left = '';
           this.boardElement.style.left = '2px';
           this.boardElement.style.right = '';
         } else {
-          this.headerElement.style.left = '2px';
-          this.headerElement.style.right = '';
+          //this.headerElement.style.left = '2px';
+          //this.headerElement.style.right = '';
           this.boardElement.style.right = '2px';
           this.boardElement.style.left = '';
         }
         this.boardElement.style.top = '2px';
+        this.header.resize(gsWidth, titleSize + gsHeight, 0);
         this.headerElement.style.height = (titleSize + gsHeight) + 'px';
         this.headerElement.style.width = gsWidth + 'px';
         // this.gameScoreElement.style.left = '';
@@ -138,7 +145,6 @@ export class LayoutService {
         this.statusElement.style.width = gsWidth.toString() + 'px';
         this.statusElement.style.height = '42px';
         this.statusElement.style.right = '1px';
-        this.scoreSize.next(gsWidth);
       } else {
         //this.preferredRatio = width / gsSize;
         let padding = width * 0.02;
@@ -159,7 +165,7 @@ export class LayoutService {
         // this.gameScoreElement.style.left = '';
         // this.gameScoreElement.style.top = titleSize + 2 + 'px'; // 64 represents the controls ux
         // this.gameScoreElement.style.width = gsSize + 'px';
-        // this.gameScoreElement.style.height = gsHeight + 'px';
+        this.gameScoreElement.style.height = gsHeight + 'px';
         // this.gameScoreElement.style.overflow = 'visible';
         // controls
         this.controlsElement.style.left = '';
@@ -174,37 +180,38 @@ export class LayoutService {
         this.statusElement.style.width = gsSize.toString() + 'px';
         this.statusElement.style.right = '1px';
         this.statusElement.style.height = '64px';
-        this.scoreSize.next(gsSize);
       }
       if (this.menuComponent && this.menuComponent.visible) {
         this.menuComponent.resize(width, height);
       }
-      this.boardSize.next(boardSize);
     }
     this.landscapeOrientation.next(true);
   }
   private resizeToPortrait(width: number, height: number, gsSize?: number) {
-    if (this.olga && this.boardElement && this.headerElement) {
+    if (this.olga && this.boardElement && this.headerElement && this.header) {
       const boardSize = Math.floor((1 - this.preferredRatioPortrait) * width);
       this.board?.setSize(boardSize);
       let yOffset = 0;
+      
+      this.header.resize(width, 360, 0);
       if ((width - boardSize) > 340) { // side by side
         this.boardElement.style.top = '1px';
         if (this.layoutDirection) { // RTL
-          this.headerElement.style.right = '2px';
-          this.headerElement.style.left = '';
+          // this.headerElement.style.right = '2px';
+          // this.headerElement.style.left = '';
+          
           this.boardElement.style.left = '2px';
         } else {
-          this.headerElement.style.left = '2px';
-          this.headerElement.style.right = '';
+          // this.headerElement.style.left = '2px';
+          // this.headerElement.style.right = '';
           this.boardElement.style.right = '2px';
         }
-        this.headerElement.style.width = ((width - boardSize) - 2) + 'px';
+        //this.headerElement.style.width = ((width - boardSize) - 2) + 'px';
         //this.headerElement.style.height = boardSize + 'px';
       } else { // Header above board
         this.boardElement.style.top = '200px';
         //this.headerElement.style.height = '240px';
-        this.headerElement.style.width = '100%';
+        //this.headerElement.style.width = '100%';
         this.boardElement.style.left = ((width - boardSize) / 2) + 'px';
         yOffset = 200;
       }
@@ -254,14 +261,10 @@ export class LayoutService {
     this.board = olga.canvasBoardComponent;
     this.menuComponent = olga.menuComponent;
     this.appContainer = olga.appContainer;
-    if (autoResize) {
-      window.removeEventListener('resize', this.resizeLayout.bind(this));
-      window.addEventListener('resize', this.resizeLayout.bind(this));
-    }
-    this.resizeLayout();
-    window.setTimeout(() => {
-      this.resizeLayout();
-    }, 250);
+    // if (autoResize) {
+    //   window.removeEventListener('resize', this.resizeLayout.bind(this));
+    //   window.addEventListener('resize', this.resizeLayout.bind(this));
+    // }
   }
 
   public increaseBoardSize(): void {
@@ -272,7 +275,6 @@ export class LayoutService {
     if (!landscape && this.preferredRatioPortrait > .1) {
       this.preferredRatioPortrait -= .025;
     }
-    this.resizeLayout();
   }
 
   public decreaseBoardSize(): void {
@@ -283,7 +285,6 @@ export class LayoutService {
     if (!landscape && this.preferredRatioPortrait < .7) {
       this.preferredRatioPortrait += .025;
     }
-    this.resizeLayout();
   }
 
   onSliderTouch(event: TouchEvent): void {
@@ -425,35 +426,27 @@ export class LayoutService {
     }
   }
 
-  resizeLayout(): void {
+  resizeLayout(boundingRect: DOMRectReadOnly): void {
     if (!this.appContainer) {
       console.log('Invalid (Null) App Container %$@');
     } else {
-      const width = window.innerWidth
-        || document.documentElement.clientWidth
-        || document.body.clientWidth;
-
-      const height = window.innerHeight
-        || document.documentElement.clientHeight
-        || document.body.clientHeight;
-      const landscape = (width >= height);
+      const landscape = (boundingRect.width >= boundingRect.height);
       this.landscapeOrientation.next(landscape);
       switch (this.preferredLayout) {
         case 'auto': {
           if (landscape) {
-            this.landscapeOrientation.next(true);
-            this.resizeToLandscape(width, height);
+            this.rtl(boundingRect);
           } else {
-            this.resizeToPortrait(width, height);
+            this.rtp(boundingRect);
           }
           break;
         }
         case 'landscape': {
-          this.resizeToLandscape(width, height);
+          this.rtl(boundingRect);
           break;
         }
         case 'portrait': {
-          this.resizeToPortrait(width, height);
+          this.rtp(boundingRect);
           break;
         }
       }
@@ -474,7 +467,6 @@ export class LayoutService {
           this.appContainer.nativeElement.clientHeight = (window.innerHeight * this.preferredHeightPercentage);
         }
       }
-      this.resizeLayout();
     }
   }
 
@@ -491,7 +483,6 @@ export class LayoutService {
           this.appContainer.nativeElement.clientHeight = (window.innerHeight * this.preferredHeightPercentage);
         }
       }
-      this.resizeLayout();
     }
   }
 }

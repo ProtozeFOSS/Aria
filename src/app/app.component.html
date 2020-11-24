@@ -1,5 +1,5 @@
 <div #olgaContainer id="{{ this.olga.UUID }}-olga-container" class="olga-container" (touchmove)="touchMoved($event)"
-  (mousemove)="mouseMoved($event)">
+  (mousemove)="mouseMoved($event)" (resize)="resizeOlga($event)">
   <canvas-chessboard (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent
     id="{{this.olga.UUID}}-ccb" boardID="this.olga.UUID" [theme]="this.themes.boardTheme()"
     [showLabels]="this.olga.showLabels.value">

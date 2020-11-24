@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { LayoutService } from '../services/layout.service';
 import { STOCK_IMAGE, PlayerData, OlgaService } from '../services/olga.service';
-
+const MIN_WIDTH_PS = 260; // Minimum width Player Showcase
 @Component({
   selector: 'olga-header',
   templateUrl: './olga-header.component.html',
@@ -24,10 +24,33 @@ export class OlgaHeaderComponent implements OnInit {
   @Input() matchURL: string = "https://en.wikipedia.org/wiki/2016_US_Chess_Championship";
   @Input() searchURL: string = 'https://www.chessgames.com/perl/ezsearch.pl?search=';
 
-  constructor(public olga: OlgaService, public layout: LayoutService) { }
+  // HTML Element Handles
+  // @ts-ignore
+  @ViewChild('containerElement') containerElement: ElementRef;
+  // @ts-ignore
+  @ViewChild('variantElement') variantElement: ElementRef;
+  // @ts-ignore
+  @ViewChild('topHeaderElement') topHeaderElement: ElementRef;
+  // @ts-ignore
+  @ViewChild('prevButtonElement') prevButtonElement: ElementRef;
+  // @ts-ignore
+  @ViewChild('matchHeaderElement') matchHeaderElement: ElementRef;
+  // @ts-ignore
+  @ViewChild('nextButtonElement') nextButtonElement: ElementRef;
+  // @ts-ignore
+  @ViewChild('resultSectionElement') resultSectionElement: ElementRef;
+  // @ts-ignore
+  @ViewChild('scoreElement') scoreElement: ElementRef;
+  // @ts-ignore
+  @ViewChild('playerSectionElement') playerSectionElement: ElementRef;
 
-  ngOnInit(): void {
-  }
+
+  constructor(public olga: OlgaService, public layout: LayoutService) {
+    olga.attachHeader(this);
+    layout.attachHeader(this);
+   }
+
+  ngOnInit(): void {}
 
   setHeader(map: Map<string, string>): void {
     this.event = this.olga.setName;
@@ -123,6 +146,30 @@ export class OlgaHeaderComponent implements OnInit {
   nextGame(): void {
     if (this.currentGame < this.gameCount) {
       this.olga.selectGame(++this.currentGame)
+    }
+  }
+  resize(width: number, height: number, state: number) {
+    switch(state) {
+        case 0 : // Full Portrait
+        case 1:
+          let variantHeight = (height * .05);
+          let fontSize = ((width)/this.match.length) + 4;
+          this.containerElement.nativeElement.style = 'max-height:' + height + 'px;width:100%;margin-left:0px;margin-right:1px;'
+          this.variantElement.nativeElement.style = 'margin-left: 2px;order:0;z-index:4;width:auto;height:'+ variantHeight + 'px;margin-top:' + (42 - variantHeight)/2 + 'px;';
+         // this.resultSectionElement.nativeElement.style = 'order:1;min-height:24px;height:32px;top-margin:2px;background:red;width:' + (width - (8+ variantWidth) + 'px;');
+          this.topHeaderElement.nativeElement.style ='margin-left:2px;margin-top:-2px;z-index:10;line-height:32px;display:flex;z-index:4;order:1;margin-right:4px;height:auto;width:auto;';
+          this.matchHeaderElement.nativeElement.style = 'font-size:' + fontSize + 'px;line-height:' +  Math.round(fontSize + 1) + 'px;margin-top:' + (24 - fontSize) + 'px';
+          this.playerSectionElement.nativeElement.style = 'margin-top:-8px; max-height:' + (height * .35) + 'px;';
+          break;
+        case 2: // Full Landscape
+          this.variantElement.nativeElement.style = 'min-height:32px;min-width:166px;margin-top:2px;height: 48px;flex-grow:2;order:0;z-index:10;';
+          this.topHeaderElement.nativeElement.style =
+          'order:1;height: auto;line-height:42px;font-size: 160%;text-align:center;min-width: 140px;width: calc(100% - 72px);min-height:42px;' 
+          'padding-bottom:4px;font-family: Candara;.match-date{height: 22px;font-size:72%;font-weight: bold;text-align: center;line-height:4px;}';
+          break;
+        case 3: // Vertical Column w/ Scroll
+          break;
+        default: break;
     }
   }
 }

@@ -47,7 +47,9 @@ export class Olga implements AfterViewInit {
   @Output() gameScoreWidth: number | null = 389;
   @Output() oldWidth: number | null = 0;
   @Output() keymap: Map<string, any> = new Map<string, any>();
+
   protected doneResizingScore = false;
+  resizeObserver: ResizeObserver = new ResizeObserver(this.resizeEvent.bind(this));
   constructor(
     public olga: OlgaService,
     public themes: ThemeService,
@@ -90,6 +92,7 @@ export class Olga implements AfterViewInit {
       }
     });
     this.olga.loadPGN(TestPGNData + this.gameScoreComponent?.getPGN());
+    this.resizeObserver.observe(this.appContainer.nativeElement);
     window.onkeydown = this.keyEvent.bind(this);
     window.setTimeout(()=>{ 
       this.olga.loadSettings();
@@ -139,7 +142,10 @@ export class Olga implements AfterViewInit {
     return JSON.stringify({themes: themeSettings, layout: layoutSettings, olga:olgaSettings});
   }
 
-
+  protected resizeEvent(entries: []) {
+    // @ts-ignore
+    this.layout.resizeLayout(entries[0].contentRect);
+  }
 
   public toggleAutoPlay(): void {
     if(this.olga) {
