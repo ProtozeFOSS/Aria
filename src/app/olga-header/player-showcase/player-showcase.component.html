@@ -5,8 +5,8 @@
     </div>
     <div class="player-details">
         <div class="player-header">
-            <img *ngIf="color" src="./assets/images/pieces/bpawn.png" class="color-image">
-            <img *ngIf="!color" src="./assets/images/pieces/wpawn.png" class="color-image">
+            <img *ngIf="color" src="/assets/images/pieces/bpawn.png" class="color-image">
+            <img *ngIf="!color" src="/assets/images/pieces/wpawn.png" class="color-image">
             {{color ? 'Black':'White'}}
         </div>
         <div class="player-name" (click)="search(name)">{{name}}</div>

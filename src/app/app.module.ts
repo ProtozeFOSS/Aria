@@ -10,7 +10,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
-import { GameScoreItemComponent } from './olga-score/game-score-item/game-score-item.component';
+import { FlowItemComponent } from './olga-score/score-flow/flow-item/flow-item.component';
 import { ThemeService } from './services/themes.service';
 import { ToggleSwitchComponent } from './common/toggle-switch/toggle-switch.component';
 import { MainMenuComponent } from './olga-menu/main-menu/main-menu.component';
@@ -42,13 +42,15 @@ import { ValueSelectComponent } from './olga-menu/controls/value-select/value-se
 import { PlayerShowcaseComponent } from './olga-header/player-showcase/player-showcase.component';
 import { ColorSketchModule } from 'ngx-color/sketch';
 import { ResultShowcaseComponent } from './olga-header/result-showcase/result-showcase.component';
+import { ScoreTableComponent } from './olga-score/score-table/score-table.component';
+import { ScoreFlowComponent } from './olga-score/score-flow/score-flow.component';
 
 @NgModule({
   declarations: [
     Olga,
     GamescoreMenuComponent,
     GamescoreUxComponent,
-    GameScoreItemComponent,
+    FlowItemComponent,
     ToggleSwitchComponent,
     MainMenuComponent,
     BoardMenuComponent,
@@ -72,7 +74,9 @@ import { ResultShowcaseComponent } from './olga-header/result-showcase/result-sh
     ValueSliderComponent,
     ValueSelectComponent,
     PlayerShowcaseComponent,
-    ResultShowcaseComponent
+    ResultShowcaseComponent,
+    ScoreTableComponent,
+    ScoreFlowComponent
   ],
   imports: [
     BrowserModule,

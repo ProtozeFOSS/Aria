@@ -6,9 +6,9 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  width: 100%;
-  height: 100%;
-  overflow-y:auto;
+  width: 800px;
+  height: 600px;
+  overflow-y:hidden;
 }
 
 .fenbutton {
@@ -28,10 +28,9 @@ cookie-consent{
 }
 
 olga-score {
-   margin: 2px;
-   width:100%;
-   height: 600px;
-   position: relative;
+   position: absolute;
+   z-index:10;
+   height: auto;
   // height: 40%;
 }
 
@@ -39,6 +38,7 @@ olga-header{
   background-image:url(/assets/images/header-background.svg);
   position: absolute;
   border: 1px solid black;
+  border-radius: 2px;
   min-width:230px;
   min-height: 240px;
   overflow-y: auto;
@@ -66,8 +66,7 @@ olga-controls {
   position: absolute;
   right: 1px;
   bottom: 8%;
-  height: 128px;
-  width:50%;
+  height: 99px;
   background-color: $gsBackground;
   border: black solid 1px;
   border-radius: 2px;

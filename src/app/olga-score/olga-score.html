@@ -1,13 +1,7 @@
-<div *ngIf="!(olga.gameScoreAsTable | async)" class="score-list">
-    <game-score-item #scoreItem *ngFor="let item of _items; index as i;" [data]="item" (click)="navigateToNode(i)">
-    </game-score-item>
-</div>
-
-<div *ngIf="(olga.gameScoreAsTable | async)" class="score-table">
-
-</div>
-
-  <input style="visibility: hidden; display: none;" #pgnData value='[Event "GMA, Wijk aan Zee NED"]
+Hello this is Olga Score!
+<score-flow *ngIf="olga.scoreViewType.value === ScoreViewType.Flow" class="score-list"></score-flow>
+<score-table *ngIf="olga.scoreViewType.value === ScoreViewType.Table" [items]="items"; class="score-table"></score-table>
+<input style="visibility: hidden; display: none;" #pgnData value='[Event "GMA, Wijk aan Zee NED"]
 [Site "?"]
 [Date "2003.??.??"]
 [Round "1"]

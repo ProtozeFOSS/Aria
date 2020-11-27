@@ -31,7 +31,7 @@ export class OlgaMenuComponent implements OnInit, AfterViewInit {
     this.overlay = document.getElementById('settings-overlay-' + this.olga.UUID);
   }
 
-  resize(width: number, height: number): void {
+  resize(width: number, height: number, state: number): void {
     this.size = {width, height};
     if(this.settingsMenu) {
       this.settingsMenu.resize(this.size);
@@ -78,7 +78,6 @@ export class OlgaMenuComponent implements OnInit, AfterViewInit {
     }
     if(this.settingsMenu) {
       if(this.settingsMenu.visible){
-        this.layout.resizeLayout();
         this.olga.saveSettings();
         this.settingsMenu.close();
       }

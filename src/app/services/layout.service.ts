@@ -5,6 +5,7 @@ import { OlgaHeaderComponent } from '../olga-header/olga-header.component';
 import { GamescoreUxComponent } from '../olga-score/olga-score.component';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
 import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
+import { OlgaControlsComponent } from '../olga-controls/olga-controls.component';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
 
@@ -16,12 +17,14 @@ export class LayoutService {
   readonly mobileView = new BehaviorSubject<boolean>(false);
   olga: Olga | null = null;
   header: OlgaHeaderComponent | null = null;
+  controlsComponent: OlgaControlsComponent;
   appContainer: ElementRef | null = null;
   gameScore: GamescoreUxComponent | null = null;
   board: CanvasChessBoard | null = null;
+  public menuComponent: OlgaMenuComponent | null = null;
   resizeElement: HTMLElement | null = null;
   preferredLayout: Layout = 'auto';
-  preferredRatioLandscape = 0.3;
+  preferredRatioLandscape = .75;
   preferredRatioPortrait = 0.4;
   preferredWidthPercentage = 1.0;
   preferredHeightPercentage = 1.0
@@ -31,7 +34,7 @@ export class LayoutService {
   public controlsElement: HTMLElement | null = null;
   public statusElement: HTMLElement | null = null;
   public headerElement: HTMLElement | null = null;
-  public menuComponent: OlgaMenuComponent | null = null;
+  resizeObserver: ResizeObserver = new ResizeObserver(this.resizeEvent.bind(this));
   constructor() { }
 
   public settings(): object {
@@ -39,23 +42,119 @@ export class LayoutService {
     return settings;
   }
 
+  protected resizeEvent(entries: ResizeObserverEntry[]) {
+    // @ts-ignore
+    const boundingRect = entries[0].contentRect as DOMRectReadOnly;
+    if (!this.appContainer) {
+      console.log('Invalid (Null) App Container %$@');
+    } else {
+      const landscape = (boundingRect.width >= boundingRect.height);
+      this.landscapeOrientation.next(landscape);
+      switch (this.preferredLayout) {
+        case 'auto': {
+          if (landscape) {
+            this.rtl(boundingRect);
+          } else {
+            this.rtp(boundingRect);
+          }
+          break;
+        }
+        case 'landscape': {
+          this.rtl(boundingRect);
+          break;
+        }
+        case 'portrait': {
+          this.rtp(boundingRect);
+          break;
+        }
+      }
+    }
+  }
+
   public attachHeader(header: OlgaHeaderComponent) {
     this.header = header;
   }
 
   private rtl(boundingRect: DOMRectReadOnly) {
-    let state = this.preferredRatioLandscape > .5 ? 4:3;
     let boardWidth = (boundingRect.width * this.preferredRatioLandscape);
     boardWidth = boardWidth > boundingRect.height ? boundingRect.height:boardWidth;    
     boardWidth = boardWidth < 192 ? 192: boardWidth;
     let c2width = boundingRect.width - (boardWidth + 4);
     let hheight = (boundingRect.height * .4);
     hheight = hheight > 320 ? 320: hheight;
-    this.board.setSize(boardWidth);
+    let state = boardWidth/boundingRect.width > .5 ? 4:3;
     this.header?.resize(c2width, hheight, state);
-    this.headerElement.style.height = '800px';
-    this.headerElement.style.width = c2width + 'px';
-    this.headerElement.style.right = '0px';
+    this.controlsComponent?.resize(c2width, 64, state);
+    this.board?.setSize(boardWidth);
+
+    switch(state) {
+      case 3:{ // landscape full
+        if(this.headerElement) {
+          this.headerElement.style.height = '800px';
+          this.headerElement.style.width = c2width + 'px';
+          this.headerElement.style.right = '0px';
+        }
+        if (this.layoutDirection) { // RTL
+          this.boardElement.style.left = '2px';
+          this.boardElement.style.right = '';
+        } else {
+          this.boardElement.style.right = '2px';
+          this.boardElement.style.left = '';
+        }
+        this.boardElement.style.top = '2px';
+        if(this.controlsElement) {
+          this.controlsElement.style.width = c2width + 'px';
+          this.controlsElement.style.top = '800px';
+        }
+        if(this.gameScoreElement) {
+          this.gameScoreElement.style.right = '2px';
+          this.gameScoreElement.style.width = c2width - 22 + 'px';
+          this.gameScoreElement.style.height = '456px';
+          this.gameScoreElement.style.top = '340px';
+          this.gameScoreElement.style.left = '';
+        }
+        if(this.statusElement) {
+          this.statusElement.style.top = '910px';
+          this.statusElement.style.height = '64px';
+          this.statusElement.style.right = '2px';
+          this.statusElement.style.width = c2width - 2 + 'px';
+        }
+        break;
+      }
+      case 4:{
+        if(this.headerElement) {
+          this.headerElement.style.height = '800px';
+          this.headerElement.style.width = c2width + 'px';
+          this.headerElement.style.right = '0px';
+        }
+        if (this.layoutDirection) { // RTL
+          this.boardElement.style.left = '2px';
+          this.boardElement.style.right = '';
+        } else {
+          this.boardElement.style.right = '2px';
+          this.boardElement.style.left = '';
+        }
+        this.boardElement.style.top = '2px';
+        if(this.controlsElement) {
+          this.controlsElement.style.width = c2width + 'px';
+          this.controlsElement.style.top = '800px';
+        }
+        if(this.gameScoreElement) {
+          this.gameScoreElement.style.right = '2px';
+          this.gameScoreElement.style.width = c2width - 24 + 'px';
+          this.gameScoreElement.style.height = '456px';
+          this.gameScoreElement.style.top = '340px';
+          this.gameScoreElement.style.left = '';
+        }
+        if(this.statusElement) {
+          this.statusElement.style.top = '910px';
+          this.statusElement.style.height = '64px';
+          this.statusElement.style.right = '2px';
+          this.statusElement.style.width = c2width - 2 + 'px';
+        }
+        break;
+      }
+    }
   }
 
   private rtp(boundingRect: DOMRectReadOnly) {
@@ -124,7 +223,7 @@ export class LayoutService {
           this.boardElement.style.left = '';
         }
         this.boardElement.style.top = '2px';
-        this.header.resize(gsWidth, titleSize + gsHeight, 0);
+        this.header.resize(gsWidth, titleSize + gsHeight, 1);
         this.headerElement.style.height = (titleSize + gsHeight) + 'px';
         this.headerElement.style.width = gsWidth + 'px';
         // this.gameScoreElement.style.left = '';
@@ -182,7 +281,7 @@ export class LayoutService {
         this.statusElement.style.height = '64px';
       }
       if (this.menuComponent && this.menuComponent.visible) {
-        this.menuComponent.resize(width, height);
+        this.menuComponent.resize(width, height,1);
       }
     }
     this.landscapeOrientation.next(true);
@@ -193,7 +292,7 @@ export class LayoutService {
       this.board?.setSize(boardSize);
       let yOffset = 0;
       
-      this.header.resize(width, 360, 0);
+      this.header.resize(width, 360, 1);
       if ((width - boardSize) > 340) { // side by side
         this.boardElement.style.top = '1px';
         if (this.layoutDirection) { // RTL
@@ -250,21 +349,18 @@ export class LayoutService {
         this.resizeElement.style.height = '1.2em';
       }
       if (this.menuComponent && this.menuComponent.visible) {
-        this.menuComponent.resize(width, height);
+        this.menuComponent.resize(width, height, 1);
       }
     }
     this.landscapeOrientation.next(false);
   }
-  initializeLayout(olga: Olga, autoResize = true): void {
+  initializeLayout(olga: Olga): void {
     this.olga = olga;
     this.gameScore = olga.gameScoreComponent;
     this.board = olga.canvasBoardComponent;
     this.menuComponent = olga.menuComponent;
     this.appContainer = olga.appContainer;
-    // if (autoResize) {
-    //   window.removeEventListener('resize', this.resizeLayout.bind(this));
-    //   window.addEventListener('resize', this.resizeLayout.bind(this));
-    // }
+    this.resizeObserver?.observe(this.appContainer.nativeElement);
   }
 
   public increaseBoardSize(): void {

@@ -14,17 +14,10 @@ import {
   GameScoreItem,
   GameScoreType
 } from '../common/kokopu-engine';
-import { GameScoreItemComponent } from './game-score-item/game-score-item.component';
 import { BehaviorSubject } from 'rxjs';
-import { OlgaService } from '../services/olga.service';
+import { OlgaService, ScoreViewType } from '../services/olga.service';
 import { LayoutService } from '../services/layout.service';
-
-export enum ScoreViewType {
-  Table = 101,
-  Flow = 202
-};
-
-
+import { FlowItemComponent } from './olga-score-flow/flow-item/flow-item.component';
 
 @Component({
   selector: 'olga-score',
@@ -32,13 +25,9 @@ export enum ScoreViewType {
   styleUrls: ['./olga-score.scss'],
 })
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
-  // Settings For Game Score Font
-  @Input() viewType: ScoreViewType = ScoreViewType.Flow;
-
   // View Children Handles
   @ViewChild('resizeHandle')
   resizeHandle: ElementRef | null = null;
-  @ViewChildren(GameScoreItemComponent) scoreItems: QueryList<GameScoreItemComponent> | null = null;
   @ViewChild('gamescore-container') container: ElementRef | null = null;
   @ViewChild('pgnData')
   pgnData: ElementRef | null = null; // To Be Deleted
@@ -52,7 +41,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   public _items: GameScoreItem[] = [];
   // Current item data and visual
   @Output() readonly currentData = new BehaviorSubject<GameScoreItem | null>(null);
-  @Output() currentItem: GameScoreItemComponent | null = null;
+  @Output() currentItem: FlowItemComponent | null = null;
   @Output() currentIndex: number = -1;
 
 
@@ -60,7 +49,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     this.resetCursor();
     this.layout.gameScore = this;
     this.olga.attachScore(this);
-
   }
 
   ngOnInit(): void {
@@ -97,6 +85,10 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
 
   }
 
+  resize(width: number, height: number, state: number) {
+    
+  }
+
   resizeScore(): void {
     this.olga.toggleAutoPlay();
     if (this.scoreWidth) {
@@ -107,7 +99,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     this.olga.toggleAutoPlay();
   }
 
-  openItemMenu(event: MouseEvent, item: GameScoreItemComponent): void {
+  openItemMenu(event: MouseEvent, item: FlowItemComponent): void {
     event.preventDefault();
     event.stopPropagation();
     console.log(item);

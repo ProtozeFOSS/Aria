@@ -3,7 +3,6 @@ import {
   AfterViewInit,
   ViewChild,
   ElementRef,
-  Input,
   Output,
 } from '@angular/core';
 import { GamescoreUxComponent } from './olga-score/olga-score.component';
@@ -28,28 +27,30 @@ const OLGA = 'olga';
 })
 export class Olga implements AfterViewInit {
   title = 'Olga PGN Viewer 2.0';
-  @ViewChild(GamescoreUxComponent)
-  gameScoreComponent: GamescoreUxComponent | null = null;
-  @ViewChild(CanvasChessBoard)
-  canvasBoardComponent: CanvasChessBoard | null = null;
-  @ViewChild('olgaContainer')
-  appContainer: ElementRef | null = null;
-  @ViewChild(OlgaMenuComponent)
-  menuComponent: OlgaMenuComponent | null = null;
-  @ViewChild(OlgaControlsComponent)
-  controlsComponent: OlgaControlsComponent | null = null;
-  @ViewChild(CookieConsentComponent)
-  cookiesComponent: CookieConsentComponent | null = null;
-  @ViewChild(OlgaHeaderComponent)
-  headerComponent: OlgaHeaderComponent | null = null;
-  @ViewChild(OlgaStatusComponent)
-  statusComponent: OlgaStatusComponent | null = null;
-  @Output() gameScoreWidth: number | null = 389;
-  @Output() oldWidth: number | null = 0;
+  // @ts-ignore
+  @ViewChild(GamescoreUxComponent) gameScoreComponent: GamescoreUxComponent;
+  // @ts-ignore
+  @ViewChild(CanvasChessBoard) canvasBoardComponent: CanvasChessBoard;
+  // @ts-ignore
+  @ViewChild('olgaContainer') appContainer: ElementRef;
+  // @ts-ignore
+  @ViewChild(OlgaMenuComponent) menuComponent: OlgaMenuComponent;
+  // @ts-ignore
+  @ViewChild(OlgaControlsComponent) controlsComponent: OlgaControlsComponent;
+  // @ts-ignore
+  @ViewChild(CookieConsentComponent) cookiesComponent: CookieConsentComponent;
+  // @ts-ignore
+  @ViewChild(OlgaHeaderComponent) headerComponent: OlgaHeaderComponent | null;
+  // @ts-ignore
+  @ViewChild(OlgaStatusComponent) statusComponent: OlgaStatusComponent | null;
+  // @ts-ignore
+  @Output() gameScoreWidth: number = 389;
+  // @ts-ignore
+  @Output() oldWidth: number = 0;
+  // @ts-ignore
   @Output() keymap: Map<string, any> = new Map<string, any>();
 
   protected doneResizingScore = false;
-  resizeObserver: ResizeObserver = new ResizeObserver(this.resizeEvent.bind(this));
   constructor(
     public olga: OlgaService,
     public themes: ThemeService,
@@ -59,24 +60,18 @@ export class Olga implements AfterViewInit {
     this.olga.UUID = 'OLGA-' + date.getTime().toString();
     console.log('ID: ' + this.olga.UUID);
     this.loadKeymap();
-    // this.olga..subscribe((game) => {
-    //   this.currentGame = game;
-    //   //this.gameScoreComponent.setGame(game);
-    //   //this.canvasBoarComponent.setGame(game);
-    //   //this.layout.updateLayout();
-    // })
   }
 
  
   // tslint:disable-next-line: typedef
   ngAfterViewInit() {
-
     this.layout.boardElement = document.getElementById(this.olga.UUID + '-ccb');
     this.layout.controlsElement = document.getElementById('olga-controls-' + this.olga.UUID);
     this.layout.statusElement = document.getElementById('olga-status-' + this.olga.UUID);
     this.layout.headerElement = document.getElementById('olga-header-' + this.olga.UUID);
     
     this.olga.attachOlga(this);
+    this.layout.initializeLayout(this);
     if (this.gameScoreComponent) {
       this.gameScoreComponent.resizeHandleEvent = this.layout.onSliderDrag.bind(this.layout);
       this.gameScoreComponent.resizeTouchEvent = this.layout.onSliderTouch.bind(this.layout);
@@ -92,21 +87,22 @@ export class Olga implements AfterViewInit {
       }
     });
     this.olga.loadPGN(TestPGNData + this.gameScoreComponent?.getPGN());
-    this.resizeObserver.observe(this.appContainer.nativeElement);
     window.onkeydown = this.keyEvent.bind(this);
     window.setTimeout(()=>{ 
       this.olga.loadSettings();
-      this.layout.initializeLayout(this);
       this.themes.initializeColorPalette();
+      this.appContainer.nativeElement.style.width = '';
+      this.appContainer.nativeElement.style.width = '100%';
+      this.appContainer.nativeElement.style.height = '';
+      this.appContainer.nativeElement.style.height = '100%';
     },1);
 
 
   }
   mouseMoved(event: MouseEvent): void {
-    if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
+    if (this.gameScoreComponent) {
       this.gameScoreComponent.resizeHandleEvent(event);
       if (event.buttons === 0) {
-        this.gameScoreComponent.resizing = false;
       }
     }
   }
@@ -142,10 +138,6 @@ export class Olga implements AfterViewInit {
     return JSON.stringify({themes: themeSettings, layout: layoutSettings, olga:olgaSettings});
   }
 
-  protected resizeEvent(entries: []) {
-    // @ts-ignore
-    this.layout.resizeLayout(entries[0].contentRect);
-  }
 
   public toggleAutoPlay(): void {
     if(this.olga) {
@@ -173,25 +165,9 @@ export class Olga implements AfterViewInit {
   }
 
   touchMoved(event: TouchEvent): void {
-    if (this.gameScoreComponent && this.gameScoreComponent.resizing) {
+    if (this.gameScoreComponent) {
       this.gameScoreComponent.resizeTouchEvent(event);
     }
-  }
-
-  setBoardSize(size: number): void {
-    if (this.canvasBoardComponent) {
-      this.canvasBoardComponent.setSize(size);
-    }
-  }
-  setGameScoreSize(size: number): void {
-    this.gameScoreWidth = size;
-    if (this.canvasBoardComponent) {
-      this.canvasBoardComponent.setSize(this.gameScoreWidth);
-    }
-  }
-
-  setMenuSize(size: number): void {
-    this.menuComponent?.resize(size, size);
   }
 
   ignoreEvent(event: MouseEvent): void {

@@ -1,42 +1,42 @@
-<div class="quick-actions-container">
-        <div (click)="toggleAutoPlay()" class="play">
+<div class="action-container" #actContainerElement>
+        <div (click)="toggleAutoPlay()" class="play" #playElement>
                 <svg class="feather-play">
                         <use [ngStyle]="{'visibility': playing ? 'visible':'hidden'}" xlink:href="/assets/images/feather-sprite.svg#pause" />
                         <use [ngStyle]="{'visibility': !playing ? 'visible':'hidden'}"  xlink:href="/assets/images/feather-sprite.svg#play" />
                 </svg>
                 <div class="timer">{{timeLeft}}</div>
         </div>
-        <div (click)="olga.rotateBoardOrientation()" class="view">
+        <div (click)="olga.rotateBoardOrientation()" class="view" #rotateElement>
                 <svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#refresh-cw" />
                 </svg>
         </div>
-        <div (click)="layout.openSettings()" class="settings">
+        <div (click)="layout.openSettings()" class="settings" #settingsElement>
                 <svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#sliders" />
                 </svg>
         </div>
         
-        <div (click)="layout.decreaseBoardSize()" class="shrink">
+        <div (click)="layout.decreaseBoardSize()" class="shrink" #shrinkElement>
                 <svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#minus" />
                 </svg>
         </div>
         
-        <div (click)="layout.increaseBoardSize()" class="grow">
+        <div (click)="layout.increaseBoardSize()" class="grow" #growElement>
                 <svg class="feather">
                         <use xlink:href="/assets/images/feather-sprite.svg#plus" />
                 </svg>
         </div>
         
 </div>
-<div class="navigation-container">
-        <div (click)="moveToStart($event);" class="button start"><svg class="feather">
+<div class="navigation-container" #navContainerElement>
+        <div (click)="moveToStart($event);" class="button start"><svg class="feather" #homeElement>
                         <use xlink:href="/assets/images/feather-sprite.svg#rewind" /></svg></div>
-        <div (click)="previous($event);" class="button previous"><svg class="feather">
+        <div (click)="previous($event);" class="button previous"><svg class="feather" #previousElement>
                         <use xlink:href="/assets/images/feather-sprite.svg#chevron-left" /></svg></div>
-        <div (click)="advance($event);" class="button next"><svg class="feather">
+        <div (click)="advance($event);" class="button next"><svg class="feather" #nextElement>
                         <use xlink:href="/assets/images/feather-sprite.svg#chevron-right" /></svg></div>
-        <div (click)="moveToEnd($event);" class="button end"><svg class="feather">
+        <div (click)="moveToEnd($event);" class="button end"><svg class="feather" #endElement>
                         <use xlink:href="/assets/images/feather-sprite.svg#fast-forward" /></svg></div>
 </div>

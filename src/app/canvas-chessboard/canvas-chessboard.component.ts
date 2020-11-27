@@ -24,6 +24,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Input() interactive = true;
   @Input() showLabels = false;
   @Input() boardID: string = '';
+  container: HTMLElement | null = null;
   protected promotionDialog: fabric.Group | null = null;
   protected knightButton: fabric.Group | null = null;
   protected bishopButton: fabric.Group | null = null;
@@ -47,7 +48,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   } | null = null;
   @Output() touching = false;
   @Output() midPromotion = false;
-
   @ViewChild('boardCanvas', {static: false}) boardCanvas: ElementRef | null = null;
   constructor(
     public olga: OlgaService,
@@ -61,6 +61,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     fabric.Object.prototype.transparentCorners = false;
+    this.container = document.getElementById(this.boardID + '-ccb');
     if(this.boardCanvas) { 
       this.canvas = new fabric.Canvas(this.boardCanvas.nativeElement);
       this.canvas.selection = false;
@@ -1251,9 +1252,13 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.tileSize = Math.floor(size / 8);
       this.canvas.width = size;
       this.canvas.height = size;
+      if(this.container) {
+        this.container.style.height = size +'px';
+        this.container.style.width = size +'px';
+      }
       this.canvas.setDimensions({
-        width: size + 4,
-        height: size + 4,
+        width: size,
+        height: size,
       });
       this.resizeBoardObjects(size);
       this.canvas.requestRenderAll();

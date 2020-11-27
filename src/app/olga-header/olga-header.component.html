@@ -1,5 +1,5 @@
 <div class="container" #containerElement>
-    <div class="top-header" #topHeaderElement>
+    <div class="top-header" #titleContainerElement>
     <img src="/assets/images/{{variant}}.svg" class="variant" #variantElement>
         <button [ngClass]="{disabled : currentGame == 0}" (click)="previousGame()" class="prev-game" #prevButtonElement>
             < </button>
@@ -18,8 +18,6 @@
     <div class="result-section" #resultSectionElement>
 
     </div>
-    
-    <olga-score *ngIf="layout.landscapeOrientation | async" id="olga-score-{{this.olga.UUID}}" #scoreElement></olga-score>
     <!-- <div class="primary-data-box"><div class="box-title">Event</div>{{event}}</div>
     <div class="secondary-data-box"><div class="secondary-box-title">Event Date</div>{{eventDate}}</div>
 

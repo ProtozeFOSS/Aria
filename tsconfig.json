@@ -2,6 +2,7 @@
 // It is not intended to be used to perform a compilation.
 {
   "files": [],
+  "experimentalDecorators":true,
   "references": [
     {
       "path": "./tsconfig.app.json"

@@ -1,17 +1,13 @@
-<div #olgaContainer id="{{ this.olga.UUID }}-olga-container" class="olga-container" (touchmove)="touchMoved($event)"
-  (mousemove)="mouseMoved($event)" (resize)="resizeOlga($event)">
+<div #olgaContainer id="{{ this.olga.UUID }}-olga-container" class="olga-container">
   <canvas-chessboard (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent
-    id="{{this.olga.UUID}}-ccb" boardID="this.olga.UUID" [theme]="this.themes.boardTheme()"
+    id="{{this.olga.UUID}}-ccb" boardID="{{this.olga.UUID}}" [theme]="this.themes.boardTheme()"
     [showLabels]="this.olga.showLabels.value">
   </canvas-chessboard>
-  <olga-score *ngIf="!(layout.landscapeOrientation  | async)" id="olga-score-{{this.olga.UUID}}" (contextmenu)="ignoreEvent($event)">
-  </olga-score>
+  <olga-score id="olga-score-{{this.olga.UUID}}" (contextmenu)="ignoreEvent($event)"></olga-score>
   <olga-controls id="olga-controls-{{this.olga.UUID}}"></olga-controls>
   <olga-status id="olga-status-{{this.olga.UUID}}"></olga-status>
   <olga-menu id="olga-menu-{{this.olga.UUID}}" (click)="layout.closeSettings()"></olga-menu>
-  <olga-header id="olga-header-{{this.olga.UUID}}">
-    <olga-score *ngIf="layout.landscapeOrientation | async" id="olga-score-{{this.olga.UUID}}" (contextmenu)="ignoreEvent($event)"></olga-score>
-  </olga-header>
+  <olga-header id="olga-header-{{this.olga.UUID}}"></olga-header>
   <cookie-consent></cookie-consent>
   <!-- https://www.chessgames.com/perl/chessgame?gid=1067289 Game 1 -->
   <!-- https://www.chessgames.com/perl/chessgame?gid=1935550 Game 2 -->

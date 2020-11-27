@@ -15,6 +15,10 @@ export class OlgaControlsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public resize(width: number, height: number, state: number) {
+
+  }
+
   advance(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();

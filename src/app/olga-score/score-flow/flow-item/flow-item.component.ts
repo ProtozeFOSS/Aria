@@ -1,20 +1,26 @@
 import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, Output, ViewChild, ElementRef, ComponentFactoryResolver } from '@angular/core';
-import { GameScoreType, GameScoreItem } from '../../common/kokopu-engine';
-import { OlgaService } from '../../services/olga.service';
-import { ThemeService } from '../../services/themes.service';
+import { GameScoreType, GameScoreItem } from '../../../common/kokopu-engine';
+import { OlgaService } from '../../../services/olga.service';
+import { ThemeService } from '../../../services/themes.service';
 
 @Component({
-  selector: 'game-score-item',
-  templateUrl: './game-score-item.component.html',
-  styleUrls: ['./game-score-item.component.scss']
+  selector: 'flow-item',
+  templateUrl: './flow-item.component.html',
+  styleUrls: ['./flow-item.component.scss']
 })
-export class GameScoreItemComponent implements OnInit, AfterViewInit, OnChanges {
-  @Input() @Output() data: GameScoreItem = new GameScoreItem(null, -1);
+// @ts-ignore
+export class FlowItemComponent implements OnInit, AfterViewInit, OnChanges {
+  // @ts-ignore
+  @Input()  data: GameScoreItem = new GameScoreItem(null, -1);
+  // @ts-ignore
   @Output() typeName = '';
   // visual nodes
+// @ts-ignore
   @Output() ply = '';
+  // @ts-ignore
   @Output() score = '';
   GameScoreType = GameScoreType;
+  // @ts-ignore
   @ViewChild('gsiPly') gsiPly: ElementRef | null = null;
   constructor(public olga: OlgaService, public themes:ThemeService) {
     // use data to actually set type

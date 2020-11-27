@@ -17,6 +17,11 @@ export interface PlayerData{
   elo?: number;
   image?: string;
 }
+export enum ScoreViewType {
+  Table = 101,
+  Flow = 202
+};
+
 export const STOCK_IMAGE = '/assets/images/player.png';
 
 @Injectable({
@@ -27,7 +32,7 @@ export class OlgaService {
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
   @Output() readonly cookiesAccepted = new BehaviorSubject<boolean>(false);
   @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(300);
-  @Output() readonly gameScoreAsTable = new BehaviorSubject<boolean>(false);
+  @Output() readonly scoreViewType = new BehaviorSubject<ScoreViewType>(ScoreViewType.Flow);
   protected autoIntervalID = -1;
   protected timeLeft = 300;
   public UUID: string = '';
@@ -177,7 +182,11 @@ export class OlgaService {
   public openEngine(): void { }
 
   public toggleGameScoreViewType(): void {
-    this.gameScoreAsTable.next(!this.gameScoreAsTable);
+    if(this.scoreViewType.value === ScoreViewType.Flow) {
+      this.scoreViewType.next(ScoreViewType.Table);
+    }else {
+      this.scoreViewType.next(ScoreViewType.Flow);
+    }
   }
 
   public loadPGN(pgn: string) {
