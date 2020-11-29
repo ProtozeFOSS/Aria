@@ -1,5 +1,5 @@
 Hello this is Olga Score!
-<score-flow *ngIf="olga.scoreViewType.value === ScoreViewType.Flow" class="score-list"></score-flow>
+<score-flow *ngIf="olga.scoreViewType.value === ScoreViewType.Flow" [items]="items"; class="score-list"></score-flow>
 <score-table *ngIf="olga.scoreViewType.value === ScoreViewType.Table" [items]="items"; class="score-table"></score-table>
 <input style="visibility: hidden; display: none;" #pgnData value='[Event "GMA, Wijk aan Zee NED"]
 [Site "?"]
