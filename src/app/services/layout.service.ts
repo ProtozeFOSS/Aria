@@ -93,7 +93,7 @@ export class LayoutService {
     let hheight = (boundingRect.height * .4);
     hheight = hheight > 320 ? 320: hheight;
     this.state = c2width >= 600 ? 3:4;
-    this.header.resize(c2width, hheight);
+    this.header?.resize(c2width, hheight);
     this.controlsComponent?.resize(c2width, 64);
     this.board?.setSize(boardWidth);
     console.log('State:' + this.state);
@@ -118,7 +118,7 @@ export class LayoutService {
           // this.gameScoreElement.style.height = '456px';
           // this.gameScoreElement.style.top = '340px';
           // this.gameScoreElement.style.left = '';
-          this.gameScore.resize(c2width, 456);
+          this.gameScore?.resize(c2width, 456);
           this.statusElement.style.top = '910px';
           this.statusElement.style.height = '64px';
           this.statusElement.style.right = '2px';
@@ -145,7 +145,7 @@ export class LayoutService {
           // this.gameScoreElement.style.height = '456px';
           // this.gameScoreElement.style.top = '340px';
           // this.gameScoreElement.style.left = '';
-          this.gameScore.resize(c2width, 456);
+          this.gameScore?.resize(c2width, 456);
           this.statusElement.style.top = '910px';
           this.statusElement.style.height = '64px';
           this.statusElement.style.right = '2px';
