@@ -14,10 +14,9 @@ import { FlowItemComponent } from './flow-item/flow-item.component';
   templateUrl: './score-flow.component.html',
   styleUrls: ['./score-flow.component.scss'],
 })
-// @ts-ignore
+
 export class ScoreFlowComponent implements OnInit {
-  // @ts-ignore
-  @ViewChildren(FlowItemComponent) scoreItems: QueryList<FlowItemComponent> | null = null;
+  @ViewChildren(FlowItemComponent) scoreItems!: QueryList<FlowItemComponent>;
   @Output() currentItem: FlowItemComponent | null = null;
   @Input() items: GameScoreItem[] = [];
   constructor() { }
@@ -49,5 +48,13 @@ export class ScoreFlowComponent implements OnInit {
     switch (item.data.type) { // open different menus
 
     }
+  }
+
+  clearGameScore(): void {
+
+  }
+
+  resize(width: number, height: number) : void {
+    
   }
 }

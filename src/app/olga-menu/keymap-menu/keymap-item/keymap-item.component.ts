@@ -23,12 +23,12 @@ export class KeymapItemComponent implements OnInit, AfterViewInit {
       this.labelElement.nativeElement.innerHTML = this.label;
     }
     if(this.svgContainer) {
-      this.svgContainer.nativeElement.innerHTML = '<use xlink:href="/assets/images/feather-sprite.svg#' + this.icon + '" />';
+      this.svgContainer.nativeElement.innerHTML = '<use xlink:href="olga2/assets/images/feather-sprite.svg#' + this.icon + '" />';
     }
   }
   ngOnChanges(changes: SimpleChanges) {
     if(this.svgContainer) {
-      this.svgContainer.nativeElement.innerHTML = '<use xlink:href="/assets/images/feather-sprite.svg#' + this.icon + '" />';
+      this.svgContainer.nativeElement.innerHTML = '<use xlink:href="olga2/assets/images/feather-sprite.svg#' + this.icon + '" />';
     }
   }
 }

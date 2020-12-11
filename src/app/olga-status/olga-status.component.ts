@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Node as KNode } from 'kokopu';
 import { OlgaService } from '../services/olga.service';
 import { ChessMove } from '../common/kokopu-engine';
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'olga-status',
   templateUrl: './olga-status.component.html',
@@ -14,6 +15,7 @@ export class OlgaStatusComponent implements OnInit {
   readonly status = new BehaviorSubject<string>('White to move.');
   lastNode: KNode | null = null;
   lastMove: ChessMove | undefined = undefined;
+  environment = environment;
   constructor(public olga: OlgaService) {
   }
 

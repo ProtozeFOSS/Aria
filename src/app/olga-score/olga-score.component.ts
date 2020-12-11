@@ -1,24 +1,20 @@
 import {
   Component,
   OnInit,
-  Input,
   Output,
   AfterViewInit,
   ViewChild,
   ElementRef,
-  ViewChildren,
-  QueryList
 } from '@angular/core';
 import {
   ChessMove,
   GameScoreItem,
   GameScoreType
 } from '../common/kokopu-engine';
-import { BehaviorSubject } from 'rxjs';
 import { OlgaService, ScoreViewType } from '../services/olga.service';
 import { LayoutService } from '../services/layout.service';
-import { FlowItemComponent } from './score-flow/flow-item/flow-item.component';
 import { ScoreFlowComponent } from './score-flow/score-flow.component';
+import { BehaviorSubject } from 'rxjs';
 import { ScoreTableComponent } from './score-table/score-table.component';
 
 @Component({
@@ -28,45 +24,42 @@ import { ScoreTableComponent } from './score-table/score-table.component';
 })
 export class GamescoreUxComponent implements OnInit, AfterViewInit {
   // View Children Handles
-  @ViewChild('resizeHandle')
-  resizeHandle: ElementRef | null = null;
-  @ViewChild('gamescore-container') container: ElementRef | null = null;
-  @ViewChild(ScoreFlowComponent) scoreFlow: ScoreFlowComponent | null = null;
-  @ViewChild(ScoreTableComponent) scoreTable: ScoreTableComponent | null = null;
-  @ViewChild('pgnData')
-  pgnData: ElementRef | null = null; // To Be Deleted
-  columnCount = 3;
-  rowHeight = '50px';
-  maxPlySize = 178;
-  @Output() resizing = false;
-  @Input() scoreWidth: number | null = 360;
+  // @ts-ignore
+  @ViewChild(ScoreFlowComponent) flowScore: ScoreFlowComponent | null;
+  // @ts-ignore
+  @ViewChild(ScoreTableComponent) tableScore: ScoreTableComponent | null;
+
+  container: HTMLElement | null = null;
   GameScoreType = GameScoreType;
   ScoreViewType = ScoreViewType;
-  public _items: GameScoreItem[] = [];
-  // Current item data and visual
+  @Output() _items: GameScoreItem[] = [];
+  // @ts-ignore
   @Output() readonly currentData = new BehaviorSubject<GameScoreItem | null>(null);
-  @Output() currentItem: FlowItemComponent | null = null;
+  // @ts-ignore
   @Output() currentIndex: number = -1;
+  // @ts-ignore
+  @Output() currentItem: GameScoreItem | null;
+  // Current item data and visual
 
 
   constructor(public olga: OlgaService, public layout: LayoutService) {
-    this.resetCursor();
-    this.layout.gameScore = this;
     this.olga.attachScore(this);
+    this.layout.attachScore(this);
   }
 
   ngOnInit(): void {
-    //console.log(this.gameScore);
   }
 
   ngAfterViewInit(): void {
-    // move to layout
-    this.layout.resizeElement = document.getElementById('resize-handle-' + this.olga.UUID);
+    this.olga.attachScore(this);
+    this.layout.attachScore(this);
+    this.layout.gameScoreElement = this.container = document.getElementById('olga-score-' + this.olga.UUID);
   }
 
   public clearGameScore(): void {
-    this._items = []
-    this.clearSelection();
+    if (this.flowScore) {
+      this.flowScore.clearGameScore();
+    }
   }
   public setGameScoreItems(items: GameScoreItem[] | undefined): void {
     if (items) {
@@ -75,34 +68,52 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     } else {
       this._items = [];
     }
+    if (this.flowScore) {
+      this.flowScore.items = this._items;
+    }
+    if (this.tableScore) {
+      this.tableScore.items = this._items;
+    }
+  }
+
+  public plyCount(): number {
+    if (this._items) {
+      return (this._items.length / 2) + 1;
+    }
+    return 0;
   }
 
   public updateSelection(): void {
     window.setTimeout(() => { this.selectGameScoreItem(this.currentIndex); }, 75);
   }
   public clearSelection(): void {
+
     this.currentIndex = -1;
-    window.setTimeout(() => { this.selectGameScoreItem(-1),, 75);
+    window.setTimeout(() => { this.selectGameScoreItem(-1); }, 75);
   }
 
   protected navigateToItem(index: number): void {
 
   }
 
-  resize(width: number, height: number, state: number) {
-
-  }
-
-  resizeScore(): void {
-    this.olga.toggleAutoPlay();
-    if (this.scoreWidth) {
-      this.columnCount = Math.floor(this.scoreWidth / this.maxPlySize);
-    } else {
-      this.columnCount = 3;
+  resize(width: number, height: number) {
+    if(this.flowScore) {
+      this.flowScore.resize(width,height);
     }
-    this.olga.toggleAutoPlay();
+    if(this.tableScore) {
+      this.tableScore.resize(width, height);
+    }
   }
 
+  // resizeScore(): void {
+  //   this.olga.toggleAutoPlay();
+  //   if (this.scoreWidth) {
+  //     this.columnCount = Math.floor(this.scoreWidth / this.maxPlySize);
+  //   } else {
+  //     this.columnCount = 3;
+  //   }
+  //   this.olga.toggleAutoPlay();
+  // }
 
 
   ignoreEvent(event: MouseEvent): void {
@@ -110,88 +121,32 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
   }
 
-  setWidth(width: number | null): void {
-    if (width) {
-      this.columnCount = Math.floor(width / this.maxPlySize);
-    }
-  }
-
-  resetResizeHandle(event: DragEvent | MouseEvent): void {
-    this.resizing = false;
-    if (this.resizeHandle && event.buttons === 0) {
-      document.body.style.cursor = 'pointer';
-      this.resizeHandle.nativeElement.style.cursor = 'pointer';
-    }
-    if (this.resizeHandleEvent) {
-      this.resizeHandleEvent(event);
-    }
-  }
-
-  setGrabCursor(event: DragEvent | MouseEvent): void {
-    this.resizing = true;
-    document.body.style.cursor = 'grab';
-    if (this.resizeHandle) {
-      this.resizeHandle.nativeElement.style.cursor = 'grab';
-    }
-  }
-
-  resetCursor(): void {
-    document.body.style.cursor = 'pointer';
-    if (this.resizeHandle) {
-      this.resizeHandle.nativeElement.style.cursor = 'pointer';
-    }
-  }
-
-  startTouch(event: TouchEvent): void {
-    const touchPoint = event.touches[0];
-    if (touchPoint) {
-      if (this.layout.resizeElement) {
-        this.resizing = true;
-      }
-    }
-  }
-
-  stopTouch(event: TouchEvent) {
-    this.resizing = false;
-  }
+  // setWidth(width: number | null): void {
+  //   if (width) {
+  //     this.columnCount = Math.floor(width / this.maxPlySize);
+  //   }
+  // }
 
 
-
-  resizeHandleEvent(event: DragEvent | MouseEvent): void {
-    if (this.resizing) {
-      this.resizeScore();
-    }
-  }
-
-  resizeTouchEvent(event: TouchEvent): void {
-    if (this.resizing) {
-      this.resizeScore();
-    }
-  }
-
-  resizeHandleCore(event: DragEvent | MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    //document.body.style.cursor = 'grab';
-    if (this.resizeHandle) {
-      //this.resizeHandle.nativeElement.style.cursor = 'grab';
-    }
-    if (event.buttons > 0 && this.resizeHandleEvent) {
-      this.resizeHandleEvent(event);
-    }
-  }
   selectGameScoreItem(index: number) {
-    if (this.scoreFlow) {
-      this.scoreFlow.selectGameScoreItem(index);
+    if (this.flowScore) {
+      this.flowScore.selectGameScoreItem(index);
+    } else if (this.tableScore) {
+      this.tableScore.selectGameScoreItem(index);
     }
-    if (this.scoreTable) {
-      this.scoreTable.selectGameScoreItem(index);
-    }
+    // if (this.currentItem) {
+    //   this.currentItem.setSelected(false);
+    //   this.currentItem = null;
+    // }
+    // if(index >= 0) {
+    //   const item = this.scoreItems?.toArray()[index];
+    //   if (item && item != this.currentItem) {
+    //     item.setSelected(!item.isSelected());
+    //     this.currentItem = item;
+    //   }
+    // }
   }
 
-  public getPGN(): string {
-    return this.pgnData?.nativeElement.value;
-  }
 
   // Navigation
 
@@ -202,7 +157,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
         const item = this._items[++this.currentIndex];
         const variations = item.move.variations();
         if (variations.length > 0) {
-          // show variation
+          // show variation 
           console.log('Taking first variation');
           console.log(variations[0]);
           this.olga.makeVariantMove(0, item.move);

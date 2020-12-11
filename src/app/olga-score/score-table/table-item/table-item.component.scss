@@ -1,0 +1,44 @@
+@import "../../../../styles.scss";
+.gsi-container{
+    display:flex;
+    flex-direction: row;
+    flex-wrap:nowrap;
+}
+.white-move{
+    border: black 2px solid;
+    background: white;
+    font-size: 22px;
+    text-align: center;
+    min-width: 30px;
+    width: $gsTableItemWidth;
+    height:auto;
+    color:black;
+    font-weight: bold;
+    padding-top:2px;
+    font-size: $gsFontSize;
+    font-family: $gsFontFamily;
+}
+
+.black-move{
+    border: black 2px solid;
+    background: grey;
+    font-size: 16px;
+    text-align: center;
+    color:white;
+    min-width: 60px;
+    width: $gsTableItemWidth;
+    height:auto;
+    font-size: $gsFontSize;
+    font-family: $gsFontFamily;
+}
+.gsi-ply{
+  color: $gsTextColor;
+  font-weight: bold;
+  font-size: $gsFontSize;
+  background: rgb(78, 117, 168);
+  width:$gsTablePlyWidth;
+  text-align:center;
+  padding-top:4px;
+  border: 1px solid black;
+
+}

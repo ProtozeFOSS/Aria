@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { ThemeService } from '../../../services/themes.service';
-//import { ColorEvent } from 'ngx-color';
+import { ColorEvent } from 'ngx-color';
 
 @Component({
   selector: 'color-select',

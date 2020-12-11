@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import {STOCK_IMAGE, PlayerData } from '../../services/olga.service';
 @Component({
   selector: 'player-showcase',
@@ -12,6 +13,7 @@ export class PlayerShowcaseComponent implements OnInit {
   @Input() title: string = '';
   @Input() playerData: PlayerData = {image: STOCK_IMAGE }
   @Input() searchURL: string = '';
+  environment = environment;
   constructor() { }
 
   ngOnInit(): void {

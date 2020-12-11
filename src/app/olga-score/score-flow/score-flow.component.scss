@@ -1,0 +1,109 @@
+@import "../../../styles.scss";
+
+mat-divider {
+  background-color: white;
+  margin: 2px;
+}
+
+
+.mat-grid-tile {
+  background: $gamescore-highlight;
+  color: $gamescore-foreground;
+  font-family: $gamescore-family;
+  font-weight: 360;
+  max-width: 164px;
+  font-size: 24px;
+  text-align: auto;
+}
+
+.score-title {
+  position: absolute;
+  top: 0px;
+  left: -2px;
+  height: 30px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.score-list {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  padding-left:12px;
+  padding-top:2px;
+  padding-bottom:2px;
+  top: 32px;
+  height: calc(99% - 30px);
+  overflow: auto;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  background: $gsListBackground;
+}
+.gamescore-container {
+  background: $gsBackground;
+  height: 100%;
+  border: 2px black solid;
+  overflow: hidden;
+  line-height: $gsTextSize;
+  word-break: keep-all;
+  vertical-align: bottom;
+}
+
+
+.gs-menu {
+  position: absolute;
+  background: transparent;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  max-height:480px;
+  max-width:480px;
+}
+
+
+.resize-handle {
+  position: absolute;
+  clip: true;
+  top: calc(50% - 3em);
+  width: 36px;
+  border-radius: 5px;
+  border: solid grey 3px;
+  height: 6em;
+  background-color: rgba(0, 0, 10, 255);
+  cursor: grab;
+}
+.input-box{
+  position:absolute;
+  right: 2px;
+  width: 100%;
+  height: 300px;
+  border: solid black 4px;
+  
+}
+
+.score-table{
+  background-color:red;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  padding-left:12px;
+  padding-top:2px;
+  padding-bottom:2px;
+  top: 32px;
+  height: calc(99% - 30px);
+  overflow: auto;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}

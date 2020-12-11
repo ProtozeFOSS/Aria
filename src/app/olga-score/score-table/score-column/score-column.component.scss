@@ -1,0 +1,30 @@
+@import "../../../../styles.scss";
+table-item{
+    min-width:180px;
+    min-height: 32px;
+}
+
+.header{
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    display:flex;
+    flex-flow: row nowrap;
+    .spacer{
+        width:$gsTablePlyWidth;
+        height:100%;
+        border: 1px solid transparent;
+    }
+    .wheader{
+        width: $gsTableItemWidth;
+        height:100%;
+        border:2px black solid;
+    }
+    .bheader{
+        width: $gsTableItemWidth;
+        height:100%;
+        background:black;
+        color:white;
+        border:2px black solid;
+    }
+}

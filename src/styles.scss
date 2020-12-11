@@ -52,6 +52,8 @@ $gsListBackground: var(--gsListBackground); // list background of game score
 $gsBorder: var(--gsBorder); // background of Menus
 $gsTextSize: var(--gsTextSize); // background of Menus
 $gsFontFamily: var(--gsFontFamily); // score font
+$gsTableItemWidth: var(--gsTableItemWidth); // width of score item in table layout
+$gsTablePlyWidth: var(--gsTablePlyWidth); // width of ply element in table layout
 
 /******************* Game Score Container Variables ***************************/
 $gsTextColorMW: var(--gsTextColorMW); // Text color for game score

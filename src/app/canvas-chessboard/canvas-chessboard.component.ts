@@ -6,7 +6,7 @@ import { ThemeService } from '../services/themes.service';
 import { OlgaService } from '../services/olga.service';
 import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames, Color } from './types';
 
-export type Coordinate = {x: number, y: number};
+export type Coordinate = { x: number, y: number };
 
 enum ObjectType {
   Tile = 111,
@@ -20,7 +20,7 @@ enum ObjectType {
 })
 export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Input() size = 320;
-  @Input() @Output() tileSize = Math.floor(this.size / 8);
+  @Input() tileSize = Math.floor(this.size / 8);
   @Input() interactive = true;
   @Input() showLabels = false;
   @Input() boardID: string = '';
@@ -31,8 +31,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   protected rookButton: fabric.Group | null = null;
   protected queenButton: fabric.Group | null = null;
   protected pieceAnimation: { piece: fabric.Group, x: number, y: number } | null = null;
-  @Input() @Output() theme: BoardTheme = new BoardTheme();
-  @Input() @Output() settings: BoardSettings = new BoardSettings();
+  @Input() theme: BoardTheme = new BoardTheme();
+  settings: BoardSettings = new BoardSettings();
   @Output() pieceMap = new Map<string, fabric.Group>();
   @Output() pieces: { tile: number; object: fabric.Group }[] = [];
   @Output() background: fabric.Rect | null = null;
@@ -42,17 +42,17 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Output() canvas: fabric.Canvas | null = null;
 
   readonly labelState = new BehaviorSubject<LabelState>(LabelState.LeftBottom);
-  @Input() @Output() selectedPiece: {
+  selectedPiece: {
     tile: number;
     object: fabric.Group;
   } | null = null;
   @Output() touching = false;
   @Output() midPromotion = false;
-  @ViewChild('boardCanvas', {static: false}) boardCanvas: ElementRef | null = null;
+  @ViewChild('boardCanvas', { static: false }) boardCanvas: ElementRef | null = null;
   constructor(
     public olga: OlgaService,
     public themes: ThemeService
-  ) {}
+  ) { }
 
 
 
@@ -62,7 +62,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     fabric.Object.prototype.transparentCorners = false;
     this.container = document.getElementById(this.boardID + '-ccb');
-    if(this.boardCanvas) { 
+    if (this.boardCanvas) {
       this.canvas = new fabric.Canvas(this.boardCanvas.nativeElement);
       this.canvas.selection = false;
       const waitCount = this.loadPieces();
@@ -71,7 +71,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           this.generateBoard();
           this.connectMouseInput();
           const position = this.olga.getGame()?.getPosition();
-          if(position) {
+          if (position) {
             this.setBoardToPosition(position);
           }
           waitCount.unsubscribe();
@@ -104,7 +104,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   private generateBoard(): void {
     this.generateBoardObjects();
     const position = this.olga.getGame()?.getPosition();
-    if(position) {
+    if (position) {
       this.setBoardToPosition(position);
     }
   }
@@ -224,7 +224,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     this.promotionDialog = null;
   }
 
-  
+
 
   protected createPromotionDialog(move: ChessMove) {
     // pull items out of chess move
@@ -675,7 +675,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         piece.tile = to;
         this.pieces[to] = piece;
         this.tiles[to].piece = { color: move.color, role: move.role };
-        if(move.castle){
+        if (move.castle) {
           const rmove = new ChessMove();
           rmove.to = move.castle.to;
           rmove.from = move.castle.from;
@@ -717,7 +717,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         piece.object.moveTo(10);
         piece.object.setCoords();
         this.promotionDialog?.moveTo(500);
-        if(move.castle){
+        if (move.castle) {
           const rmove = new ChessMove();
           rmove.to = move.castle.to;
           rmove.from = move.castle.from;
@@ -916,10 +916,10 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.canvas?.remove(tileData.tile);
     });
     this.tiles = [];
-    if(this.background) {
+    if (this.background) {
       this.canvas?.remove(this.background);
     }
-    if(this.tileGroup){
+    if (this.tileGroup) {
       this.canvas?.remove(this.tileGroup);
     }
   }
@@ -931,12 +931,12 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     this.pieces = [];
   }
 
-  public clearLabels(): void{
-    this.labels.forEach((value) =>{
-      if(this.tileGroup){
+  public clearLabels(): void {
+    this.labels.forEach((value) => {
+      if (this.tileGroup) {
         this.tileGroup.remove(value);
       }
-      });
+    });
     this.labels = [];
   }
 
@@ -948,30 +948,30 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
   private createBoardObject(type: ObjectType, x: number, y: number, selectable = false, labelText = '', isDark?: boolean): fabric.Rect | fabric.Text | null {
     let object: fabric.Object | null = null;
-    switch(type) {
-      case ObjectType.Label:{
+    switch (type) {
+      case ObjectType.Label: {
         object = new fabric.Text(labelText, {
           fontSize: this.theme.labelFontSize, left: x, top: y, fontFamily: this.theme.labelFontFamily,
           fontWeight: this.theme.labelFontWeight
         }) as fabric.Object;
-        
-        if(isDark !== undefined && isDark !== null) {
+
+        if (isDark !== undefined && isDark !== null) {
           object.setColor(isDark ? this.themes.boardLabelDark.value : this.themes.boardLabelLight.value);
         }
         break;
       }
-      case ObjectType.Tile:{
+      case ObjectType.Tile: {
         object = new fabric.Rect({
           width: this.tileSize,
           height: this.tileSize,
         });
-        if(isDark !== undefined && isDark !== null) {
+        if (isDark !== undefined && isDark !== null) {
           object.setColor(isDark ? this.themes.boardBGDark.value : this.themes.boardBGLight.value);
         }
         break;
       }
     }
-    if(object) {
+    if (object) {
       object.set('left', x);
       object.set('top', y);
       object.set('lockRotation', true);
@@ -984,7 +984,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       object.set('lockMovementX', !selectable);
       object.set('lockMovementY', !selectable);
       object.set('selectable', selectable);
-      object.setCoords(); 
+      object.setCoords();
     }
     return object;
   }
@@ -1035,33 +1035,33 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
               dark = false;
             }
           }
-          const tile = this.createBoardObject(ObjectType.Tile, col * this.tileSize + padding , row * this.tileSize + padding, true,'', dark);
-          if(tile){
+          const tile = this.createBoardObject(ObjectType.Tile, col * this.tileSize + padding, row * this.tileSize + padding, true, '', dark);
+          if (tile) {
             this.tiles.push({ tile });
             tiles.push(tile);
           }
-          if(this.showLabels) {          
+          if (this.showLabels) {
             let labelText = '';
             let rowText = '';
             if (this.settings.orientation == 'white') {
               labelText = SquareNames[((7 - row) * 8) + col][0];
-              rowText = (8-row).toString();
+              rowText = (8 - row).toString();
             } else {
-              labelText = SquareNames[(row * 8) + (7-col)][0];
+              labelText = SquareNames[(row * 8) + (7 - col)][0];
               rowText = (row + 1).toString();
             }
             let x = 4 + padding;
             let y = (row * this.tileSize) + 4;
             if (col == 0) {
               const file = this.createBoardObject(ObjectType.Label, x, y, false, rowText, !dark);
-              if(file){
+              if (file) {
                 labels.push(file);
                 this.labels.push(file);
               }
             }
             if (row == 7) {
-              const rank = this.createBoardObject(ObjectType.Label, ((this.tileSize * (col + 1)) - this.theme.labelFontSize/2) - padding, size - this.theme.labelFontSize, false, labelText, !dark);
-              if(rank){
+              const rank = this.createBoardObject(ObjectType.Label, ((this.tileSize * (col + 1)) - this.theme.labelFontSize / 2) - padding, size - this.theme.labelFontSize, false, labelText, !dark);
+              if (rank) {
                 labels.push(rank);
                 this.labels.push(rank);
               }
@@ -1097,13 +1097,13 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     }
   }
 
-  
+
   private resizeBoardObjects(size: number): void {
-    if(!this.background) {
+    if (!this.background) {
       return;
     }
     this.tileSize = Math.floor(this.size / 8);
-    this.background.scaleToHeight((this.tileSize * 8) - 1); 
+    this.background.scaleToHeight((this.tileSize * 8) - 1);
     this.background.scaleToWidth((this.tileSize * 8) - 1);
     if (this.tileGroup) {
       this.tileGroup.set('top', 0);
@@ -1175,15 +1175,15 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.queenButton?.setCoords();
     }
   }
-  
+
   public getPieceAnimation(): Coordinate {
     let x = 0;
     let y = 0;
 
-    return {x, y} as Coordinate;
+    return { x, y } as Coordinate;
   }
 
-  public updatePieceAnimation(x: number, y: number):void {
+  public updatePieceAnimation(x: number, y: number): void {
 
   }
 
@@ -1203,15 +1203,15 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           }
         }
       }
-      if(this.labels.length) {
-        this.labels.forEach((label: fabric.Object)=>{
+      if (this.labels.length) {
+        this.labels.forEach((label: fabric.Object) => {
           // @ts-ignore
-          if(label &&  label.get('fill') === this.theme.tileDark) {
+          if (label && label.get('fill') === this.theme.tileDark) {
             label.setColor(color);
           }
         });
       }
-      this.theme.tileDark = color;      
+      this.theme.tileDark = color;
       this.canvas?.requestRenderAll();
     }
   }
@@ -1232,15 +1232,15 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           }
         }
       }
-      if(this.labels.length) {
-        this.labels.forEach((label: fabric.Object)=>{
+      if (this.labels.length) {
+        this.labels.forEach((label: fabric.Object) => {
           // @ts-ignore
-          if(label && label.get('fill') === this.theme.tileLight) {
+          if (label && label.get('fill') === this.theme.tileLight) {
             label.setColor(color);
           }
         });
       }
-      this.theme.tileLight = color;      
+      this.theme.tileLight = color;
       this.canvas?.requestRenderAll();
     }
 
@@ -1252,9 +1252,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       this.tileSize = Math.floor(size / 8);
       this.canvas.width = size;
       this.canvas.height = size;
-      if(this.container) {
-        this.container.style.height = size +'px';
-        this.container.style.width = size +'px';
+      if (this.container) {
+        this.container.style.height = size + 'px';
+        this.container.style.width = size + 'px';
       }
       this.canvas.setDimensions({
         width: size,
@@ -1292,14 +1292,14 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     this.clearBoard();
     this.generateBoard();
   }
-  
+
   public show(): void {
-    if(this.boardCanvas) {
+    if (this.boardCanvas) {
       this.boardCanvas.nativeElement.style.visibility = 'visible';
     }
   }
   public hide(): void {
-    if(this.boardCanvas) {
+    if (this.boardCanvas) {
       this.boardCanvas.nativeElement.style.visibility = 'hidden';
     }
   }

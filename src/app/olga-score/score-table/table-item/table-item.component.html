@@ -1,0 +1,9 @@
+<div #domElement class="gsi-container">
+    <div class="gsi-ply" (click)="clickMove()" #gsiPly>
+        {{ply}}</div>
+    <!-- <div class="gsi-move {{typeName}}" *ngIf="!isGroup()">..&nbsp;</div> -->
+    <div class="white-move {{typeName}}">
+        {{whiteScore}}</div>
+    <div class="black-move {{typeName}}">
+        {{blackScore}}</div>
+</div>

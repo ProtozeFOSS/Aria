@@ -1,23 +1,37 @@
 <div class="container" #containerElement>
+    <img src="{{environment.imagesPath}}{{variant}}.svg" class="variant{{layout.state}}" #variantElement>
     <div class="top-header" #titleContainerElement>
-    <img src="/assets/images/{{variant}}.svg" class="variant" #variantElement>
-        <button [ngClass]="{disabled : currentGame == 0}" (click)="previousGame()" class="prev-game" #prevButtonElement>
+        <button *ngIf="currentGame > 0" (click)="previousGame()" class="prev-game" #prevButtonElement>
             < </button>
-                <div class="match-header" #matchHeaderElement><a href="{{matchURL}}" class="match-title">{{match}}</a>
-                    <div class="match-date" (click)="searchDate()" >{{matchDate}}</div>
+                <div class="match-header" #matchHeaderElement><a href="{{eventURL}}" class="match-title">{{event}}</a>
+                    <div class="event-date" (click)="searchDate()">{{setDate}}</div>
                 </div>
-                <button [ngClass]="{disabled : currentGame >= gameCount-1}" class="next-game" (click)="nextGame()" #nextButtonElement> >
+                <button [ngClass]="{disabled : currentGame >= gameCount-1}" class="next-game" (click)="nextGame()"
+                    #nextButtonElement> >
                 </button>
     </div>
     <div class="player-section" #playerSectionElement>
-        <player-showcase [name]="white" [elo]="whiteElo" [playerData]="whiteData" [searchURL]="searchURL" #whiteShowcaseElement>
-        </player-showcase >
-        <player-showcase [name]="black" [color]="true" [elo]="blackElo" [playerData]="blackData" [searchURL]="searchURL" #blackShowcaseElement>
-        </player-showcase >
+        <player-showcase [name]="white" [elo]="whiteElo" [playerData]="whiteData" [searchURL]="searchURL"
+            #whiteShowcaseElement>
+        </player-showcase>
+        <player-showcase [name]="black" [color]="true" [elo]="blackElo" [playerData]="blackData" [searchURL]="searchURL"
+            #blackShowcaseElement>
+        </player-showcase>
     </div>
-    <div class="result-section" #resultSectionElement>
-
+    <div class="result-section{{layout.state}}" #resultSectionElement>
+        <img class="result-trophy{{layout.state}}" src="{{trophySource}}" #resultTrophy>
+        <div class="result-data{{layout.state}}">
+            <div class="round">&nbsp;{{round}}</div>
+            <div class="site-date">
+                <div class="site"><img class="site-flag" src="{{siteFlag}}">{{site}}</div>
+                <div class="match-date"><img class="calendar" src="{{environment.imagesPath}}calendar.png">{{eventDate}}</div>
+            </div>
+            <div class="opening">{{opening}}</div>
+            <div class="result">{{result}}</div>
+        </div>
     </div>
+    <olga-score class="score{{layout.state}}" *ngIf="layout.state >= 3" id="olga-score-{{this.olga.UUID}}" #score>
+    </olga-score>
     <!-- <div class="primary-data-box"><div class="box-title">Event</div>{{event}}</div>
     <div class="secondary-data-box"><div class="secondary-box-title">Event Date</div>{{eventDate}}</div>
 

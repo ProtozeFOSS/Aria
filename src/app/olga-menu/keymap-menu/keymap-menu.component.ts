@@ -1,9 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
-export class FeatherIcons{
-  public static readonly Rewind = '/assets/images/feather-sprite.svg#rewind';
-  public static readonly Forward = '/assets/images/feather-sprite.svg#forward';
-}
 
 @Component({
   selector: 'keymap-menu',
@@ -11,7 +7,6 @@ export class FeatherIcons{
   styleUrls: ['./keymap-menu.component.scss']
 })
 export class KeymapMenuComponent implements OnInit {
-  public icons = FeatherIcons;
   @ViewChild('container', {static: false}) container: ElementRef | null = null;
   constructor() { }
 

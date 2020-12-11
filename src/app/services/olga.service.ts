@@ -11,18 +11,23 @@ import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
 import { CookieConsentComponent } from '../cookie-consent/cookie-consent.component';
 import { Olga } from '../app.component';
 import { OlgaHeaderComponent } from '../olga-header/olga-header.component';
-
-export interface PlayerData{
+import { environment } from '../../environments/environment';
+export interface PlayerData {
   born?: string;
   elo?: number;
   image?: string;
+}
+export interface GameData {
+  opening?: string;
+  country?: string;
 }
 export enum ScoreViewType {
   Table = 101,
   Flow = 202
 };
 
-export const STOCK_IMAGE = '/assets/images/player.png';
+
+export const STOCK_IMAGE = environment.imagesPath + 'player.png';
 
 @Injectable({
   providedIn: 'root'
@@ -32,16 +37,15 @@ export class OlgaService {
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
   @Output() readonly cookiesAccepted = new BehaviorSubject<boolean>(false);
   @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(300);
-  @Output() readonly scoreViewType = new BehaviorSubject<ScoreViewType>(ScoreViewType.Flow);
+  @Output() readonly scoreViewType = new BehaviorSubject<ScoreViewType>(ScoreViewType.Table);
   protected autoIntervalID = -1;
   protected timeLeft = 300;
   public UUID: string = '';
   public setName: string = '';
   public setDate: string = '';
   public playerData: object = {};
-  @Input() @Output() readonly figurineNotation = new BehaviorSubject<boolean>(
-    true
-  );
+  public gameData = [];
+  readonly figurineNotation = new BehaviorSubject<boolean>(true);
   @Output() readonly gsFontFamily = new BehaviorSubject<string>('FigurineSymbolT1');
   @Output() readonly scoreFontSize = new BehaviorSubject<number>(32);
   @Output() readonly figurineSize = new BehaviorSubject<number>(20);
@@ -117,6 +121,13 @@ export class OlgaService {
     return -1;
   }
 
+  public getPlyCount(): number {
+    if (this._score) {
+      return this._score.plyCount();
+    }
+    return 0;
+  }
+
   protected autoAdvance(): void {
     this.timeLeft -= 100;
     if (this._controls) {
@@ -170,6 +181,13 @@ export class OlgaService {
   public getCookiesConsent(): boolean {
     return this.cookiesAccepted.value;
   }
+
+  public gameCount(): number {
+    if (this._games) {
+      return this._games.length;
+    }
+    return 0;
+  }
   public setCookieConsent(consent: boolean): void {
     if (this.cookiesAccepted.value != consent) {
       this.cookiesAccepted.next(consent);
@@ -182,9 +200,9 @@ export class OlgaService {
   public openEngine(): void { }
 
   public toggleGameScoreViewType(): void {
-    if(this.scoreViewType.value === ScoreViewType.Flow) {
+    if (this.scoreViewType.value === ScoreViewType.Flow) {
       this.scoreViewType.next(ScoreViewType.Table);
-    }else {
+    } else {
       this.scoreViewType.next(ScoreViewType.Flow);
     }
   }
@@ -195,7 +213,7 @@ export class OlgaService {
       const endSet = pgn.indexOf(']', fIndex);
       const setName = pgn.slice(fIndex, endSet + 1);
       if (setName.length > 0 && setName.length < 240) {
-        this.setName = setName.substr(6, -2);
+        this.setName = setName.slice(6, -2);
       }
       pgn = pgn.replace(setName, '');
     }
@@ -204,17 +222,17 @@ export class OlgaService {
       const endSet = pgn.indexOf(']', fIndex);
       const setDate = pgn.slice(fIndex, endSet + 1);
       if (setDate.length > 0 && setDate.length < 60) {
-        this.setDate = setDate.substr(10, -2);
+        this.setDate = setDate.slice(10, -2);
       }
       pgn = pgn.replace(setDate, '');
     }
-    fIndex = pgn.indexOf('[ImagePath ');
+    fIndex = pgn.indexOf('[PlayerImages ');
     let imagePath = '';
     if (fIndex >= 0) {
       const endSet = pgn.indexOf(']', fIndex);
       const iPath = pgn.slice(fIndex, endSet + 1);
       if (endSet >= 0 && endSet - fIndex <= 120) {
-        imagePath = iPath.slice(12, -2);
+        imagePath = iPath.slice(15, -2);
       }
       pgn = pgn.replace(iPath, '');
     }
@@ -226,15 +244,37 @@ export class OlgaService {
       if (endSet >= 0 && endSet - fIndex <= 1500) {
         const data = pData.slice(13, -2);
         if (data.length > 0) {
-          this.playerData = JSON.parse(data) as object;
-          if(this.playerData) {
-            for(let k in this.playerData) {
-              // @ts-ignore
-              let pdata = this.playerData[k];
-              if(pdata.image) {
-                pdata.image = imagePath + pdata.image;
+          try {
+            this.playerData = JSON.parse(data) as object;
+            if (this.playerData) {
+              for (let k in this.playerData) {
+                // @ts-ignore
+                let pdata = this.playerData[k];
+                if (pdata.image) {
+                  pdata.image = imagePath + pdata.image;
+                }
               }
             }
+          } catch (ex) {
+            console.log('Bad parse on JSON player data');
+          }
+        }
+      }
+      pgn = pgn.replace(pData, '');
+    }
+    fIndex = pgn.indexOf('[GameData ');
+    this.gameData = [];
+    if (fIndex >= 0) {
+      let endSet = pgn.indexOf(']', fIndex);
+      endSet = pgn.indexOf(']', endSet + 1);
+      const pData = pgn.slice(fIndex, endSet + 1);
+      if (endSet >= 0 && endSet - fIndex <= 1500) {
+        const data = pData.slice(11, -2);
+        if (data.length > 0) {
+          try {
+            this.gameData = JSON.parse(data);
+          } catch (ex) {
+            console.log('Bad parse on JSON for game data');
           }
         }
       }
@@ -251,8 +291,6 @@ export class OlgaService {
         const headerData = this._game?.generateHeaderData();
         if (headerData) {
           if (this._header) {
-            this._header.gameCount = this._games.length;
-            this._header.currentGame = 0;
             this._header.setHeader(headerData);
           }
         }
@@ -282,8 +320,9 @@ export class OlgaService {
         const headerData = this._game?.generateHeaderData();
         if (headerData) {
           if (this._header) {
-            this._header.gameCount = this._games.length;
             this._header.setHeader(headerData);
+            this._header.currentGame = index;
+            this._header.gameCount = this._games.length;
           }
         }
       }, 1);
@@ -427,6 +466,12 @@ export class OlgaService {
     return this.playerData[player] as PlayerData;
   }
 
+  public getGameData(index: number): GameData | null {
+    if (this.gameData.length > index && index >= 0) {
+      return this.gameData[index] as GameData;
+    }
+    return null;
+  }
 
 
   // engine interface

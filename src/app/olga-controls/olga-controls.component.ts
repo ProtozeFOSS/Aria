@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { OlgaService } from '../services/olga.service';
 import { LayoutService } from '../services/layout.service';
 
@@ -7,6 +7,7 @@ import { LayoutService } from '../services/layout.service';
   templateUrl: './olga-controls.component.html',
   styleUrls: ['./olga-controls.component.scss']
 })
+
 export class OlgaControlsComponent implements OnInit {
 
   constructor(public olga: OlgaService, public layout: LayoutService) { }
@@ -15,7 +16,7 @@ export class OlgaControlsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public resize(width: number, height: number, state: number) {
+  public resize(width: number, height: number) {
 
   }
 

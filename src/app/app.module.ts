@@ -40,10 +40,12 @@ import { OlgaHeaderComponent } from './olga-header/olga-header.component';
 import { ValueSliderComponent } from './common/value-slider/value-slider.component';
 import { ValueSelectComponent } from './olga-menu/controls/value-select/value-select.component';
 import { PlayerShowcaseComponent } from './olga-header/player-showcase/player-showcase.component';
-//import { ColorSketchModule } from 'ngx-color/sketch';
-import { ResultShowcaseComponent } from './olga-header/result-showcase/result-showcase.component';
+import { ColorSketchModule } from 'ngx-color/sketch';
 import { ScoreTableComponent } from './olga-score/score-table/score-table.component';
 import { ScoreFlowComponent } from './olga-score/score-flow/score-flow.component';
+import { TableItemComponent } from './olga-score/score-table/table-item/table-item.component';
+import { ScoreColumnComponent } from './olga-score/score-table/score-column/score-column.component';
+
 
 @NgModule({
   declarations: [
@@ -74,9 +76,10 @@ import { ScoreFlowComponent } from './olga-score/score-flow/score-flow.component
     ValueSliderComponent,
     ValueSelectComponent,
     PlayerShowcaseComponent,
-    ResultShowcaseComponent,
     ScoreTableComponent,
     ScoreFlowComponent,
+    TableItemComponent,
+    ScoreColumnComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,9 +93,9 @@ import { ScoreFlowComponent } from './olga-score/score-flow/score-flow.component
     MatGridListModule,
     MatMenuModule,
     MatTabsModule,
-    //ColorSketchModule
+    ColorSketchModule
   ],
   providers: [LayoutService, ThemeService, OlgaService, Clipboard],
   bootstrap: [Olga],
 })
-export class AppModule {}
+export class AppModule { }

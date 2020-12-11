@@ -27,6 +27,7 @@ const OLGA = 'olga';
 })
 export class Olga implements AfterViewInit {
   title = 'Olga PGN Viewer 2.0';
+  resizeHandle: HTMLElement | null = null;
   // @ts-ignore
   @ViewChild(GamescoreUxComponent) gameScoreComponent: GamescoreUxComponent;
   // @ts-ignore
@@ -49,7 +50,8 @@ export class Olga implements AfterViewInit {
   @Output() oldWidth: number = 0;
   // @ts-ignore
   @Output() keymap: Map<string, any> = new Map<string, any>();
-
+  // @ts-ignore
+  @ViewChild('pgnData') pgnData: ElementRef; // To Be Deleted
   protected doneResizingScore = false;
   constructor(
     public olga: OlgaService,
@@ -69,12 +71,13 @@ export class Olga implements AfterViewInit {
     this.layout.controlsElement = document.getElementById('olga-controls-' + this.olga.UUID);
     this.layout.statusElement = document.getElementById('olga-status-' + this.olga.UUID);
     this.layout.headerElement = document.getElementById('olga-header-' + this.olga.UUID);
+    this.layout.resizeElement = document.getElementById('resize-handle-' + this.olga.UUID);
     
     this.olga.attachOlga(this);
     this.layout.initializeLayout(this);
     if (this.gameScoreComponent) {
-      this.gameScoreComponent.resizeHandleEvent = this.layout.onSliderDrag.bind(this.layout);
-      this.gameScoreComponent.resizeTouchEvent = this.layout.onSliderTouch.bind(this.layout);
+      //this.gameScoreComponent.resizeHandleEvent = this.layout.onSliderDrag.bind(this.layout);
+      //this.gameScoreComponent.resizeTouchEvent = this.layout.onSliderTouch.bind(this.layout);
     }
     this.themes.boardBGLight.subscribe((light) => {
       if (this.canvasBoardComponent) {
@@ -86,7 +89,7 @@ export class Olga implements AfterViewInit {
         this.canvasBoardComponent.setDarkTile(dark);
       }
     });
-    this.olga.loadPGN(TestPGNData + this.gameScoreComponent?.getPGN());
+    this.olga.loadPGN(TestPGNData + this.pgnData.nativeElement.value);
     window.onkeydown = this.keyEvent.bind(this);
     window.setTimeout(()=>{ 
       this.olga.loadSettings();
@@ -101,7 +104,7 @@ export class Olga implements AfterViewInit {
   }
   mouseMoved(event: MouseEvent): void {
     if (this.gameScoreComponent) {
-      this.gameScoreComponent.resizeHandleEvent(event);
+      //this.gameScoreComponent.resizeHandleEvent(event);
       if (event.buttons === 0) {
       }
     }
@@ -166,7 +169,7 @@ export class Olga implements AfterViewInit {
 
   touchMoved(event: TouchEvent): void {
     if (this.gameScoreComponent) {
-      this.gameScoreComponent.resizeTouchEvent(event);
+      //this.resizeTouchEvent(event);
     }
   }
 
@@ -175,4 +178,71 @@ export class Olga implements AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
   }
+
+  /// RESIZING FUNCTIONS
+  // resetResizeHandle(event: DragEvent | MouseEvent): void {
+  //   this.resizing = false;
+  //   if (this.resizeHandle && event.buttons === 0) {
+  //     document.body.style.cursor = 'pointer';
+  //     this.resizeHandle.nativeElement.style.cursor = 'pointer';
+  //   }
+  //   if (this.resizeHandleEvent) {
+  //     this.resizeHandleEvent(event);
+  //   }
+  // }
+
+  // setGrabCursor(event: DragEvent | MouseEvent): void {
+  //   this.resizing = true;
+  //   document.body.style.cursor = 'grab';
+  //   if (this.resizeHandle) {
+  //     this.resizeHandle.nativeElement.style.cursor = 'grab';
+  //   }
+  // }
+
+  // resetCursor(): void {
+  //   document.body.style.cursor = 'pointer';
+  //   if (this.resizeHandle) {
+  //     this.resizeHandle.nativeElement.style.cursor = 'pointer';
+  //   }
+  // }
+
+  // startTouch(event: TouchEvent): void {
+  //   const touchPoint = event.touches[0];
+  //   if (touchPoint) {
+  //     if (this.layout.resizeElement) {
+  //       this.resizing = true;
+  //     }
+  //   }
+  // }
+
+  // stopTouch(event: TouchEvent) {
+  //   this.resizing = false;
+  // }
+
+
+
+  // resizeHandleEvent(event: DragEvent | MouseEvent): void {
+  //   if (this.resizing) {
+  //     this.resizeScore();
+  //   }
+  // }
+
+  // resizeTouchEvent(event: TouchEvent): void {
+  //   if (this.resizing) {
+  //     this.resizeScore();
+  //   }
+  // }
+
+  // resizeHandleCore(event: DragEvent | MouseEvent): void {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   //document.body.style.cursor = 'grab';
+  //   if (this.resizeHandle) {
+  //     //this.resizeHandle.nativeElement.style.cursor = 'grab';
+  //   }
+  //   if (event.buttons > 0 && this.resizeHandleEvent) {
+  //     this.resizeHandleEvent(event);
+  //   }
+  // }
+
 }

@@ -1,7 +1,7 @@
 import { Injectable, Output, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import {  BoardTheme } from '../canvas-chessboard/types';
-
+import { BoardTheme } from '../canvas-chessboard/types';
+import {environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
@@ -24,7 +24,7 @@ export class ThemeService {
   @Input() readonly textColorContext = 'white';
   @Input() readonly borderContext = 'solid black 1px';
   @Input() readonly overlayContextBackground = 'rgb(199,199,199)';
-  @Input() readonly overlayContextBackgroundGradient='linear-gradient(153deg, rgba(199,199,199,0.9051995798319328) 41%, rgba(249,249,249,0.8911939775910365) 83%)';
+  @Input() readonly overlayContextBackgroundGradient = 'linear-gradient(153deg, rgba(199,199,199,0.9051995798319328) 41%, rgba(249,249,249,0.8911939775910365) 83%)';
 
 
   // Board Colors
@@ -32,7 +32,7 @@ export class ThemeService {
   @Input() @Output() readonly boardBGLight = new BehaviorSubject<string>('#e0fffb');
   @Input() @Output() readonly boardLabelDark = new BehaviorSubject<string>('#81388f');
   @Input() @Output() readonly boardLabelLight = new BehaviorSubject<string>('#e0fffb');
-  @Input() @Output() readonly boardPieceSet = new BehaviorSubject<string>('../../assets/images/pieces/merida/');
+  @Input() @Output() readonly boardPieceSet = new BehaviorSubject<string>(environment.piecesPath + 'merida/');
 
 
   // Menu
@@ -45,6 +45,8 @@ export class ThemeService {
   @Input() @Output() readonly gsListBackground = new BehaviorSubject<string>('#353535');
   @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('');
   @Input() @Output() readonly gsTextSize = new BehaviorSubject<string>('16px');
+  @Input() @Output() readonly gsTableItemWidth = new BehaviorSubject<string>('70px');
+  @Input() @Output() readonly gsTablePlyWidth = new BehaviorSubject<string>('48px');
 
   // Game Score Highlight Colors
   @Input() @Output() readonly gsTextColorHG = new BehaviorSubject<string>('orange');
@@ -68,7 +70,7 @@ export class ThemeService {
   @Input() @Output() readonly gsBackgroundPC = new BehaviorSubject<string>('#353535');
   @Input() @Output() readonly gsBorderPC = new BehaviorSubject<string>('');
 
-  
+
   // Control Elements (Buttons, sliders, number wheels, toggle switches)
   readonly csBackground = new BehaviorSubject<string>('#81388f');
   readonly csColor = new BehaviorSubject<string>('#e0fffb');
@@ -95,10 +97,10 @@ export class ThemeService {
     this.createColorMap();
   }
 
-  updateColor(name: string, color: string) : void {
-    if(this.propertyMap.has(name)) {
+  updateColor(name: string, color: string): void {
+    if (this.propertyMap.has(name)) {
       const subject = this.propertyMap.get(name) as BehaviorSubject<string>;
-      if(subject) {
+      if (subject) {
         subject.next(color);
       }
       document.documentElement.style.setProperty(
@@ -118,7 +120,7 @@ export class ThemeService {
 
   private createColorMap(): void {
     this.propertyMap.clear();
-    this.propertyMap.set( '--gsTextColorPC', this.gsTextColorPC);
+    this.propertyMap.set('--gsTextColorPC', this.gsTextColorPC);
     this.propertyMap.set('--gsTextColor', this.gsTextColor);
     this.propertyMap.set('--gsBackgroundPC', this.gsBackgroundPC);
     this.propertyMap.set('--gsBorderPC', this.gsBorderPC);
@@ -155,19 +157,22 @@ export class ThemeService {
 
     // Font Sizes
     this.propertyMap.set('--gsFontSize', this.gsFontSize);
+    this.propertyMap.set('--gsTableItemWidth', this.gsTableItemWidth);
+    this.propertyMap.set('--gsTablePlyWidth', this.gsTablePlyWidth);
+
 
     this.propertyMap.set('--gsFontSizeAN', this.gsFontSizeAN);
     this.propertyMap.set('--gsFontSizeHG', this.gsFontSizeHG);
     this.propertyMap.set('--gsFontSizeVA', this.gsFontSizeVA);
     this.propertyMap.set('--gsFontSizePC', this.gsFontSizePC);
     this.propertyMap.forEach((value, key) => {
-      if(typeof value.value == "string") {
-        (value as BehaviorSubject<string>).subscribe((newVal)=>{
-          document.documentElement.style.setProperty(key,newVal);
+      if (typeof value.value == "string") {
+        (value as BehaviorSubject<string>).subscribe((newVal) => {
+          document.documentElement.style.setProperty(key, newVal);
         });
       } else {
-        (value as BehaviorSubject<number>).subscribe((newVal)=>{
-          document.documentElement.style.setProperty(key,newVal + "px");
+        (value as BehaviorSubject<number>).subscribe((newVal) => {
+          document.documentElement.style.setProperty(key, newVal + "px");
         });
       }
     });
@@ -175,39 +180,39 @@ export class ThemeService {
   public settings(): object {
     let settings = {};
     this.propertyMap.forEach((behavior, key) => {
-        // @ts-ignore
-        settings[key] = behavior.value;
+      // @ts-ignore
+      settings[key] = behavior.value;
     });
     return settings;
   }
 
-  public setSettings(settings: object) : void {
-   for(let key in settings){
-      if(this.propertyMap.has(key)) {
+  public setSettings(settings: object): void {
+    for (let key in settings) {
+      if (this.propertyMap.has(key)) {
         const subject = this.propertyMap.get(key);
-        if(subject) {
+        if (subject) {
           // @ts-ignore
           subject.next(settings[key]);
         }
-      }      
+      }
     }
     this.initializeColorPalette();
   }
 
   setDarkColorPalette(): void {
     // Add hardcoded chessgames dark color pallete
-   }
+  }
 
   setLightColorPalette(): void {
     // Add hardcoded chessgames dark color pallete
-   }
+  }
 
   initializeColorPalette(): void {
     this.propertyMap.forEach((value, key) => {
-      if(typeof value.value == "string") {
-        document.documentElement.style.setProperty(key,value.value);
+      if (typeof value.value == "string") {
+        document.documentElement.style.setProperty(key, value.value);
       } else {
-        document.documentElement.style.setProperty(key,value.value + "px");
+        document.documentElement.style.setProperty(key, value.value + "px");
       }
     });
   }

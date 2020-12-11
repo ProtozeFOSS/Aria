@@ -1,10 +1,13 @@
+import { environment } from "../environments/environment";
+
 export const TestPGNData = '[Set "Testing Olga 2"]' +
-    '[SetDate "Halloween 2020"]' +
-    '[ImagePath "/assets/images/players/"]' +
+    '[SetDate "October 8th - December 31st, 1990"]' +
+    '[PlayerImages "' + environment.playersPath +'"]' +
     '[PlayerData "{"Garry Kasparov":{"born":"April 13th 1963","image":"Garry-Kasparov.png", "elo":2812}, "Anatoly Karpov":{"image":"Anatoly-Karpov.png", "elo":2617, "born":"May 23th 1951"}, \
     "Egemen Gulden":{"born":"2000", "image":"Egemen-Gulden.png", "elo":2118}, "Andrei Macovei":{"born":"2000", "image":"Andrei-Macovei.png", "elo":2453}, \
     "Robert James Fischer":{"born":"March 9th 1943", "image":"Bobby-Fischer-BW.png", "elo":2780}, "Hans Berliner":{"born":"Jan 27th 1929", "image":"Hans-Berliner.png"}, \
-    "V Anand":{"born":"December 11th 1969", "image":"V-Anand.png", "elo":2753}, "T Radjabov":{"born":"March 12th 1987","image":"T-Radjabov.png","elo":2753}}"]' + 
+    "V Anand":{"born":"December 11th 1969", "image":"V-Anand.png", "elo":2753}, "T Radjabov":{"born":"March 12th 1987","image":"T-Radjabov.png","elo":2753}}"]' +
+    '[GameData "[{"opening":"Spanish Game: Closed Variations. Keres Defense (C92)", "country":"us"},{"opening":"Formation: King\'s Indian Attack (A07)", "country":"tr"},{"opening":"Queen\'s Gambit Declined: Exchange Variation (D35)", "country":"us"}]"]' +
     '[Event "Kasparov - Karpov World Championship Match"]\n' +
     '[Site "New York, NY USA"]\n' +
     '[Date "1990.10.24"]\n' +

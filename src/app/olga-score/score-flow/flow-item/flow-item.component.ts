@@ -10,19 +10,15 @@ import { ThemeService } from '../../../services/themes.service';
 })
 // @ts-ignore
 export class FlowItemComponent implements OnInit, AfterViewInit, OnChanges {
-  // @ts-ignore
-  @Input()  data: GameScoreItem = new GameScoreItem(null, -1);
-  // @ts-ignore
+  @Input() data: GameScoreItem = new GameScoreItem(null, -1);
   @Output() typeName = '';
   // visual nodes
-// @ts-ignore
   @Output() ply = '';
-  // @ts-ignore
   @Output() score = '';
   GameScoreType = GameScoreType;
-  // @ts-ignore
-  @ViewChild('gsiPly') gsiPly: ElementRef | null = null;
-  constructor(public olga: OlgaService, public themes:ThemeService) {
+  @ViewChild('gsiPly') gsiPly!: ElementRef;
+
+  constructor(public olga: OlgaService, public themes: ThemeService) {
     // use data to actually set type
 
   }
@@ -41,15 +37,14 @@ export class FlowItemComponent implements OnInit, AfterViewInit, OnChanges {
         } else {
           showing = this.olga.showingHalfPly.value;
         }
-        if(!showing) {
+        if (!showing) {
           this.gsiPly.nativeElement.remove();
-          this.gsiPly = null;
-        }else{
+        } else {
           this.ply = this.data.move.fullMoveNumber().toString() + '.';
         }
       }
-      if(this.data.move){
-        if(this.data.move._info.moveDescriptor && typeof this.data.move._info.moveDescriptor != 'string'){ 
+      if (this.data.move) {
+        if (this.data.move._info.moveDescriptor && typeof this.data.move._info.moveDescriptor != 'string') {
           this.score = this.data.move.notation();
         } else {
           this.score = this.data.move._info.moveDescriptor;
@@ -62,19 +57,18 @@ export class FlowItemComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.updateTypeName();
-    if(this.gsiPly && this.data.move) {
+    if (this.gsiPly && this.data.move) {
       let showing = false;
       if (this.isFullPly()) {
         showing = this.olga.showingPly.value;
       } else {
         showing = this.olga.showingHalfPly.value;
       }
-      if(!showing) {
+      if (!showing) {
         this.gsiPly.nativeElement.remove();
-        this.gsiPly = null;
-      }else{
-        window.setTimeout( ()=>{this.ply = this.data.move.fullMoveNumber().toString() + '.';},
-        10);
+      } else {
+        window.setTimeout(() => { this.ply = this.data.move.fullMoveNumber().toString() + '.'; },
+          10);
       }
     }
   }
@@ -138,7 +132,7 @@ export class FlowItemComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   clickMove(): void {
-    if(this.data.move) {
+    if (this.data.move) {
       const variations = this.data.move.variations();
       if (variations.length > 0) {
         this.olga.displayVariations(this.data);
@@ -165,14 +159,14 @@ export class FlowItemComponent implements OnInit, AfterViewInit, OnChanges {
       if ((this.data.type & GameScoreType.HalfPly) == GameScoreType.HalfPly) {
         this.typeName += ' HalfPly ';
       }
-      if(this.data.move) {
+      if (this.data.move) {
         const variations = this.data.move.variations();
         if (variations && variations.length > 0) {
-            this.typeName += ' Variation ';
+          this.typeName += ' Variation ';
         }
-      
+
         if ((this.data.type & GameScoreType.Branched) == GameScoreType.Branched) { // must have a variation to be branched
-            this.typeName += ' Branched';
+          this.typeName += ' Branched';
         }
       }
     }

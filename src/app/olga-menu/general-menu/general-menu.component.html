@@ -1,4 +1,4 @@
 <div class="menu-container" #container>
-    <toggle-select title='Use Cookies' thumbnail="/assets/images/icons/cookie.png" [value]="this.olga.cookiesAccepted"></toggle-select>
-    <value-select thumbnail="/assets/images/icons/fontsize.png" title="Font Pixel Size" [minimum]=8 [max]=64 [value]="this.themes.gsFontSize"></value-select>
+    <toggle-select title='Use Cookies' thumbnail="{{environment.iconsPath}}cookie.png" [value]="this.olga.cookiesAccepted"></toggle-select>
+    <value-select thumbnail="{{environment.iconsPath}}fontsize.png" title="Font Pixel Size" [minimum]=8 [max]=64 [value]="this.themes.gsFontSize"></value-select>
 </div>

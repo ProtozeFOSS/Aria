@@ -244,7 +244,6 @@ export class ChessGame {
     }
 
     public generateHeaderData(): Map<string, string> {
-        this.game
         let map = new Map<string, string>();
         if (this.game) {
             map.set('Event', this.game.event());
@@ -269,16 +268,16 @@ export class ChessGame {
                         dateString = date.toString();
                     }
                 }
-                map.set('Match Date', dateString);
+                map.set('Event Date', dateString);
             }
             map.set('White', this.game.playerName('w'));
             map.set('Black', this.game.playerName('b'));
             let elo = this.game.playerElo('w');
-            if(elo != '?') {
+            if (elo != '?') {
                 map.set('White Elo', elo);
-            } 
-            elo =  this.game.playerElo('b');
-            if(elo !== '?') { 
+            }
+            elo = this.game.playerElo('b');
+            if (elo !== '?') {
                 map.set('Black Elo', elo);
             }
             map.set('Site', this.game.site());
