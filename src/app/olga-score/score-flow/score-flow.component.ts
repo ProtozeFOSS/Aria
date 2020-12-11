@@ -5,6 +5,8 @@ import {
   ViewChildren,
   Input,
   Output,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { GameScoreItem } from '../../common/kokopu-engine';
 import { FlowItemComponent } from './flow-item/flow-item.component';
@@ -15,7 +17,7 @@ import { FlowItemComponent } from './flow-item/flow-item.component';
   styleUrls: ['./score-flow.component.scss'],
 })
 
-export class ScoreFlowComponent implements OnInit {
+export class ScoreFlowComponent implements OnInit, OnChanges {
   @ViewChildren(FlowItemComponent) scoreItems!: QueryList<FlowItemComponent>;
   @Output() currentItem: FlowItemComponent | null = null;
   @Input() items: GameScoreItem[] = [];
@@ -23,6 +25,9 @@ export class ScoreFlowComponent implements OnInit {
 
   ngOnInit(): void { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log()
+  }
 
   selectGameScoreItem(index: number) {
     if (this.currentItem) {
@@ -55,6 +60,6 @@ export class ScoreFlowComponent implements OnInit {
   }
 
   resize(width: number, height: number) : void {
-    
+
   }
 }

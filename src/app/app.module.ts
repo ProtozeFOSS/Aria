@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AppRoutingModule } from './app-routing.module';
+import { RouterModule, Routes } from '@angular/router'
 import { Olga } from './app.component';
 import { GamescoreMenuComponent } from './olga-menu/gamescore-menu/gamescore-menu.component';
 import { GamescoreUxComponent } from './olga-score/olga-score.component';
@@ -46,6 +46,9 @@ import { ScoreFlowComponent } from './olga-score/score-flow/score-flow.component
 import { TableItemComponent } from './olga-score/score-table/table-item/table-item.component';
 import { ScoreColumnComponent } from './olga-score/score-table/score-column/score-column.component';
 
+const routes: Routes = [{path:'olga2/', component: Olga, pathMatch:'full'},
+                        {path:'olga2/:settings', component: Olga, pathMatch:'full'},
+                        {path:'**', redirectTo:'olga2/', pathMatch:'full'}];
 
 @NgModule({
   declarations: [
@@ -83,7 +86,7 @@ import { ScoreColumnComponent } from './olga-score/score-table/score-column/scor
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     MatButtonModule,
     MatCardModule,

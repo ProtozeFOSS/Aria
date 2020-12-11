@@ -1,3 +1,4 @@
+import {ActivatedRoute, Router, RoutesRecognized} from "@angular/router";
 import {
   Component,
   AfterViewInit,
@@ -54,10 +55,18 @@ export class Olga implements AfterViewInit {
   @ViewChild('pgnData') pgnData: ElementRef; // To Be Deleted
   protected doneResizingScore = false;
   constructor(
+    private route: ActivatedRoute,
     public olga: OlgaService,
     public themes: ThemeService,
-    public layout: LayoutService
+    public layout: LayoutService,
+    private router: Router
   ) {
+
+    this.router.events.subscribe(val => {
+      if (val instanceof RoutesRecognized) {
+        console.log(val.state.root.firstChild.params);
+      }
+    });
     const date = new Date();
     this.olga.UUID = 'OLGA-' + date.getTime().toString();
     console.log('ID: ' + this.olga.UUID);
