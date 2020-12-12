@@ -39,7 +39,7 @@ export class ScoreColumnComponent implements OnInit, OnChanges {
 
   private setItems(): void {
     if (this.items.length) {
-      let rows = this.items.slice(this.column * (this.size * 2), (this.column + 1) * (this.size * 2));
+      let rows = this.items.slice(this.column * this.size * 2, (this.column + 1) * this.size * 2);
       this.rows = [];
       let white: GameScoreItem | null = null;
       for (let i = 0; i < rows.length; ++i) {

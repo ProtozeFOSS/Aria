@@ -64,7 +64,7 @@ export class Olga implements AfterViewInit {
 
     this.router.events.subscribe(val => {
       if (val instanceof RoutesRecognized) {
-        console.log(val.state.root.firstChild.params);
+        console.log(val?.state?.root?.firstChild?.params);
       }
     });
     const date = new Date();
