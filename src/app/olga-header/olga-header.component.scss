@@ -40,7 +40,7 @@
 }
 player-showcase{
     margin-top: 12px;
-    min-width: 300px;
+    min-width: 288px;
     width: auto;
     max-height:120px;
     min-height:132px;
@@ -190,8 +190,9 @@ player-showcase{
 .result-section3{
     @extend .result-section;
     order:3;
-    margin-top: -20px;
+    margin-top: -34px;
     text-align:center;
+    margin-bottom:-8px;
     width: 100%;
 }
 .result-data3{
@@ -253,6 +254,9 @@ player-showcase{
     padding-bottom:4px;
     font-family: Candara;
     flex-grow:2;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    overflow:hidden;
     .match-date{
         height: 22px;
         font-size:16px;
@@ -344,5 +348,4 @@ olga-score {
     margin-right:2px;
     order:4;
     height: auto;
-    overflow-y:auto;
 }

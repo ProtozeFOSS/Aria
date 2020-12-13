@@ -1,4 +1,5 @@
 <div class="container" #containerElement>
+
     <img src="{{environment.imagesPath}}{{variant}}.svg" class="variant{{layout.state}}" #variantElement>
     <div class="top-header" #titleContainerElement>
         <button *ngIf="currentGame > 0" (click)="previousGame()" class="prev-game" #prevButtonElement>

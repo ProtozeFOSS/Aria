@@ -53,7 +53,19 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.olga.attachScore(this);
     this.layout.attachScore(this);
-    this.layout.gameScoreElement = this.container = document.getElementById('olga-score-' + this.olga.UUID);
+    window.setTimeout(() =>{
+      this.layout.gameScoreElement = this.container = document.getElementById('olga-score-' + this.olga.UUID);
+      if(this.container && this.container.style.height){
+        const height = parseInt(this.container.style.height);
+        const width = parseInt(this.container.style.width);
+        if(this.flowScore) {
+          this.flowScore.resize(width,height); 
+        }
+        if(this.tableScore) {
+          this.tableScore.resize(width,height);     
+        }
+      }
+    },1);
   }
 
   public clearGameScore(): void {

@@ -13,7 +13,7 @@ interface ScoreRow {
 })
 export class ScoreColumnComponent implements OnInit, OnChanges {
   @Input() items: GameScoreItem[] = [];
-  @Input() column: number = 0;
+  @Input() index: number = 0;
   @Input() size: number = 3;
   @Output() rows: ScoreRow[] = [];
   constructor() {
@@ -21,7 +21,6 @@ export class ScoreColumnComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.setItems();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -30,16 +29,16 @@ export class ScoreColumnComponent implements OnInit, OnChanges {
     }
   }
 
-  setData(items: GameScoreItem[], column: number, size: number) {
+  setData(items: GameScoreItem[], index: number, size: number) {
     this.items = items;
-    this.column = column;
+    this.index = index;
     this.size = size;
     this.setItems();
   }
 
   private setItems(): void {
-    if (this.items.length) {
-      let rows = this.items.slice(this.column * this.size * 2, (this.column + 1) * this.size * 2);
+    if (this.items.length && this.size) {
+      let rows = this.items.slice((this.index*2),  (this.index*2) + (this.size * 2));
       this.rows = [];
       let white: GameScoreItem | null = null;
       for (let i = 0; i < rows.length; ++i) {
