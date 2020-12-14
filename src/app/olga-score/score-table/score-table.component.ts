@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, AfterViewInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, AfterViewInit, QueryList, ViewChildren, ViewChild, ElementRef } from '@angular/core';
 
 import { GameScoreItem } from '../../common/kokopu-engine';
 import { LayoutService } from '../../services/layout.service';
@@ -13,9 +13,15 @@ import { ScoreColumnComponent } from './score-column/score-column.component';
 })
 export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChildren(ScoreColumnComponent) scoreTables!: QueryList<ScoreColumnComponent>;
+  @ViewChild('comment',{static: false}) comment!: ElementRef;
+  @ViewChild('variantBar',{static: false}) variantBar!: ElementRef;
+  @ViewChild('scoreArea',{static: false}) scoreArea!: ElementRef;
   @Input() items: GameScoreItem[] = [];
   @Input() columns: number[] = [];
   @Input() rowCount = 0;
+  @Input() currentItem: GameScoreItem | null = null;
+  @Output() moveComment: string  = '';
+  @Output() variations: [number,string][] = [];
   width = 0;
   height = 0;
 
@@ -24,16 +30,52 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
   ngOnInit(): void {
   }
   ngAfterViewInit(): void {
+    this.updateViewSize();
+  }
+
+  updateViewSize(): void {
+    window.setTimeout(()=>{
+      if(this.layout.gameScoreElement) {
+        const width = this.layout.gameScoreElement.clientWidth;
+        if(!isNaN(width)){
+          this.width = width;
+          this.height = this.layout.gameScoreElement.clientHeight;
+          this.selectGameScoreItem(this.olga.getNodeIndex());
+          this.resize(width, this.height);
+        }
+      }
+    },4)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.items) {
-        this.resize(this.width, this.height);
-    }
+      this.updateViewSize();
   }
 
   selectGameScoreItem(index: number): void {
-
+    if(this.currentItem) {
+      this.currentItem.setSelected(false);
+    }
+    this.variations = [];
+    if(index < this.items.length && index >= 0) {
+      this.currentItem = this.items[index];
+      const targetColumn = index % this.rowCount;
+      this.currentItem.setSelected(true);
+      if(this.currentItem.move) {
+        const comment = this.currentItem.move.comment();
+        if(comment) {
+          this.moveComment = comment;
+        }else {
+          this.moveComment = '';
+        }
+        const variants = this.currentItem.move.variations();
+        for(let i = 0; i < variants.length; ++i) {
+          const variation = variants[i];
+          this.variations.push([variation.initialFullMoveNumber(), variation.first().notation()])
+        }
+      }
+    } else {
+      this.currentItem = null;
+    }
   }
 
   resize(width: number, height: number) : void {
@@ -49,7 +91,7 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
       const first = existing_items[0];
       item_height = first.clientHeight;
     }
-    let max_row_count = Math.floor((height -10)/item_height);
+    let max_row_count = Math.floor((height -10)/item_height) + (this.olga.showTableHeader.value ? 0:1);
     let max_columns = Math.floor(width/160);
     if(max_row_count * max_columns >= moves) {
       // it will fit

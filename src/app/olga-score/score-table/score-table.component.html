@@ -1,2 +1,12 @@
-<score-column *ngFor="let selection of columns;index as column" [items]="items">
-</score-column>
+<div class="score-area" #scoreArea>
+    <score-column *ngFor="let selection of columns;index as column" [items]="items">
+    </score-column>
+</div>
+<div *ngIf="moveComment.length > 0" class="comment" #comment>
+    {{moveComment}}
+</div>
+<div *ngIf="variations.length > 0" class="variation-bar" #variantBar>
+    <div *ngFor="let variation of variations; index as i">
+        {{variation[0]}}. {{variation[1]}}
+    </div>
+</div>

@@ -1,4 +1,33 @@
+@import "../../../styles";
 score-column{
     min-width:180px;
     height: 100%;
+}
+
+.score-area{
+    display:flex;
+    flex-flow:row nowrap;
+    width:100%;
+    justify-content: space-around;
+    align-content:center;
+}
+
+.comment{
+    padding:2px;
+    max-height:42px;
+    height:auto;
+    line-height:20px;
+    padding-left:4px;
+    background:$gsBackgroundAN;
+    color:$gsTextColorAN;
+    border:$gsBorderAN;
+    font-size:$gsTextSize;
+}
+.variation-bar{
+    min-height:28px;
+    line-height:16px;
+    display:flex;
+    flex-flow: row nowrap;
+    align-content:center;
+    justify-content:space-around;
 }

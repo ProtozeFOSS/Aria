@@ -38,6 +38,7 @@ export class OlgaService {
   @Output() readonly cookiesAccepted = new BehaviorSubject<boolean>(false);
   @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(300);
   @Output() readonly scoreViewType = new BehaviorSubject<ScoreViewType>(ScoreViewType.Table);
+  @Output() readonly showTableHeader = new BehaviorSubject<boolean>(false);
   protected autoIntervalID = -1;
   protected timeLeft = 300;
   public UUID: string = '';
@@ -178,6 +179,15 @@ export class OlgaService {
       }
     }
   }
+
+  public toggleScoreType():void {
+    if(this.scoreViewType.value == ScoreViewType.Flow){
+      this.scoreViewType.next(ScoreViewType.Table);
+    } else {
+      this.scoreViewType.next(ScoreViewType.Flow);
+    }
+  }
+
   public getCookiesConsent(): boolean {
     return this.cookiesAccepted.value;
   }
@@ -541,10 +551,12 @@ export class OlgaService {
 
   public loadSettings(): string {
     let settings = '';
-    if (this._cookies) {
-      settings = this._cookies.getCookie();
+    if(this.cookiesAccepted.value) { 
+      if (this._cookies) {
+        settings = this._cookies.getCookie();
+      }
+      this.setJsonSettings(settings);
     }
-    this.setJsonSettings(settings);
     return settings;
   }
 }

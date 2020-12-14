@@ -146,17 +146,6 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     } else if (this.tableScore) {
       this.tableScore.selectGameScoreItem(index);
     }
-    // if (this.currentItem) {
-    //   this.currentItem.setSelected(false);
-    //   this.currentItem = null;
-    // }
-    // if(index >= 0) {
-    //   const item = this.scoreItems?.toArray()[index];
-    //   if (item && item != this.currentItem) {
-    //     item.setSelected(!item.isSelected());
-    //     this.currentItem = item;
-    //   }
-    // }
   }
 
 

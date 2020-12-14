@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { GameScoreItem } from 'src/app/common/kokopu-engine';
+import { GameScoreItem } from '../../../common/kokopu-engine';
+import { OlgaService } from '../../../services/olga.service';
 
 interface ScoreRow {
   white: GameScoreItem | null;
@@ -16,8 +17,8 @@ export class ScoreColumnComponent implements OnInit, OnChanges {
   @Input() index: number = 0;
   @Input() size: number = 3;
   @Output() rows: ScoreRow[] = [];
-  constructor() {
-    console.log('hello ' + this.size);
+  
+  constructor(public olga: OlgaService) {
   }
 
   ngOnInit(): void {
@@ -34,6 +35,10 @@ export class ScoreColumnComponent implements OnInit, OnChanges {
     this.index = index;
     this.size = size;
     this.setItems();
+  }
+
+  clearSelection(): void {
+
   }
 
   private setItems(): void {
