@@ -6,6 +6,7 @@ import { GamescoreUxComponent } from '../olga-score/olga-score.component';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
 import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
 import { OlgaControlsComponent } from '../olga-controls/olga-controls.component';
+import { Renderer2 } from '@angular/core';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
 
@@ -25,7 +26,7 @@ export class LayoutService {
   resizeElement: HTMLElement | null = null;
   preferredLayout: Layout = 'auto';
   preferredRatioLandscape = .75;
-  preferredRatioPortrait = 0.4;
+  preferredRatioPortrait = 0.52;
   preferredWidthPercentage = 1.0;
   preferredHeightPercentage = 1.0
   layoutDirection = true;
@@ -82,27 +83,27 @@ export class LayoutService {
 
   private rtl(boundingRect: DOMRectReadOnly) {
     let boardWidth = (boundingRect.width * this.preferredRatioLandscape);
-    boardWidth = boardWidth > boundingRect.height ? boundingRect.height:boardWidth;    
-    boardWidth = boardWidth < 192 ? 192: boardWidth;
+    boardWidth = boardWidth > boundingRect.height ? boundingRect.height : boardWidth;
+    boardWidth = boardWidth < 192 ? 192 : boardWidth;
     let c2width = boundingRect.width - (boardWidth + 4);
-    if(c2width < 300) {
+    if (c2width < 300) {
       let diff = 300 - c2width;
       c2width = 300;
       boardWidth -= diff;
     }
-    let hheight = (boundingRect.height * .4);
-    hheight = hheight > 320 ? 320: hheight;
-    this.state = c2width >= 600 ? 3:4;
+    let hheight = boundingRect.height - 153;
+    this.state = c2width > 586 ? 3 : 4;
     this.header?.resize(c2width, hheight);
     this.controlsComponent?.resize(c2width, 64);
     this.board?.setSize(boardWidth);
     console.log('State:' + this.state);
-    if(this.boardElement && this.gameScoreElement && this.headerElement && this.statusElement && this.controlsElement){
-      switch(this.state) {
-        case 3:{ // landscape full
-          this.headerElement.style.height = '800px';
+    if (this.boardElement && this.gameScoreElement && this.headerElement && this.statusElement && this.controlsElement) {
+      switch (this.state) {
+        case 3: { // landscape full
+          this.headerElement.style.height = hheight + 'px';
           this.headerElement.style.width = c2width + 'px';
           this.headerElement.style.right = '0px';
+          this.header?.resize(c2width, hheight);
           if (this.layoutDirection) { // RTL
             this.boardElement.style.left = '2px';
             this.boardElement.style.right = '';
@@ -112,24 +113,19 @@ export class LayoutService {
           }
           this.boardElement.style.top = '2px';
           this.controlsElement.style.width = c2width + 'px';
-          this.controlsElement.style.top = '800px';
-          // this.gameScoreElement.style.right = '2px';
-          // this.gameScoreElement.style.width = c2width - 22 + 'px';
-          // this.gameScoreElement.style.height = '456px';
-          // this.gameScoreElement.style.top = '340px';
-          // this.gameScoreElement.style.left = '';
-          this.gameScore?.resize(c2width, 456);
-          this.statusElement.style.top = '910px';
-          this.statusElement.style.height = '64px';
+          this.controlsElement.style.top = hheight + 'px';
+          //this.gameScore?.resize(c2width, 456);
+          this.statusElement.style.bottom = '0px';
+          this.statusElement.style.height = '32px';
           this.statusElement.style.right = '2px';
-          this.statusElement.style.width = c2width - 2 + 'px';          
+          this.statusElement.style.width = c2width - 2 + 'px';
           break;
         }
-        case 4:{
-          this.headerElement.style.height = '800px';
+        case 4: {
+          this.headerElement.style.height = hheight + 'px';
           this.headerElement.style.width = c2width + 'px';
           this.headerElement.style.right = '0px';
-          this.header?.resize(c2width,800);
+          this.header?.resize(c2width, hheight);
           if (this.layoutDirection) { // RTL
             this.boardElement.style.left = '2px';
             this.boardElement.style.right = '';
@@ -139,15 +135,15 @@ export class LayoutService {
           }
           this.boardElement.style.top = '2px';
           this.controlsElement.style.width = c2width + 'px';
-          this.controlsElement.style.top = '800px';
+          this.controlsElement.style.top = hheight + 'px';
           // this.gameScoreElement.style.right = '2px';
           // this.gameScoreElement.style.width = c2width - 24 + 'px';
           // this.gameScoreElement.style.height = '456px';
           // this.gameScoreElement.style.top = '340px';
           // this.gameScoreElement.style.left = '';
-          this.gameScore?.resize(c2width, 456);
-          this.statusElement.style.top = '910px';
-          this.statusElement.style.height = '64px';
+          //this.gameScore?.resize(c2width, 456);
+          this.statusElement.style.bottom = '0px';
+          this.statusElement.style.height = '32px';
           this.statusElement.style.right = '2px';
           this.statusElement.style.width = c2width - 2 + 'px';
           break;
@@ -157,8 +153,58 @@ export class LayoutService {
   }
 
   private rtp(boundingRect: DOMRectReadOnly) {
-    let state = this.preferredRatioLandscape > .5 ? 2:1;
-
+    if (this.boardElement && this.gameScoreElement && this.headerElement && this.statusElement && this.controlsElement) {
+      let boardHeight = (boundingRect.height * this.preferredHeightPercentage);
+      boardHeight = boardHeight > boundingRect.width ? boundingRect.width : boardHeight;
+      boardHeight = boardHeight < 192 ? 192 : boardHeight;
+      let hheight = Math.floor(boundingRect.height * .28);
+      this.state = boardHeight >= (boundingRect.height / 2) ? 2 : 1;
+      this.board?.setSize(boardHeight);
+      console.log('State:' + this.state);
+      if (this.appContainer) {
+        this.appContainer.nativeElement.style.height = 'auto';
+        this.appContainer.nativeElement.style.width = '100%';
+      }
+      switch (this.state) {
+        case 1: {
+          break;
+        }
+        case 2: {
+          this.header?.resize(boundingRect.width, hheight);
+          // if (this.layoutDirection) { // RTL
+          //   this.boardElement.style.left = '2px';
+          //   this.boardElement.style.right = '';
+          // } else {
+          //   this.boardElement.style.right = '2px';
+          //   this.boardElement.style.left = '';
+          // }1
+          this.boardElement.style.top = (hheight + 2) + 'px';
+          const board_margin = Math.floor((boundingRect.width - boardHeight) / 2);
+          this.boardElement.style.left = board_margin + 'px';
+          this.boardElement.style.right = '';
+          this.boardElement.style.bottom = '';
+          this.controlsElement.style.width = boundingRect.width + 'px';
+          this.controlsElement.style.top = '';
+          this.controlsElement.style.bottom = '0px'; // cant be bottom
+          this.controlsElement.style.left = '0px';
+          this.controlsElement.style.height = '99px';
+          this.controlsComponent?.resize(boundingRect.width, 99);
+          // this.gameScoreElement.style.right = '2px';
+          // this.gameScoreElement.style.width = c2width - 24 + 'px';
+          // this.gameScoreElement.style.height = '456px';
+          // this.gameScoreElement.style.top = '340px';
+          // this.gameScoreElement.style.left = '';
+          //this.gameScore?.resize(c2width, 456);
+          this.statusElement.style.bottom = '';
+          this.statusElement.style.top = (hheight + boardHeight + 2) + 'px';
+          this.statusElement.style.height = '32px';
+          this.statusElement.style.left = '2px';
+          this.statusElement.style.right = '2px';
+          this.statusElement.style.width = (boundingRect.width - 4) + 'px';
+          break;
+        }
+      }
+    }
   }
 
   public openSettings(): void {
@@ -174,7 +220,7 @@ export class LayoutService {
   }
 
   private resizeToLandscape(width: number, height: number, gsSize?: number) {
-    
+
     if (
       this.olga &&
       this.gameScoreElement &&
@@ -185,7 +231,7 @@ export class LayoutService {
       this.boardElement &&
       this.header
     ) {
-      
+
 
       let boardSize = 0;
       const titleSize = 200;
@@ -225,14 +271,10 @@ export class LayoutService {
         this.header.resize(gsWidth, titleSize + gsHeight);
         this.headerElement.style.height = (titleSize + gsHeight) + 'px';
         this.headerElement.style.width = gsWidth + 'px';
-        // this.gameScoreElement.style.left = '';
-        // this.gameScoreElement.style.top = titleSize + 'px'; // 64 represents the controls ux
-        // this.gameScoreElement.style.width = gsWidth + 'px';
-        this.gameScoreElement.style.height = gsHeight + 'px';
+        //this.gameScoreElement.style.height = gsHeight + 'px';
         // controls
         this.controlsElement.style.left = '';
-        this.controlsElement.style.top =
-          (titleSize + gsHeight + 2).toString() + 'px'; // 64 represents the
+        this.controlsElement.style.top = (titleSize + gsHeight + 2).toString() + 'px'; // 64 represents the
         this.controlsElement.style.width = (gsWidth - 2).toString() + 'px';
         this.controlsElement.style.height = controlsHeight + 'px';
         this.controlsElement.style.right = '1px';
@@ -290,14 +332,14 @@ export class LayoutService {
       const boardSize = Math.floor((1 - this.preferredRatioPortrait) * width);
       this.board?.setSize(boardSize);
       let yOffset = 0;
-      
+
       this.header.resize(width, 360);
       if ((width - boardSize) > 340) { // side by side
         this.boardElement.style.top = '1px';
         if (this.layoutDirection) { // RTL
           // this.headerElement.style.right = '2px';
           // this.headerElement.style.left = '';
-          
+
           this.boardElement.style.left = '2px';
         } else {
           // this.headerElement.style.left = '2px';

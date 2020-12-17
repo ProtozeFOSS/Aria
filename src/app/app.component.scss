@@ -34,8 +34,8 @@ olga-score {
   // height: 40%;
 }
 
-olga-header{
-  background-image:url(/assets/images/header-background.svg);
+.olgaheader{
+  background-image:url(/olga2/assets/images/header-background.svg);
   position: absolute;
   border: 1px solid black;
   border-radius: 2px;
@@ -43,25 +43,37 @@ olga-header{
   min-height: 240px;
   overflow-y: auto;
   margin-left:-4px;
-  /* width */
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
+  scrollbar-width: thin;
+}
 
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
+.olgaheader1{
+  @extend .olgaheader;
+  width: 100%;
+  left: 0px;
+  right: 0px;
+  top:0px;
+}
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-  }
+.olgaheader2{
+  @extend .olgaheader;
+  width: 100%;
+  left: 0px;
+  right: 0px;
+  top:0px;
+}
 
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+.olgaheader3{
+  @extend .olgaheader;
+  left: undefined;
+  right: 0px;
+  top:0px;
+}
+
+.olgaheader4{
+  @extend .olgaheader;
+  left: undefined;
+  right: 0px;
+  top:0px;
 }
 
 canvas-chessboard {
@@ -93,11 +105,9 @@ olga-controls {
 
 olga-status {
   position: absolute;
-  widows: 45%;
-  right: 1px;
-
- 
+  right: 1px; 
 }
+
 olga-menu{
   position: fixed;
   top: 0px;

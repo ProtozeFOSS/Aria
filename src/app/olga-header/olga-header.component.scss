@@ -38,10 +38,9 @@
     z-index:4;
     order:1;
 }
-player-showcase{
+.player-showcase{
     margin-top: 12px;
-    min-width: 288px;
-    width: auto;
+    min-width: 272px;
     max-height:120px;
     min-height:132px;
     margin-bottom: 24px;
@@ -72,6 +71,7 @@ player-showcase{
     flex-wrap:wrap;
     justify-content: space-around;
     z-index:10;
+    text-align:center;
 }
 .result-trophy{
     width:auto;
@@ -143,9 +143,14 @@ player-showcase{
     font-size: 16px;
 }
 
-// State 1 (Full Portrait)
+// State 1 (Split SBS Portrait)
 .result-section1{
     @extend .result-section;
+    order:4;
+}
+
+.player-section1{
+    @extend .player-section;
 }
 
 .variant1{
@@ -155,21 +160,57 @@ player-showcase{
 .set-name1{
     order: 7;
 }
+.player-showcase1{
+    @extend .player-showcase;
+    order:2;
+}
+.result-trophy1{
+    @extend .result-trophy;
+    visibility: hidden;
+    height:0px;
+    width:0px;
+}
 
-// State 2 (Split -sbs- Portrait)
+// State 2 (Full Portrait)
 .result-section2{
     @extend .result-section;
+    order:3;
+    width:45%;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom:100px;
+}
+.player-section2{
+    @extend .player-section;
+    order:2;
+    width:45%;
 }
 
+.top-header2{
+    @extend .top-header;
+    order:1;
+    width:calc(100% - 140px);
+}
 .variant2{
     @extend .variant;
+    order:0;
+    height:24px;
 }
-
+.player-showcase2{
+    @extend .player-showcase;
+    order:2;
+    width:44%;
+    min-width:200px;
+}
 .set-name2{
     order: 7;
-
 }
-
+.result-trophy2{
+    @extend .result-trophy;
+    visibility: hidden;
+    height:0px;
+    width:0px;
+}
 
 // State 3 (Full Landscape - preferred)
 
@@ -179,6 +220,13 @@ player-showcase{
     margin-left:4px;margin-top:-20px;
     flex-grow:0;order:0;
     z-index:10;width:180px;
+}
+.player-section3{
+    @extend .player-section;
+}
+.player-showcase3{
+    @extend .player-showcase;
+    width: 44%;
 }
 
 .result-trophy3{
@@ -191,7 +239,6 @@ player-showcase{
     @extend .result-section;
     order:3;
     margin-top: -34px;
-    text-align:center;
     margin-bottom:-8px;
     width: 100%;
 }
@@ -199,6 +246,7 @@ player-showcase{
     @extend .result-data;
     order:1;
     text-align:center;
+    padding-top:8px;
 }
 .score3{
     order:6;
@@ -209,9 +257,15 @@ player-showcase{
 // State 4 (Landscape Column)
 .result-section4{
     @extend .result-section;
-    height:32px;
-    flex-grow:0;
-    order:4;
+    order:3;
+    margin-top: -43px;
+    text-align:center;
+    margin-bottom:2px;
+    width: 100%;
+    justify-content: center;
+}
+.player-section4{
+    @extend .player-section;
 }
 
 .variant4{
@@ -225,7 +279,16 @@ player-showcase{
 .set-name4{
     order: 1;
 }
-
+.result-trophy4{
+    @extend .result-trophy;
+    visibility: hidden;
+    height:0px;
+    width:0px;
+}
+.player-showcase4{
+    @extend .player-showcase;
+    width:88%;
+}
 
 
 

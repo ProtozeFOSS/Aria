@@ -1,6 +1,6 @@
 @import "../../../styles";
 score-column{
-    min-width:180px;
+    min-width:172px;
     height: 100%;
 }
 
@@ -30,4 +30,14 @@ score-column{
     flex-flow: row nowrap;
     align-content:center;
     justify-content:space-around;
+}
+
+.variation-title{
+    order:0;
+    font-size:18px;
+    font-weight: bold;
+}
+
+.variation-box{
+    
 }

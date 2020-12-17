@@ -37,7 +37,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Output() pieces: { tile: number; object: fabric.Group }[] = [];
   @Output() background: fabric.Rect | null = null;
   @Output() tileGroup: fabric.Group | null = null;
-  @Output() tiles: { tile: fabric.Object; piece?: Piece }[] = [];
+  @Output() tiles: { tile?: fabric.Object; piece?: Piece }[] = [];
   @Output() labels: fabric.Object[] = [];
   @Output() canvas: fabric.Canvas | null = null;
 
@@ -312,7 +312,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       const tileSize = this.size * 0.2;
       // Tile Clone
       const tileToClone = this.tiles[tileIndex];
-      if (tileToClone) {
+      if (tileToClone && tileToClone.tile) {
         tileToClone.tile.clone((promotionTile: fabric.Object) => {
           promotionTile.set('top', y);
           promotionTile.set('left', x);
@@ -375,7 +375,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       atText.set('hasControls', false);
       atText.set('hasBorders', false);
       atText.set('selectable', false);
-      const bgColor = tileToClone.tile.get('fill');
+      const bgColor = tileToClone.tile?.get('fill');
       atText.setColor(bgColor ? bgColor.toString() : 'white');
       atText.set('originX', 'center');
       atText.set('originY', 'center');
@@ -399,7 +399,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       const choiceSize = tileSize * 0.75;
       if (tileToClone) {
         let buttonGroup: fabric.Object[] = [];
-        tileToClone.tile.clone((tile: fabric.Object) => {
+        tileToClone.tile?.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
           tile.set('stroke', this.themes.gsTextColorHG.value);
@@ -449,7 +449,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         let buttonGroup2: fabric.Object[] = [];
         // Bishop Button
         x = this.size * 0.4;
-        tileToClone.tile.clone((tile: fabric.Object) => {
+        tileToClone.tile?.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
           tile.set('stroke', this.themes.gsTextColorHG.value);
@@ -498,7 +498,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         // Rook Button
         x = this.size * 0.595;
         let buttonGroup3: fabric.Object[] = [];
-        tileToClone.tile.clone((tile: fabric.Object) => {
+        tileToClone.tile?.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
           tile.set('stroke', this.themes.gsTextColorHG.value);
@@ -546,7 +546,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         // Queen
         x = this.size * 0.79;
         let buttonGroup4: fabric.Object[] = [];
-        tileToClone.tile.clone((tile: fabric.Object) => {
+        tileToClone.tile?.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
           tile.set('stroke', this.themes.gsTextColorHG.value);
@@ -784,6 +784,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           }
           pieceObject.setCoords();
           this.pieces[tile] = { tile: tile, object: pieceObject };
+          if (!this.tiles[tile]) {
+            this.tiles[tile] = {};
+          }
           // @ts-ignore
           this.tiles[tile]['piece'] = { role, color } as Piece;
           if (this.canvas) {
@@ -913,7 +916,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     this.clearMaterial();
     this.clearLabels();
     this.tiles.forEach((tileData) => {
-      this.canvas?.remove(tileData.tile);
+      if (tileData && tileData.tile) {
+        this.canvas?.remove(tileData.tile);
+      }
     });
     this.tiles = [];
     if (this.background) {
@@ -1194,12 +1199,16 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         if (row % 2 === 0) {
           if (index % 2 === 0) {
             const tile = this.tiles[index].tile;
-            tile.set('fill', color);
+            if (tile) {
+              tile.set('fill', color);
+            }
           }
         } else {
           if (index % 2 !== 0) {
             const tile = this.tiles[index].tile;
-            tile.set('fill', color);
+            if (tile) {
+              tile.set('fill', color);
+            }
           }
         }
       }
@@ -1223,12 +1232,16 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         if (row % 2 !== 0) {
           if (index % 2 === 0) {
             const tile = this.tiles[index].tile;
-            tile.set('fill', color);
+            if (tile) {
+              tile.set('fill', color);
+            }
           }
         } else {
           if (index % 2 !== 0) {
             const tile = this.tiles[index].tile;
-            tile.set('fill', color);
+            if (tile) {
+              tile.set('fill', color);
+            }
           }
         }
       }

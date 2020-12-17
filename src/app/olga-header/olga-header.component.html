@@ -1,7 +1,7 @@
 <div class="container" #containerElement>
 
-    <img src="{{environment.imagesPath}}{{variant}}.svg" class="variant{{layout.state}}" #variantElement>
     <div class="top-header" #titleContainerElement>
+        <img src="{{environment.imagesPath}}{{variant}}.svg" class="variant{{layout.state}}" #variantElement>
         <button *ngIf="currentGame > 0" (click)="previousGame()" class="prev-game" #prevButtonElement>
             < </button>
                 <div class="match-header" #matchHeaderElement><a href="{{eventURL}}" class="match-title">{{event}}</a>
@@ -11,12 +11,12 @@
                     #nextButtonElement> >
                 </button>
     </div>
-    <div class="player-section" #playerSectionElement>
+    <div class="player-section{{layout.state}}" #playerSectionElement>
         <player-showcase [name]="white" [elo]="whiteElo" [playerData]="whiteData" [searchURL]="searchURL"
-            #whiteShowcaseElement>
+            class="player-showcase{{layout.state}}" #whiteShowcaseElement>
         </player-showcase>
         <player-showcase [name]="black" [color]="true" [elo]="blackElo" [playerData]="blackData" [searchURL]="searchURL"
-            #blackShowcaseElement>
+            class="player-showcase{{layout.state}}" #blackShowcaseElement>
         </player-showcase>
     </div>
     <div class="result-section{{layout.state}}" #resultSectionElement>
@@ -25,7 +25,8 @@
             <div class="round">&nbsp;{{round}}</div>
             <div class="site-date">
                 <div class="site"><img class="site-flag" src="{{siteFlag}}">{{site}}</div>
-                <div class="match-date"><img class="calendar" src="{{environment.imagesPath}}calendar.png">{{eventDate}}</div>
+                <div class="match-date"><img class="calendar" src="{{environment.imagesPath}}calendar.png">{{eventDate}}
+                </div>
             </div>
             <div class="opening">{{opening}}</div>
             <div class="result">{{result}}</div>

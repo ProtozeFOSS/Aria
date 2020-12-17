@@ -55,9 +55,9 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     this.layout.attachScore(this);
     window.setTimeout(() =>{
       this.layout.gameScoreElement = this.container = document.getElementById('olga-score-' + this.olga.UUID);
-      if(this.container && this.container.style.height){
-        const height = parseInt(this.container.style.height);
-        const width = parseInt(this.container.style.width);
+      if(this.container && this.container.style){
+        const height = this.container.clientHeight;
+        const width = this.container.clientWidth;
         if(this.flowScore) {
           this.flowScore.resize(width,height); 
         }
@@ -96,12 +96,11 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   public updateSelection(): void {
-    window.setTimeout(() => { this.selectGameScoreItem(this.currentIndex); }, 75);
+    window.setTimeout(() => { this.selectGameScoreItem(this.currentIndex); }, 5);
   }
   public clearSelection(): void {
-
     this.currentIndex = -1;
-    window.setTimeout(() => { this.selectGameScoreItem(-1); }, 75);
+    window.setTimeout(() => { this.selectGameScoreItem(-1); }, 5);
   }
 
   protected navigateToItem(index: number): void {
@@ -145,6 +144,7 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
       this.flowScore.selectGameScoreItem(index);
     } else if (this.tableScore) {
       this.tableScore.selectGameScoreItem(index);
+      window.setTimeout(this.tableScore.updateViewSize,100);
     }
   }
 

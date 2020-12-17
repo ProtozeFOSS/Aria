@@ -46,6 +46,7 @@ export class ScoreColumnComponent implements OnInit, OnChanges {
       let rows = this.items.slice((this.index*2),  (this.index*2) + (this.size * 2));
       this.rows = [];
       let white: GameScoreItem | null = null;
+      let last = null;
       for (let i = 0; i < rows.length; ++i) {
         const item = rows[i];
         if (item.move) {
@@ -56,9 +57,13 @@ export class ScoreColumnComponent implements OnInit, OnChanges {
             white = null;
           }
         }
+        last = item;
       }
       if (white) {
         this.rows.push({ white, black: null });
+      }
+      for (let i = this.rows.length; i < this.size; ++i ) {
+        this.rows.push({white:null, black: null});
       }
     }
   }

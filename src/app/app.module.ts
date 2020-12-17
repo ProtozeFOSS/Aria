@@ -46,9 +46,9 @@ import { ScoreFlowComponent } from './olga-score/score-flow/score-flow.component
 import { TableItemComponent } from './olga-score/score-table/table-item/table-item.component';
 import { ScoreColumnComponent } from './olga-score/score-table/score-column/score-column.component';
 
-const routes: Routes = [{path:'olga2/', component: Olga, pathMatch:'full'},
-                        {path:'olga2/:settings', component: Olga, pathMatch:'full'},
-                        {path:'**', redirectTo:'olga2/', pathMatch:'full'}];
+const routes: Routes = [{ path: '', redirectTo: 'olga2', pathMatch: 'full' },
+{ path: '', component: Olga, pathMatch: 'full' },
+{ path: ':settings', component: Olga, pathMatch: 'full' }];
 
 @NgModule({
   declarations: [

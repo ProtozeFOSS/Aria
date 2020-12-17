@@ -1,7 +1,7 @@
 import { Injectable, Output, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BoardTheme } from '../canvas-chessboard/types';
-import {environment } from '../../environments/environment';
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
@@ -87,6 +87,13 @@ export class ThemeService {
   readonly gsFontSizeAN = new BehaviorSubject<number>(14);
   readonly gsFontSizeVA = new BehaviorSubject<number>(14);
   readonly gsFontSizePC = new BehaviorSubject<number>(14);
+  readonly hdrDataFontSize = new BehaviorSubject<number>(14);
+  readonly hdrNameFontSize = new BehaviorSubject<number>(14);
+  readonly hdrTitleFontSize = new BehaviorSubject<number>(14);
+  readonly hdrVariantFontSize = new BehaviorSubject<number>(14);
+  readonly hdrMatchDataFontSize = new BehaviorSubject<number>(14);
+  readonly hdrResultFontSize = new BehaviorSubject<number>(14);
+  readonly hdrRoundFontSize = new BehaviorSubject<number>(14);
 
   @Output() propertyMap = new Map<string, BehaviorSubject<string> | BehaviorSubject<number>>();
   // Menu specific Colors
@@ -138,6 +145,8 @@ export class ThemeService {
     this.propertyMap.set('--gsTextColorHG', this.gsTextColorHG);
     this.propertyMap.set('--gsBackgroundHG', this.gsBackgroundHG);
     this.propertyMap.set('--gsAnnotationColorHG', this.gsAnnotationColorHG);
+    this.propertyMap.set('--gsTableItemWidth', this.gsTableItemWidth);
+    this.propertyMap.set('--gsTablePlyWidth', this.gsTablePlyWidth);
     // Menu
     this.propertyMap.set('--meBackground', this.meBackground);
     // Board
@@ -157,14 +166,18 @@ export class ThemeService {
 
     // Font Sizes
     this.propertyMap.set('--gsFontSize', this.gsFontSize);
-    this.propertyMap.set('--gsTableItemWidth', this.gsTableItemWidth);
-    this.propertyMap.set('--gsTablePlyWidth', this.gsTablePlyWidth);
-
-
     this.propertyMap.set('--gsFontSizeAN', this.gsFontSizeAN);
     this.propertyMap.set('--gsFontSizeHG', this.gsFontSizeHG);
     this.propertyMap.set('--gsFontSizeVA', this.gsFontSizeVA);
     this.propertyMap.set('--gsFontSizePC', this.gsFontSizePC);
+    this.propertyMap.set('--hdrDataFontSize', this.hdrDataFontSize);
+    this.propertyMap.set('--hdrNameFontSize', this.hdrNameFontSize);
+    this.propertyMap.set('--hdrTitleFontSize', this.hdrTitleFontSize);
+    this.propertyMap.set('--hdrVariantFontSize', this.hdrVariantFontSize);
+    this.propertyMap.set('--hdrMatchDataFontSize', this.hdrMatchDataFontSize);
+    this.propertyMap.set('--hdrResultFontSize', this.hdrResultFontSize);
+    this.propertyMap.set('--hdrRoundFontSize', this.hdrRoundFontSize);
+
     this.propertyMap.forEach((value, key) => {
       if (typeof value.value == "string") {
         (value as BehaviorSubject<string>).subscribe((newVal) => {

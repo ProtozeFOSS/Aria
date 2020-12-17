@@ -55,6 +55,9 @@ export class GameScoreItem {
     isBranched(): boolean {
         return ((this.type & GameScoreType.Branched) == GameScoreType.Branched);
     }
+    getGame(): ChessGame | null{
+        return this.game;
+    }
 }
 
 export class ChessMove {

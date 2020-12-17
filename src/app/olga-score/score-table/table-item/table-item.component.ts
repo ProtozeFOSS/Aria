@@ -22,7 +22,7 @@ export class TableItemComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.ply = this.whiteMove?.move.fullMoveNumber().toString();
-    if(this.ply == '' && this.blackMove) {
+    if (this.ply == '' && this.blackMove) {
       this.ply = this.blackMove?.move.fullMoveNumber().toString();
     }
     if (this.whiteMove) {
@@ -34,7 +34,7 @@ export class TableItemComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.updateTypeName();
+    window.setTimeout(() => this.updateTypeName(), 10);
     if (this.whiteMove && this.whiteMove.move) {
       let showing = false;
       if (this.isFullPly()) {
