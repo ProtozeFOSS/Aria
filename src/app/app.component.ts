@@ -62,8 +62,6 @@ export class Olga implements AfterViewInit {
   @Output() keymap: Map<string, any> = new Map<string, any>();
   // @ts-ignore
   @ViewChild('pgnData') pgnData: ElementRef; // To Be Deleted
-  protected doneResizingScore = false;
-  @Output() open: EventEmitter<any> = new EventEmitter();
   constructor(
     public olga: OlgaService,
     public themes: ThemeService,
@@ -118,15 +116,14 @@ export class Olga implements AfterViewInit {
     this.olga.loadPGN(TestPGNData + this.pgnData.nativeElement.value);
     window.onkeydown = this.keyEvent.bind(this);
     window.onmessage = this.onMessage.bind(this);
+    let container = this.appContainer.nativeElement;
+    container.style.width = '100%';
+    container.style.height = '100%';
+    this.olga.loadSettings();
+    this.themes.initializeColorPalette();
     window.setTimeout(() => {
-      this.olga.loadSettings();
-      this.themes.initializeColorPalette();
-      this.appContainer.nativeElement.style.width = '';
-      this.appContainer.nativeElement.style.width = '100%';
-      this.appContainer.nativeElement.style.height = '';
-      this.appContainer.nativeElement.style.height = '100%';
-    }, 5);
-    window.setTimeout(() => { this.open.emit(null); }, 100);
+      this.layout.resizeLayout(container.clientWidth, container.clientHeight);
+    }, 200);
   }
   mouseMoved(event: MouseEvent): void {
     if (this.gameScoreComponent) {

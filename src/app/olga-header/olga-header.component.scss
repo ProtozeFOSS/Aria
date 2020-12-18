@@ -27,6 +27,7 @@
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+    overflow-x:hidden;
 }
 
 .top-header{
@@ -40,10 +41,8 @@
 }
 .player-showcase{
     margin-top: 12px;
-    min-width: 272px;
+    min-width: 220;
     max-height:120px;
-    min-height:132px;
-    margin-bottom: 24px;
 }
 
 .player-section{
@@ -62,7 +61,6 @@
 .result-section{
     height: auto;
     width: auto;
-    margin-top: -10px;
     padding-left:4px;
     padding-right:4px;
     z-index:10;
@@ -72,6 +70,7 @@
     justify-content: space-around;
     z-index:10;
     text-align:center;
+    margin-bottom:4px;
 }
 .result-trophy{
     width:auto;
@@ -110,7 +109,6 @@
 }
 
 .site{
-    font-size: 16px;
     width:auto;
     margin-right: 18px;
 }
@@ -141,6 +139,7 @@
     width:100%;
     font-weight: bold;
     font-size: 16px;
+    margin-top:-4px;
 }
 
 // State 1 (Split SBS Portrait)
@@ -148,27 +147,49 @@
     @extend .result-section;
     order:4;
 }
-
+.calendar1{
+    @extend .calendar;
+    height:22px;
+}
 .player-section1{
     @extend .player-section;
+    flex-grow: unset;
+    width:100%;
+}
+.site-date1{
+    @extend .site-date;
+    font-size: 12px;
 }
 
 .variant1{
     @extend .variant;
+    height:24px;
+    margin-top:12px;
 }
 
 .set-name1{
     order: 7;
 }
+.site-flag1{
+    @extend .site-flag;
+    height:16px;
+}
 .player-showcase1{
     @extend .player-showcase;
     order:2;
+    max-height:64px;
+    max-width:90%;
+    margin-top:0px;
 }
 .result-trophy1{
     @extend .result-trophy;
     visibility: hidden;
     height:0px;
     width:0px;
+}
+.result-data1{
+    @extend .result-data;
+    
 }
 
 // State 2 (Full Portrait)
@@ -178,14 +199,23 @@
     width:45%;
     justify-content: flex-start;
     align-items: flex-start;
-    margin-bottom:100px;
+    margin-top:-12px;
 }
 .player-section2{
     @extend .player-section;
     order:2;
-    width:45%;
+    width:48%;
+    flex-grow: unset;
+    min-width:258px;
 }
-
+.site-date2{
+    @extend .site-date;
+    font-size: 12px;
+}
+.calendar2{
+    @extend .calendar;
+    height:22px;
+}
 .top-header2{
     @extend .top-header;
     order:1;
@@ -195,15 +225,27 @@
     @extend .variant;
     order:0;
     height:24px;
+    margin-top:12px;
 }
 .player-showcase2{
     @extend .player-showcase;
     order:2;
-    width:44%;
-    min-width:200px;
+    max-width:100%;
+    max-height:64px;
+    margin-top:0px;
+    margin-bottom:14px;
 }
 .set-name2{
     order: 7;
+    @extend .set-name;
+}
+.result-data2{
+    @extend .result-data;
+
+}
+.site-flag2{
+    @extend .site-flag;
+    height:16px;
 }
 .result-trophy2{
     @extend .result-trophy;
@@ -227,6 +269,7 @@
 .player-showcase3{
     @extend .player-showcase;
     width: 44%;
+    min-width:280px;
 }
 
 .result-trophy3{
@@ -238,9 +281,14 @@
 .result-section3{
     @extend .result-section;
     order:3;
-    margin-top: -34px;
-    margin-bottom:-8px;
+    margin-bottom:-2px;
     width: 100%;
+}
+.calendar3{
+    @extend .calendar;
+}
+.site-flag3{
+    @extend .site-flag;
 }
 .result-data3{
     @extend .result-data;
@@ -258,7 +306,6 @@
 .result-section4{
     @extend .result-section;
     order:3;
-    margin-top: -43px;
     text-align:center;
     margin-bottom:2px;
     width: 100%;
@@ -267,7 +314,14 @@
 .player-section4{
     @extend .player-section;
 }
-
+.site-flag4{
+    @extend .site-flag;
+    height: 16px;
+}
+.calendar4{
+    @extend .calendar;
+    height: 22px;
+}
 .variant4{
     @extend .variant;
     margin-top:8px;flex-grow:0;
@@ -288,6 +342,7 @@
 .player-showcase4{
     @extend .player-showcase;
     width:88%;
+    min-width:260px;
 }
 
 
@@ -406,7 +461,10 @@
 
 olga-score {
     position:relative;
-    width:99%;
+    width:100%;
+    margin-left:4px;
     order:4;
     height: auto;
+    overflow-x: hidden;
+    
 }

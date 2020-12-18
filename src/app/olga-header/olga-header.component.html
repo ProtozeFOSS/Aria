@@ -23,9 +23,10 @@
         <img class="result-trophy{{layout.state}}" src="{{trophySource}}" #resultTrophy>
         <div class="result-data{{layout.state}}">
             <div class="round">&nbsp;{{round}}</div>
-            <div class="site-date">
-                <div class="site"><img class="site-flag" src="{{siteFlag}}">{{site}}</div>
-                <div class="match-date"><img class="calendar" src="{{environment.imagesPath}}calendar.png">{{eventDate}}
+            <div class="site-date{{layout.state}}">
+                <div class="site"><img class="site-flag{{layout.state}}" src="{{siteFlag}}">{{site}}</div>
+                <div class="match-date"><img class="calendar{{layout.state}}"
+                        src="{{environment.imagesPath}}calendar.png">{{eventDate}}
                 </div>
             </div>
             <div class="opening">{{opening}}</div>

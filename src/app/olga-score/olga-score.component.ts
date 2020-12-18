@@ -48,24 +48,22 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.olga.attachScore(this);
+    this.layout.attachScore(this);
+    const gs = this.olga.getGame()?.generateGameScore();
+    if (gs) {
+      this._items = gs;
+    }
   }
 
   ngAfterViewInit(): void {
-    this.olga.attachScore(this);
-    this.layout.attachScore(this);
-    window.setTimeout(() =>{
-      this.layout.gameScoreElement = this.container = document.getElementById('olga-score-' + this.olga.UUID);
-      if(this.container && this.container.style){
-        const height = this.container.clientHeight;
-        const width = this.container.clientWidth;
-        if(this.flowScore) {
-          this.flowScore.resize(width,height); 
-        }
-        if(this.tableScore) {
-          this.tableScore.resize(width,height);     
-        }
-      }
-    },1);
+    this.layout.gameScoreElement = this.container = document.getElementById('olga-score-' + this.olga.UUID);
+    if (this.flowScore) {
+      this.flowScore.items = this._items;
+    }
+    if (this.tableScore) {
+      this.tableScore.items = this._items;
+    }
   }
 
   public clearGameScore(): void {
@@ -108,23 +106,20 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
   }
 
   resize(width: number, height: number) {
-    if(this.flowScore) {
-      this.flowScore.resize(width,height);
+    if (height == 0 || width == 0) {
+      return;
     }
-    if(this.tableScore) {
+    // if (this.container) {
+    //   this.container.style.width = width + 'px';
+    //   this.container.style.height = height + 'px';
+    // }
+    if (this.flowScore) {
+      this.flowScore.resize(width, height);
+    }
+    if (this.tableScore) {
       this.tableScore.resize(width, height);
     }
   }
-
-  // resizeScore(): void {
-  //   this.olga.toggleAutoPlay();
-  //   if (this.scoreWidth) {
-  //     this.columnCount = Math.floor(this.scoreWidth / this.maxPlySize);
-  //   } else {
-  //     this.columnCount = 3;
-  //   }
-  //   this.olga.toggleAutoPlay();
-  // }
 
 
   ignoreEvent(event: MouseEvent): void {
@@ -132,19 +127,13 @@ export class GamescoreUxComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
   }
 
-  // setWidth(width: number | null): void {
-  //   if (width) {
-  //     this.columnCount = Math.floor(width / this.maxPlySize);
-  //   }
-  // }
-
 
   selectGameScoreItem(index: number) {
     if (this.flowScore) {
       this.flowScore.selectGameScoreItem(index);
     } else if (this.tableScore) {
       this.tableScore.selectGameScoreItem(index);
-      window.setTimeout(this.tableScore.updateViewSize,100);
+      window.setTimeout(this.tableScore.updateViewSize, 100);
     }
   }
 

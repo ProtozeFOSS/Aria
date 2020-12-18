@@ -5,24 +5,31 @@
     margin: 2px;
     height: 100%;
     width: 100%;
-    float: right;
     display:flex;
     flex-wrap:nowrap;
     max-height: 180px;
-    min-width: 220px;
 }
 
 .player-header{
     font-size: 18px;
-    line-height: 16px;
     border-radius: 1px;
-    vertical-align: middle;
     text-align: right;
-    padding-right: 8px;
+    padding-right: 4px;
     background: rgb(240, 231, 211);
     background: linear-gradient(127deg, rgba(240, 231, 211, 0.623) 0%, rgb(175, 175, 175, .75) 44%, rgb(126, 126, 126) 100%);
     order:0;
+}.player-header1{
+    @extend .player-header;
+    font-size:16px;
+}.player-header2{
+    @extend .player-header;
+    font-size:16px;
+}.player-header3{
+    @extend .player-header;
+}.player-header4{
+    @extend .player-header;
 }
+
 
 .color-image{
     height: 18px;
@@ -40,6 +47,18 @@
     width:90px;
     display:flex;
     order:0;
+}.player-frame1{
+    @extend .player-frame;
+    height:120%;
+    width:unset;
+}.player-frame2{
+    @extend .player-frame;
+    height:120%;
+    width:unset;
+}.player-frame3{
+    @extend .player-frame;
+}.player-frame4{
+    @extend .player-frame;
 }
 
 .player-details{
@@ -47,6 +66,16 @@
     height: auto;
     width: 100%;
     order:2;
+}.player-details1{
+    @extend .player-details;
+    margin-left:-52px;
+}.player-details2{
+    @extend .player-details;
+    margin-left:-52px;
+}.player-details3{
+    @extend .player-details;
+}.player-details4{
+    @extend .player-details;
 }
 
 .photo-frame{
@@ -65,7 +94,15 @@
     margin-top: 2px;
     font-family: "Amita";
     line-height: 24px;
-
+}.player-nameP{
+    @extend .player-name;
+    text-align: left;
+    font-size: 18px;
+    line-height: 0px;
+    transform:translate(8px, 13px);
+    margin-top:unset;
+    min-width:unset;
+    margin-left:unset;
 }
 
 .player-data{
@@ -78,3 +115,4 @@
     display: flex;
     flex-flow: row wrap;
 }
+

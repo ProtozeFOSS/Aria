@@ -200,20 +200,18 @@ export class OlgaHeaderComponent implements OnInit {
   resize(width: number, height: number) {
     if (this.layout.headerElement) {
       this.layout.headerElement.style.height = height + 'px';
-      this.layout.headerElement.style.maxHeight = height + 'px';
     }
     switch (this.layout.state) {
       case 1: // SBS Portrait
+        this.containerElement.nativeElement.style = 'height:auto;width:100%;margin-left:0px;margin-right:0px;overflow-y:hidden;';
+        if (this.layout.headerElement) {
+          this.layout.headerElement.style.width = width + 'px';
+        }
         break;
       case 2: {
-        this.containerElement.nativeElement.style = 'height:auto;width:100%;margin-left:0px;margin-right:0px;overflow-y:scroll;';
+        this.containerElement.nativeElement.style = 'height:auto;width:100%;margin-left:0px;margin-right:0px;overflow-y:hidden;';
         if (this.layout.headerElement) {
-          this.layout.headerElement.style.width = 'auto';;
-          // this.renderer.setStyle(this.layout.headerElement, 'width', '100%');
-          // this.renderer.setStyle(this.layout.headerElement, 'left', '0px');
-          // this.renderer.setStyle(this.layout.headerElement, 'right', '0px');
-          // this.renderer.setStyle(this.layout.headerElement, 'top', '0px');
-          // this.renderer.setStyle(this.layout.headerElement, 'bottom', '');
+          this.layout.headerElement.style.width = width + 'px';
         }
         break;
       }
@@ -224,7 +222,7 @@ export class OlgaHeaderComponent implements OnInit {
           scoreSize -= this.resultSectionElement.nativeElement.clientHeight;
         }
         if (this.playerSectionElement) {
-          scoreSize -= (this.playerSectionElement.nativeElement.clientHeight - 48);
+          scoreSize -= (this.playerSectionElement.nativeElement.clientHeight);
         }
         if (this.matchHeaderElement) { // should be 83
           scoreSize -= this.matchHeaderElement.nativeElement.clientHeight;
@@ -235,13 +233,25 @@ export class OlgaHeaderComponent implements OnInit {
         this.titleContainerElement.nativeElement.style =
           'order:1;height: auto;line-height:42px;font-size: 110%;text-align:center;min-width: 140px;width: calc(100% - 188px);min-height:42px;'
         'padding-bottom:4px;font-family: Candara;.match-date{height: 22px;font-size:72%;font-weight: bold;text-align: center;line-height:4px;}';
-
-        if (this.layout.gameScoreElement) {
-          this.renderer.setStyle(this.layout.gameScoreElement, 'overflow-y', 'auto');
-          this.renderer.setStyle(this.layout.gameScoreElement, 'height', 'auto');
+        if (this.scoreComponent) {
+          this.scoreComponent.resize(width, Math.ceil(scoreSize + 42));
+          if (this.layout.gameScoreElement) {
+            this.renderer.setStyle(this.layout.gameScoreElement, 'overflow-y', 'hidden');
+            this.renderer.setStyle(this.layout.gameScoreElement, 'height', scoreSize + 'px');
+            this.renderer.setStyle(this.layout.gameScoreElement, 'height', 'auto');
+          }
+        } else {
+          window.setTimeout(() => {
+            if (this.scoreComponent) {
+              this.scoreComponent.resize(width, Math.ceil(scoreSize + 42));
+              if (this.layout.gameScoreElement) {
+                this.renderer.setStyle(this.layout.gameScoreElement, 'overflow-y', 'hidden');
+                this.renderer.setStyle(this.layout.gameScoreElement, 'height', scoreSize + 'px');
+                this.renderer.setStyle(this.layout.gameScoreElement, 'height', 'auto');
+              }
+            }
+          }, 20);
         }
-
-        window.setTimeout(() => { this.scoreComponent.resize(width, Math.ceil(scoreSize)) }, 4);
         break;
       }
       case 4: {
@@ -253,24 +263,32 @@ export class OlgaHeaderComponent implements OnInit {
           scoreSize -= this.resultSectionElement.nativeElement.clientHeight;
         }
         if (this.playerSectionElement) {
-          scoreSize -= (this.playerSectionElement.nativeElement.clientHeight - 48);
+          scoreSize -= (this.playerSectionElement.nativeElement.clientHeight);
         }
         if (this.matchHeaderElement) { // should be 83
           scoreSize -= this.matchHeaderElement.nativeElement.clientHeight;
         }
         // 773 - 455 = 318
-        if (this.layout.gameScoreElement) {
-          this.renderer.setStyle(this.layout.gameScoreElement, 'overflow-y', '');
-          this.renderer.setStyle(this.layout.gameScoreElement, 'height', 'auto');
-        }
-        // if (this.layout.headerElement) {
-        //   this.renderer.setStyle(this.layout.headerElement, 'left', '');
-        // }
-        window.setTimeout(() => {
-          if (this.scoreComponent) {
-            this.scoreComponent.resize(width, Math.ceil(scoreSize))
+
+        if (this.scoreComponent) {
+          this.scoreComponent.resize(width, Math.ceil(scoreSize + 48));
+          if (this.layout.gameScoreElement) {
+            this.renderer.setStyle(this.layout.gameScoreElement, 'overflow-y', 'hidden');
+            this.renderer.setStyle(this.layout.gameScoreElement, 'height', scoreSize + 'px');
+            this.renderer.setStyle(this.layout.gameScoreElement, 'height', 'auto');
           }
-        }, 4);
+        } else {
+          window.setTimeout(() => {
+            if (this.scoreComponent) {
+              this.scoreComponent.resize(width, Math.ceil(scoreSize + 48));
+              if (this.layout.gameScoreElement) {
+                this.renderer.setStyle(this.layout.gameScoreElement, 'overflow-y', 'hidden');
+                this.renderer.setStyle(this.layout.gameScoreElement, 'height', scoreSize + 'px');
+                this.renderer.setStyle(this.layout.gameScoreElement, 'height', 'auto');
+              }
+            }
+          }, 20);
+        }
         //this.scoreComponent.resize(width, height - 344);
         break;
       }

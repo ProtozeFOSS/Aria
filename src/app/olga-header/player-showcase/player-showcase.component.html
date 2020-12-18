@@ -1,17 +1,19 @@
 <div class="showcase-box">
-    <div class="player-frame">
+    <div class="player-frame{{layout.state}}">
         <img [src]="playerData.image" class="player-image">
         <img src="{{environment.imagesPath}}picture-frame.png" class="photo-frame">
     </div>
-    <div class="player-details">
-        <div class="player-header">
+    <div class="player-details{{layout.state}}">
+        <div class="player-header{{layout.state}}">
+            <div *ngIf="layout.state <= 2" class="player-nameP" (click)="search(name)">{{name}}</div>
             <img *ngIf="color" src="{{environment.piecesPath}}bpawn.png" class="color-image">
             <img *ngIf="!color" src="{{environment.piecesPath}}wpawn.png" class="color-image">
             {{color ? 'Black':'White'}}
         </div>
-        <div class="player-name" (click)="search(name)">{{name}}</div>
+        <div *ngIf="layout.state > 2" class="player-name" (click)="search(name)">{{name}}</div>
         <div class="player-data-box">
-            <div *ngIf="playerData.born !== undefined" class="player-data" (click)="search(playerData.born)"><b>Born: </b>{{playerData.born}}</div>
+            <div *ngIf="playerData.born !== undefined" class="player-data" (click)="search(playerData.born)"><b>Born:
+                </b>{{playerData.born}}</div>
             <div *ngIf="playerData.elo !== undefined" class="player-data"><b>FIDE Elo: </b>{{playerData.elo}}</div>
             <div *ngIf="elo.length" class="player-data"><b>Match Elo: </b>{{elo}}</div>
         </div>

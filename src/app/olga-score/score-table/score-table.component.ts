@@ -27,36 +27,24 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
   constructor(public olga: OlgaService, public theme: ThemeService, public layout: LayoutService, private renderer: Renderer2) { }
 
   ngOnInit(): void {
+
   }
   ngAfterViewInit(): void {
-    let container = document.getElementById('score-table-' + this.olga.UUID);
-    if (container) {
-      this.container;
-    }
-    if (this.layout.gameScoreElement) {
-      const width = this.layout.gameScoreElement.clientWidth;
-      if (!isNaN(width)) {
-        this.width = width;
-        this.height = this.layout.gameScoreElement.clientHeight;
-        this.updateViewSize();
+    window.setTimeout(() => {
+      let container = document.getElementById('score-table-' + this.olga.UUID);
+      if (container) {
+        this.container = container;
       }
-    } else {
-      window.setTimeout(() => {
-        let container = document.getElementById('score-table-' + this.olga.UUID);
-        if (container) {
-          this.container;
+      this.layout.gameScoreElement = document.getElementById('olga-score-' + this.olga.UUID);
+      if (this.layout.gameScoreElement) {
+        const width = this.layout.gameScoreElement.clientWidth;
+        if (!isNaN(width)) {
+          this.width = width;
+          this.height = this.layout.gameScoreElement.clientHeight;
         }
-        this.layout.gameScoreElement = document.getElementById('olga-score-' + this.olga.UUID);
-        if (this.layout.gameScoreElement) {
-          const width = this.layout.gameScoreElement.clientWidth;
-          if (!isNaN(width)) {
-            this.width = width;
-            this.height = this.layout.gameScoreElement.clientHeight;
-          }
-        }
-        this.updateViewSize();
-      }, 20);
-    }
+      }
+      //this.updateViewSize();
+    }, 10);
   }
 
   updateViewSize(): void {
@@ -64,11 +52,13 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
       if (this.resize) {
         this.resize();
       }
-    }, 20);
+    }, 10);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.updateViewSize();
+    if (this.resize) {
+      this.resize();
+    }
   }
 
   selectGameScoreItem(index: number): void {
@@ -103,32 +93,29 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.items.length == 0) {
       return;
     }
-    let scoreSize = height;
+    let scoreSize = height - 32;
     if (this.currentItem && this.currentItem.move) {
       let comment = this.currentItem.move.comment();
-      if (comment && comment.length) {
+      if (comment && comment.length >= 0) {
         if (!this.comment) {
           window.setTimeout(() => { this.resize(width, height) }, 10);
+          return;
         }
-        scoreSize -= (this.comment.nativeElement.clientHeight - 1);
+        scoreSize = height;
       }
     }
 
+    let moves = Math.ceil(this.items.length / 2);
+    let existing_items = document.getElementsByClassName('gsi-container');
+    let item_height = 25;
+    if (existing_items && existing_items.length) {
+      const first = existing_items[0];
+      item_height = first.clientHeight;
+    }
     switch (this.layout.state) {
       case 3: {
         this.width = width;
         this.height = height;
-        if (this.scoreArea) {
-          this.renderer.setStyle(this.scoreArea.nativeElement, 'height', 'auto');
-          this.renderer.setStyle(this.scoreArea.nativeElement, 'overflow-y', undefined);
-        }
-        let existing_items = document.getElementsByClassName('gsi-container');
-        let item_height = 25;
-        let moves = Math.ceil(this.items.length / 2);
-        if (existing_items && existing_items.length) {
-          const first = existing_items[0];
-          item_height = first.clientHeight;
-        }
         let max_row_count = Math.floor(height / item_height) + (this.olga.showTableHeader.value ? 0 : 1);
         let max_columns = Math.floor(width / 176);
         if (max_row_count * max_columns >= moves) {
@@ -152,6 +139,16 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
           //max_columns = Math.floor( (3 + max_columns)/2);
           this.rowCount = Math.ceil(moves / max_columns);
         }
+        if (this.container) {
+          this.renderer.setStyle(this.container, 'height', 'unset');
+          this.renderer.setStyle(this.container, 'overflow-y', 'scroll');
+        }
+
+        if (this.scoreArea) {
+          this.renderer.setStyle(this.scoreArea.nativeElement, 'height', scoreSize + 'px');
+          this.renderer.setStyle(this.scoreArea.nativeElement, 'overflow-y', 'unset');
+          this.renderer.setStyle(this.scoreArea.nativeElement, 'overflow-x', 'hidden');
+        }
         this.columns = Array.from({ length: max_columns }, (_, i) => i + 1);
         this.theme.gsTableItemWidth.next(Math.round((width - (32 * this.columns.length)) / (this.columns.length * 2)) + 'px');
         window.setTimeout(() => {
@@ -167,21 +164,18 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
       case 4: {
         if (this.container) {
           //this.renderer.setStyle(this.container, 'width', '100%');
-          this.renderer.setStyle(this.container, 'height', 'auto');
-          //this.renderer.setStyle(this.container, 'overflow-y', 'scroll');
+          // if(this.container.clientHeight == 0) {
+          // this.renderer.setStyle(this.container, 'height', '800px');
+          //   window.setTimeout(()=>{this.resize(width, height)}, 2);
+          // }
+          this.renderer.setStyle(this.container, 'height', 'unset');
+          //this.renderer.setStyle(this.container, 'overflow-y', 'visible');
         }
 
         if (this.scoreArea) {
-          this.renderer.setStyle(this.scoreArea.nativeElement, 'height', scoreSize + 'px');
-          this.renderer.setStyle(this.scoreArea.nativeElement, 'overflow-y', 'scroll');
-        }
-
-        let existing_items = document.getElementsByClassName('gsi-container');
-        let item_height = 25;
-        let moves = Math.ceil(this.items.length / 2);
-        if (existing_items && existing_items.length) {
-          const first = existing_items[0];
-          item_height = first.clientHeight;
+          this.renderer.setStyle(this.scoreArea.nativeElement, 'height', (scoreSize - 10) + 'px');
+          this.renderer.setStyle(this.scoreArea.nativeElement, 'overflow-y', 'unset');
+          this.renderer.setStyle(this.scoreArea.nativeElement, 'overflow-x', 'hidden');
         }
         let max_row_count = Math.floor(scoreSize / item_height) + (this.olga.showTableHeader.value ? 0 : 1);
         let max_columns = Math.floor(width / 180);
