@@ -52,7 +52,7 @@ export class OlgaService {
 
   private _games: ChessGame[] = [];
   private _game: ChessGame | null = null;
-
+  private _result: string = '';
   private _board: CanvasChessBoard | null = null;
   private _score: GamescoreUxComponent | null = null;
   private _status: OlgaStatusComponent | null = null;
@@ -276,6 +276,10 @@ export class OlgaService {
         // this._score?.updateSelection();
         const headerData = this._game?.generateHeaderData();
         if (headerData) {
+          const result = headerData.get('Result');
+          if (result) {
+            this._result = result;
+          }
           if (this._header) {
             this._header.setHeader(headerData);
           }
@@ -305,6 +309,10 @@ export class OlgaService {
         this._score?.updateSelection();
         const headerData = this._game?.generateHeaderData();
         if (headerData) {
+          const result = headerData.get('Result');
+          if (result) {
+            this._result = result;
+          }
           if (this._header) {
             this._header.setHeader(headerData);
             this._header.currentGame = index;
@@ -469,6 +477,10 @@ export class OlgaService {
       return this._game.getPosition().fen();
     }
     return fen;
+  }
+
+  public gameResult(): string {
+    return this._result;
   }
 
   public getMoveNotation(node: KNode): string {

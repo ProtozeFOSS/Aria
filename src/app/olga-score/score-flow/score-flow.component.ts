@@ -22,16 +22,14 @@ export class ScoreFlowComponent implements OnInit, OnChanges {
   @ViewChildren(FlowItemComponent) scoreItems!: QueryList<FlowItemComponent>;
   @Output() currentItem: FlowItemComponent | null = null;
   @Input() items: GameScoreItem[] = [];
-  @Output() result = '';
+  @Input() @Output() result = '1-0';
   constructor(public olga: OlgaService) { }
 
   ngOnInit(): void {
-    const game = this.olga.getGame() as ChessGame;
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log()
+    this.result = this.olga.gameResult();
   }
 
   selectGameScoreItem(index: number) {
