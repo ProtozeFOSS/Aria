@@ -8,17 +8,23 @@
                 </svg>
                 <div class="timer">{{timeLeft}}</div>
         </div>
-        <div (click)="olga.toggleScoreType()" class="view" #rotateElement>
+        <div (click)="olga.rotateBoardOrientation()" class="view" #rotateElement>
                 <svg class="feather">
                         <use xlink:href="assets/images/feather-sprite.svg#refresh-cw" />
                 </svg>
         </div>
-        <div (click)="layout.openSettings()" class="settings" #settingsElement>
+        <div *ngIf="olga.scoreViewType.value === ScoreViewType.Flow" (click)="olga.toggleScoreType()" class="settings"
+                #settingsElement>
                 <svg class="feather">
-                        <use xlink:href="assets/images/feather-sprite.svg#sliders" />
+                        <use xlink:href="assets/images/feather-sprite.svg#align-justify" />
                 </svg>
         </div>
-
+        <div *ngIf="olga.scoreViewType.value === ScoreViewType.Table" (click)="olga.toggleScoreType()" class="settings"
+                #settingsElement>
+                <svg class="feather">
+                        <use xlink:href="assets/images/feather-sprite.svg#align-left" />
+                </svg>
+        </div>
         <div (click)="layout.shrink()" class="shrink" #shrinkElement>
                 <svg class="feather">
                         <use xlink:href="assets/images/feather-sprite.svg#minus" />

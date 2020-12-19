@@ -43,7 +43,7 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
           this.height = this.layout.gameScoreElement.clientHeight;
         }
       }
-      //this.updateViewSize();
+      this.resize();
     }, 10);
   }
 
@@ -90,7 +90,11 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   resize(width: number = this.width, height: number = this.height): void {
-    if (this.items.length == 0) {
+    if (this.items.length == 0 || width == 0) {
+      return;
+    }
+    if (!this.container || !this.scoreArea) {
+      window.setTimeout(() => { this.resize(width, height); }, 100);
       return;
     }
     let scoreSize = height - 32;
@@ -112,7 +116,17 @@ export class ScoreTableComponent implements OnInit, OnChanges, AfterViewInit {
       const first = existing_items[0];
       item_height = first.clientHeight;
     }
+    if (height <= 0) {
+      height = ((Math.ceil(moves / 3) + (this.olga.showTableHeader.value ? 2 : 1)) * item_height);
+      if (this.container) {
+        this.renderer.setStyle(this.container, 'height', height + 'px');
+      }
+    }
     switch (this.layout.state) {
+      //@ts-ignore
+      case 1: { }
+      //@ts-ignore
+      case 2: { }
       case 3: {
         this.width = width;
         this.height = height;

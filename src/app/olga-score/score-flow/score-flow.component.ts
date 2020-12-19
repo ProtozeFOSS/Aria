@@ -8,7 +8,8 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { GameScoreItem } from '../../common/kokopu-engine';
+import { OlgaService } from 'src/app/services/olga.service';
+import { GameScoreItem, ChessGame } from '../../common/kokopu-engine';
 import { FlowItemComponent } from './flow-item/flow-item.component';
 
 @Component({
@@ -21,9 +22,13 @@ export class ScoreFlowComponent implements OnInit, OnChanges {
   @ViewChildren(FlowItemComponent) scoreItems!: QueryList<FlowItemComponent>;
   @Output() currentItem: FlowItemComponent | null = null;
   @Input() items: GameScoreItem[] = [];
-  constructor() { }
+  @Output() result = '';
+  constructor(public olga: OlgaService) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    const game = this.olga.getGame() as ChessGame;
+
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log()
@@ -59,7 +64,7 @@ export class ScoreFlowComponent implements OnInit, OnChanges {
 
   }
 
-  resize(width: number, height: number) : void {
+  resize(width: number, height: number): void {
 
   }
 }

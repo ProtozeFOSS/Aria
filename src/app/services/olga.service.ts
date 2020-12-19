@@ -7,8 +7,6 @@ import { OlgaStatusComponent } from '../olga-status/olga-status.component';
 // @ts-ignore
 import { Node as KNode, Variation as KVariation } from 'kokopu';
 import { OlgaControlsComponent } from '../olga-controls/olga-controls.component';
-import { OlgaMenuComponent } from '../olga-menu/olga-menu.component';
-import { CookieConsentComponent } from '../cookie-consent/cookie-consent.component';
 import { Olga } from '../app.component';
 import { OlgaHeaderComponent } from '../olga-header/olga-header.component';
 import { environment } from '../../environments/environment';
@@ -35,9 +33,8 @@ export const STOCK_IMAGE = environment.imagesPath + 'player.png';
 export class OlgaService {
   @Output() readonly showingPly = new BehaviorSubject<boolean>(true);
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
-  @Output() readonly cookiesAccepted = new BehaviorSubject<boolean>(false);
   @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(300);
-  @Output() readonly scoreViewType = new BehaviorSubject<ScoreViewType>(ScoreViewType.Table);
+  @Output() readonly scoreViewType = new BehaviorSubject<ScoreViewType>(ScoreViewType.Flow);
   @Output() readonly showTableHeader = new BehaviorSubject<boolean>(true);
   protected autoIntervalID = -1;
   protected timeLeft = 300;
@@ -60,8 +57,6 @@ export class OlgaService {
   private _score: GamescoreUxComponent | null = null;
   private _status: OlgaStatusComponent | null = null;
   private _controls: OlgaControlsComponent | null = null;
-  private _menu: OlgaMenuComponent | null = null;
-  private _cookies: CookieConsentComponent | null = null;
   private _header: OlgaHeaderComponent | null = null;
   private _app: Olga | null = null;
   readonly isVariant = new BehaviorSubject<boolean>(false);
@@ -79,9 +74,6 @@ export class OlgaService {
         '--gsFontFamily',
         this.gsFontFamily.value
       );
-    });
-    this.cookiesAccepted.subscribe((cookiesAccepted: boolean) => {
-      this.setCookieConsent(cookiesAccepted);
     });
   }
 
@@ -184,23 +176,11 @@ export class OlgaService {
     }
   }
 
-  public getCookiesConsent(): boolean {
-    return this.cookiesAccepted.value;
-  }
-
   public gameCount(): number {
     if (this._games) {
       return this._games.length;
     }
     return 0;
-  }
-  public setCookieConsent(consent: boolean): void {
-    if (this.cookiesAccepted.value != consent) {
-      this.cookiesAccepted.next(consent);
-    }
-    if (consent && this._cookies) {
-      this._cookies.hide();
-    }
   }
 
   public openEngine(): void { }
@@ -340,8 +320,6 @@ export class OlgaService {
     this._board = olga.canvasBoardComponent;
     this._header = olga.headerComponent;
     this._controls = olga.controlsComponent;
-    this._cookies = olga.cookiesComponent;
-    this._menu = olga.menuComponent;
     this._status = olga.statusComponent;
   }
   public attachScore(score: GamescoreUxComponent): void {
@@ -361,9 +339,9 @@ export class OlgaService {
     if (this._score && variations && variations.length) {
       console.log('Editing Variations on: ' + data.move.notation());
       console.log(variations);
-      if (this._menu) {
-        this._menu.openVariationMenu(data);
-      }
+      // if (this._menu) {
+      //   this._menu.openVariationMenu(data);
+      // }
     }
   }
 
@@ -535,24 +513,25 @@ export class OlgaService {
   }
 
   public saveSettings(): void {
-    if (this._cookies) {
-      if (this.cookiesAccepted.value) {
-        let settings = this.createJsonSettings();
-        this._cookies.setCookie(settings, 365);
-      } else {
-        this._cookies.setCookie('', 0);
-      }
-    }
+    // if (this._cookies) {
+    //   if (this.cookiesAccepted.value) {
+    //     let settings = this.createJsonSettings();
+    //     this._cookies.setCookie(settings, 365);
+    //   } else {
+    //     this._cookies.setCookie('', 0);
+    //   }
+    // }
+    this._app?.saveSettings(this.createJsonSettings());
   }
 
   public loadSettings(): string {
-    let settings = '';
-    if (this.cookiesAccepted.value) {
-      if (this._cookies) {
-        settings = this._cookies.getCookie();
-      }
-      this.setJsonSettings(settings);
-    }
+    let settings = '{}';
+    // if (this.cookiesAccepted.value) {
+    //   if (this._cookies) {
+    //     settings = this._cookies.getCookie();
+    //   }
+    //   this.setJsonSettings(settings);
+    // }
     return settings;
   }
 }

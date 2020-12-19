@@ -14,8 +14,6 @@ import { ThemeService } from './services/themes.service';
 import { LayoutService } from './services/layout.service';
 import { OlgaService } from './services/olga.service';
 import { OlgaControlsComponent } from './olga-controls/olga-controls.component';
-import { OlgaMenuComponent } from './olga-menu/olga-menu.component';
-import { CookieConsentComponent } from './cookie-consent/cookie-consent.component';
 import { OlgaHeaderComponent } from './olga-header/olga-header.component';
 import { TestPGNData } from './test';
 import { OlgaStatusComponent } from './olga-status/olga-status.component';
@@ -45,11 +43,7 @@ export class Olga implements AfterViewInit {
   // @ts-ignore
   @ViewChild('olgaContainer') appContainer: ElementRef;
   // @ts-ignore
-  @ViewChild(OlgaMenuComponent) menuComponent: OlgaMenuComponent;
-  // @ts-ignore
   @ViewChild(OlgaControlsComponent) controlsComponent: OlgaControlsComponent;
-  // @ts-ignore
-  @ViewChild(CookieConsentComponent) cookiesComponent: CookieConsentComponent;
   // @ts-ignore
   @ViewChild(OlgaHeaderComponent) headerComponent: OlgaHeaderComponent | null;
   // @ts-ignore
@@ -76,7 +70,6 @@ export class Olga implements AfterViewInit {
           const decoded = atob(params.settings);
           const settings_obj = JSON.parse(decoded);
           this.applyJsonSettings(settings_obj);
-          this.olga.cookiesAccepted.next(false);
         } catch (any) {
 
         }
@@ -204,6 +197,13 @@ export class Olga implements AfterViewInit {
           }
         }
       }
+    }
+  }
+
+  public saveSettings(settings: any) {
+    let message = this.createParentMessage(JSRPC.onSettings, settings);
+    if (message.length) {
+      parent.postMessage(message, parent.origin);
     }
   }
 

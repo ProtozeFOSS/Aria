@@ -1,5 +1,5 @@
 import { Component, OnInit, Output } from '@angular/core';
-import { OlgaService } from '../services/olga.service';
+import { OlgaService, ScoreViewType } from '../services/olga.service';
 import { LayoutService } from '../services/layout.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class OlgaControlsComponent implements OnInit {
   constructor(public olga: OlgaService, public layout: LayoutService) { }
   public playing = false
   public timeLeft = 0.6;
+  ScoreViewType = ScoreViewType;
   ngOnInit(): void {
   }
 
@@ -44,10 +45,10 @@ export class OlgaControlsComponent implements OnInit {
     this.olga.moveToEnd();
   }
 
-  toggleAutoPlay():void {
+  toggleAutoPlay(): void {
     this.olga.toggleAutoPlay();
   }
   public setTimer(time: number) {
-    this.timeLeft = time/1000;
+    this.timeLeft = time / 1000;
   }
 }

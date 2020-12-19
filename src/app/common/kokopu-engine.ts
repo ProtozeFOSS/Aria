@@ -7,7 +7,6 @@ export class GameScoreItem {
     type = 0;
     move: KNode | null = null;
     constructor(
-        protected game: ChessGame | null = null,
         move?: KNode
     ) {
         this.move = move;
@@ -54,9 +53,6 @@ export class GameScoreItem {
     }
     isBranched(): boolean {
         return ((this.type & GameScoreType.Branched) == GameScoreType.Branched);
-    }
-    getGame(): ChessGame | null{
-        return this.game;
     }
 }
 
@@ -237,7 +233,7 @@ export class ChessGame {
         let previous = null;
         let gItem = null;
         while (node) {
-            gItem = new GameScoreItem(this, node);
+            gItem = new GameScoreItem(node);
             gItem.getType(previous);
             items.push(gItem);
             previous = gItem;
@@ -311,7 +307,7 @@ export class ChessGame {
         for (let index = 0; index < traversals; ++index) {
             const traversal = this.scorePath[index] as Traversal;
             for (let j = 0; j < traversal.right; ++j) {
-                gItem = new GameScoreItem(this, current);
+                gItem = new GameScoreItem(current);
                 gItem.getType(previous);
                 items.push(gItem);
                 previous = gItem;
@@ -323,7 +319,7 @@ export class ChessGame {
                     const variation = variations[traversal.down - 1];
                     current = variation.first();
                     console.log('Branching at ' + current.notation());
-                    gItem = new GameScoreItem(this, current);
+                    gItem = new GameScoreItem(current);
                     gItem.getType(previous);
                     items.push(gItem);
                     previous = gItem;
@@ -332,7 +328,7 @@ export class ChessGame {
             }
         }
         while (current) {
-            gItem = new GameScoreItem(this, current);
+            gItem = new GameScoreItem(current);
             gItem.getType(previous);
             items.push(gItem);
             previous = gItem;

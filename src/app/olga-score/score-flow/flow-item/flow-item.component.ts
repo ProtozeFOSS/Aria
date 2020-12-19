@@ -10,7 +10,7 @@ import { ThemeService } from '../../../services/themes.service';
 })
 // @ts-ignore
 export class FlowItemComponent implements OnInit, AfterViewInit, OnChanges {
-  @Input() data: GameScoreItem = new GameScoreItem(null, -1);
+  @Input() data: GameScoreItem = new GameScoreItem();
   @Output() typeName = '';
   // visual nodes
   @Output() ply = '';
