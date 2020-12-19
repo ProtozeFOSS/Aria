@@ -35,9 +35,7 @@ olga-score {
 }
 
 .olgaheader{
-  background-image:url(/olga2/assets/images/header-background.svg);
   position: absolute;
-  border: 1px solid black;
   border-radius: 2px;
   min-height: 240px;
   overflow-y: auto;
@@ -113,13 +111,3 @@ olga-status {
   user-select: none;
 }
 
-olga-menu{
-  position: fixed;
-  top: 0px;
-  bottom:0px;
-  left:0px;
-  right:0px;
-  background: #100c0ce3;
-  z-index: 1000;
-  visibility: hidden;
-}
