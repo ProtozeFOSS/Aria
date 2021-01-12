@@ -1,0 +1,7 @@
+<div class="score-area" #scoreArea>
+    <table-column *ngFor="let selection of columns;index as column" [index]="column">
+    </table-column>
+</div>
+<div *ngIf="moveComment.length > 0" class="comment" #comment>
+    {{moveComment}}
+</div>

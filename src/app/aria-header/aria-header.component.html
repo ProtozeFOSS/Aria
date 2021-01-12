@@ -1,0 +1,35 @@
+<div class="container" #containerElement>
+    <div class="top-header" #titleContainerElement>
+        <img src="{{environment.imagesPath}}{{variant}}.svg" class="variant{{layout.state}}" #variantElement>
+        <button *ngIf="currentGame > 0" (click)="previousGame()" class="prev-game" #prevButtonElement>
+            < </button>
+                <div class="match-header" #matchHeaderElement><a (click)="clickedEvent()" class="match-title">{{event}}</a>
+                    <div class="event-date" (click)="searchDate()">{{setDate}}</div>
+                </div>
+                <button [ngClass]="{disabled : currentGame >= gameCount-1}" class="next-game" (click)="nextGame()"
+                    #nextButtonElement> >
+                </button>
+    </div>
+    <div class="player-section{{layout.state}}" #playerSectionElement>
+        <player-showcase [name]="white" [elo]="whiteElo" [playerData]="whiteData" class="player-showcase{{layout.state}}" #whiteShowcaseElement>
+        </player-showcase>
+        <player-showcase [name]="black" [color]="true" [elo]="blackElo" [playerData]="blackData" class="player-showcase{{layout.state}}" #blackShowcaseElement>
+        </player-showcase>
+    </div>
+    <div class="result-section{{layout.state}}" #resultSectionElement>
+        <img class="result-trophy{{layout.state}}" src="{{trophySource}}" #resultTrophy>
+        <div class="result-data{{layout.state}}">
+            <div class="round">&nbsp;{{round}}</div>
+            <div class="site-date{{layout.state}}">
+                <div class="site"><img class="site-flag{{layout.state}}" src="{{siteFlag}}">{{site}}</div>
+                <div class="match-date"><img class="calendar{{layout.state}}"
+                        src="{{environment.imagesPath}}calendar.png">{{eventDate}}
+                </div>
+            </div>
+            <div class="opening">{{opening}}</div>
+            <div class="result">{{result}}</div>
+        </div>
+    </div>
+    <aria-score class="score{{layout.state}}" *ngIf="layout.state >= 3" id="aria-score-{{this.aria.UUID}}" #score>
+    </aria-score>
+</div>

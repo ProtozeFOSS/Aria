@@ -1,0 +1,147 @@
+@import "../../styles.scss";
+
+.noselect{
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.button {
+    @extend .noselect;
+    position: absolute;
+    border: black 2px solid;
+    background: $csBackground;
+    text-align: center;
+    border-radius: 2px;
+}
+
+.action-container{
+    @extend .noselect;
+    background: $csBackground;
+    border: none;
+    border-radius: 2px;
+    position:absolute;
+    height:48px;
+    width: 100%;
+}
+.navigation-container{
+    @extend .noselect;
+    position:absolute;
+    top: 42px;
+    width: 100%;
+    left:0px;
+    height:64px;
+}
+
+.start {
+    @extend .noselect;
+    left: -1px;
+    width: 14%;
+    top: 6px;
+    bottom: 6px;
+}
+.previous {
+    @extend .noselect;
+    left: calc(14% - 2px);
+    width: calc(22% - 2px);
+    top: 6px;
+    bottom: 6px;
+}
+.next {
+    @extend .noselect;
+    width: calc(50% + 3px);
+    left: calc(36% - 5px);
+    top:6px;
+    bottom:6px;
+}
+.end {
+    @extend .noselect;
+    width: calc(14% + 2px);
+    right: -1px;
+    top:6px;
+    bottom:6px;
+}
+
+.play{
+    @extend .noselect;
+    position:absolute;
+    width: 34%;
+    left: 4px;
+    top: 4px;
+    bottom:4px;
+    border: $csColor solid 2px;
+    border-radius: 6px;
+}
+.shrink{
+    @extend .noselect;
+    position:absolute;
+    width: 12%;
+    left: calc(49.5% + 12px);
+    top: 4px;
+    bottom:4px;
+}
+.settings{
+    @extend .noselect;
+    position:absolute;
+    width: 12%;
+    right: 2px;
+    top: 4px;
+    bottom:4px;
+}
+
+.grow {
+    @extend .noselect;
+    position:absolute;
+    width: 12%;
+    left: calc(63.5% + 16px);
+    top: 4px;
+    bottom:4px;
+}
+
+
+.view{
+    @extend .noselect;
+    position:absolute;
+    width: 12%;
+    left: calc(36.5% + 8px);
+    top: 4px;
+    bottom:4px;
+}
+
+.feather  {
+    @extend .noselect;
+    position: absolute;
+    left:4%;
+    width: 90%;
+    height: 90%;
+    top:5%;
+    stroke: $csColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: flat;
+    fill: none;
+}
+.feather-play  {
+    @extend .noselect;
+    position: absolute;
+    left:6px;
+    width: 32px;
+    height: 80%;
+    top:10%;
+    stroke: $csColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
+.timer {
+    @extend .noselect;
+    text-align: center;
+    color:$csColor;
+    line-height: 38px;
+    margin-left: 24px;
+    font-size: 18px;
+}

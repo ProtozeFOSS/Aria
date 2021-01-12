@@ -1,0 +1,14 @@
+@import "../../styles.scss";
+
+score-flow{
+  width:100%;
+  height:100%;
+}
+
+score-table{
+    display:flex;
+    flex-flow:column nowrap;
+    width:100%;
+    justify-content: space-around;
+    align-content:center;
+}

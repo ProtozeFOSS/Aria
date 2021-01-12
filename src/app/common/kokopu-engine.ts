@@ -141,13 +141,13 @@ export class ChessGame {
         }
         return false;
     }
-    static parsePGN(olga: any, pgn: string): ChessGame[] {
+    static parsePGN(aria: any, pgn: string): ChessGame[] {
         const games = [];
         const state = pgnRead(pgn) as KDatabase;
         if (state) {
             const gameCount = state.gameCount();
             for (let index = 0; index < gameCount; ++index) {
-                games.push(new ChessGame(olga, state.game(index)));
+                games.push(new ChessGame(aria, state.game(index)));
             }
         }
         return games;
@@ -170,13 +170,13 @@ export class ChessGame {
         if (!this.currentNode) {
             this.currentNode = this.lastNode;
         }
-        this.olga.redrawBoard();
-        this.olga.updateStatus(this.position.turn(), node);
+        this.aria.redrawBoard();
+        this.aria.updateStatus(this.position.turn(), node);
     }
 
     protected addNextMove(notation: string): void {
         this.currentNode = this.currentNode.play(notation);
-        this.olga.gameScoreItemsChanged(this.generateGameScore());
+        this.aria.gameScoreItemsChanged(this.generateGameScore());
     }
 
     public getMoveNotation(node: KNode): string {
@@ -216,7 +216,7 @@ export class ChessGame {
         }
     }
 
-    constructor(protected olga: any, public game?: KGame) {
+    constructor(protected aria: any, public game?: KGame) {
         if (game) {
             this.setGame(this.game);
         }
@@ -346,7 +346,7 @@ export class ChessGame {
         this.startNode = variation.first();
         this.position = variation.initialPosition() as KPosition;
         this.currentNode = null;
-        this.olga.redrawBoard();
+        this.aria.redrawBoard();
     }
 
 
@@ -355,7 +355,7 @@ export class ChessGame {
             const previousPosition = this.currentNode.positionBefore();
             if (previousPosition && this.currentNode) {
                 const moveToBeUndone = ChessMove.fromNode(this.currentNode) as ChessMove;
-                this.olga.updateStatus(this.position.turn(), previousNode);
+                this.aria.updateStatus(this.position.turn(), previousNode);
                 return moveToBeUndone;
             }
             this.position = previousPosition;
@@ -372,7 +372,7 @@ export class ChessGame {
     public play(next: KNode): boolean {
         if (this.position.play(next._info.moveDescriptor)) {
             this.currentNode = next;
-            this.olga.updateStatus(this.position.turn(), next);
+            this.aria.updateStatus(this.position.turn(), next);
             ++this.currentIndex;
             return true;
         }
@@ -383,7 +383,7 @@ export class ChessGame {
             this.position = previous.position();
             this.currentNode = previous;
             --this.currentIndex;
-            this.olga.updateStatus(this.position.turn(), previous);
+            this.aria.updateStatus(this.position.turn(), previous);
             return true;
         }
         return false;
@@ -397,10 +397,10 @@ export class ChessGame {
             this.position = this.currentNode.position();
             this.scorePath.push({ right: this.currentIndex, down: variationsBefore.length + 1 });
             this.currentIndex = 0;
-            this.olga.updateStatus(this.position.turn(), this.currentNode, move);
+            this.aria.updateStatus(this.position.turn(), this.currentNode, move);
             // tell it to restore gamescore
-            this.olga.gameScoreItemsChanged(this.generateGameScore());
-            this.olga.incrementGameScoreSelection();
+            this.aria.gameScoreItemsChanged(this.generateGameScore());
+            this.aria.incrementGameScoreSelection();
             return true;
         }
         return false;
@@ -411,11 +411,11 @@ export class ChessGame {
             const next = this.currentNode.play(move);
             this.currentNode = next;
             this.position = this.currentNode.position();
-            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            this.aria.updateStatus(this.position.turn(), this.currentNode);
             // tell it to restore gamescore
-            this.olga.gameScoreItemsChanged([]);
-            this.olga.gameScoreItemsChanged(this.generateGameScore());
-            this.olga.incrementGameScoreSelection();
+            this.aria.gameScoreItemsChanged([]);
+            this.aria.gameScoreItemsChanged(this.generateGameScore());
+            this.aria.incrementGameScoreSelection();
             return true;
         }
         return false;
@@ -427,16 +427,16 @@ export class ChessGame {
             const variation = variations[index];
             this.currentNode = variation.first();
             this.position = this.currentNode.position();
-            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            this.aria.updateStatus(this.position.turn(), this.currentNode);
             this.scorePath.push({ right: this.currentIndex, down: index + 1 });
             this.currentIndex = 0;
             if (updateBoard) {
-                this.olga.makeBoardMove(ChessMove.fromNode(this.currentNode));
+                this.aria.makeBoardMove(ChessMove.fromNode(this.currentNode));
             }
-            this.olga.updateStatus(this.position.turn(), this.currentNode);
+            this.aria.updateStatus(this.position.turn(), this.currentNode);
             // tell it to restore gamescore
-            this.olga.gameScoreItemsChanged(this.generateGameScore());
-            this.olga.incrementGameScoreSelection();
+            this.aria.gameScoreItemsChanged(this.generateGameScore());
+            this.aria.incrementGameScoreSelection();
             return true;
         }
         return false;
@@ -446,7 +446,7 @@ export class ChessGame {
         let valid = false;
         if (nextMove && moveToBeMade.compareMoveToNode(nextMove)) {
             valid = this.position.play(legalMove);
-            this.olga.incrementGameScoreSelection();
+            this.aria.incrementGameScoreSelection();
             this.currentNode = nextMove;
             ++this.currentIndex;
         } else {
@@ -480,7 +480,7 @@ export class ChessGame {
         if (legal) {
             if (legal.status == 'promotion') {
                 move.promoteFunction = legal;
-                this.olga.showPromotionDialog(move);
+                this.aria.showPromotionDialog(move);
                 return true;
             }
             const legalMove = legal();
@@ -504,7 +504,7 @@ export class ChessGame {
     public resetEngine(): void {
         this.position = this.game.initialPosition();
         this.currentNode = null;
-        this.olga.updateStatus(this.position.turn());
+        this.aria.updateStatus(this.position.turn());
     }
 }
 

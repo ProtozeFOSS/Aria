@@ -1,5 +1,5 @@
 @import "../../../styles.scss";
-.olga-slider{
+.aria-slider{
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
   left:5%;
@@ -12,12 +12,12 @@
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
 }
-.olga-slider:hover {
+.aria-slider:hover {
     opacity: 1; /* Fully shown on mouse-over */
 }
 
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.olga-slider::-webkit-slider-thumb {
+.aria-slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;
     width: 25px; /* Set a specific slider handle width */
@@ -28,7 +28,7 @@
     border: 1px solid black;
 }
   
-.olga-slider::-moz-range-thumb {
+.aria-slider::-moz-range-thumb {
 width: 25px; /* Set a specific slider handle width */
 height: 25px; /* Slider handle height */
 background: $csFill; /* Green background */

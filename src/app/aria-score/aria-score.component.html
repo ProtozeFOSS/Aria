@@ -1,0 +1,9 @@
+<div class="title-container">
+<div class="title-text">Score</div>
+<div class="shrink-text">a</div>
+<div class="grow-text">A</div>
+</div>
+<score-flow id="score-flow-{{aria.UUID}}" *ngIf="aria.scoreViewType.value === ScoreViewType.Flow">
+</score-flow>
+<score-table id="score-table-{{aria.UUID}}" *ngIf="aria.scoreViewType.value === ScoreViewType.Table">
+</score-table>

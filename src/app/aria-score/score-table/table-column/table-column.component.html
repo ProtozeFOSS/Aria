@@ -1,0 +1,7 @@
+<div *ngIf="aria.showTableHeader | async" class="header">
+    <div class="spacer"></div>
+    <div class="wheader">WHITE</div>
+    <div class="bheader">BLACK</div>
+</div>
+<table-item *ngFor="let row of rows;" [whiteMove]="row.white" [blackMove]="row.black">
+</table-item>
