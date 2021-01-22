@@ -32,23 +32,34 @@ export const STOCK_IMAGE = environment.imagesPath + 'player.png';
   providedIn: 'root'
 })
 export class AriaService {
+  // Aria Score Toggles 
   @Output() readonly showingPly = new BehaviorSubject<boolean>(true);
   @Output() readonly showingHalfPly = new BehaviorSubject<boolean>(false);
-  @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(300);
   @Output() readonly scoreViewType = new BehaviorSubject<ScoreViewType>(ScoreViewType.Flow);
   @Output() readonly showTableHeader = new BehaviorSubject<boolean>(true);
+
+  // Control Toggles
+  @Output() readonly showSettings = new BehaviorSubject<boolean>(true);
+  @Output() readonly autoPlaySpeed = new BehaviorSubject<number>(1000);
+
+  // Score
+  readonly figurineNotation = new BehaviorSubject<boolean>(true);
+  @Output() readonly gsFontFamily = new BehaviorSubject<string>('FigurineSymbolT1');
+  @Output() readonly gsFontScale = new BehaviorSubject<number>(1);
+  @Output() readonly scoreFontSize = new BehaviorSubject<number>(32);
+  @Output() readonly figurineSize = new BehaviorSubject<number>(20);
+
+  // Board
+  @Output() readonly showLabels = new BehaviorSubject<boolean>(true);
+
+
   protected autoIntervalID = -1;
-  protected timeLeft = 300;
+  public timeLeft = 1000;
   public UUID: string = '';
   public setName: string = '';
   public setDate: string = '';
   public playerData: object = {};
   public gameData = [];
-  readonly figurineNotation = new BehaviorSubject<boolean>(true);
-  @Output() readonly gsFontFamily = new BehaviorSubject<string>('FigurineSymbolT1');
-  @Output() readonly scoreFontSize = new BehaviorSubject<number>(32);
-  @Output() readonly figurineSize = new BehaviorSubject<number>(20);
-  @Output() readonly showLabels = new BehaviorSubject<boolean>(true);
 
 
   private _games: ChessGame[] = [];
@@ -80,6 +91,9 @@ export class AriaService {
         this.gsFontFamily.value
       );
     });
+    this.autoPlaySpeed.subscribe((value)=>{
+      this._controls?.setTimer(value);
+    })
   }
 
   public settings(): object {
@@ -229,6 +243,14 @@ export class AriaService {
     }
   }
 
+  public openSettings(): void{
+    if(this._app){
+      //this._app. send(JRPC:OpenSettings);
+    }
+  }
+
+  public openEngine(): void { }
+
   public gameCount(): number {
     if (this._games) {
       return this._games.length;
@@ -236,7 +258,6 @@ export class AriaService {
     return 0;
   }
 
-  public openEngine(): void { }
 
   public toggleGameScoreViewType(): void {
     if (this.scoreViewType.value === ScoreViewType.Flow) {
@@ -332,7 +353,7 @@ export class AriaService {
   }
 
   public selectGame(index: number) {
-    if (index >= 0 && index <= this._games.length && this._score) {
+    if (index >= 0 && index <= this._games.length) {
       this._game = this._games[index];
       window.setTimeout(() => {
         this._score?.clearSelection();
@@ -363,27 +384,49 @@ export class AriaService {
 
   public attachAria(aria: Aria) {
     this._app = aria;
-    this._board = aria.canvasBoardComponent;
-    this._header = aria.headerComponent;
-    this._controls = aria.controlsComponent;
-    this._status = aria.statusComponent;
+    this.attachScore(aria.gameScoreComponent);
+    this.attachBoard(aria.canvasBoardComponent);
+    this.attachHeader(aria.headerComponent);
+    this.attachControls(aria.controlsComponent);
+    this.attachStatus(aria.statusComponent);
   }
 
   public attachControls(controls: AriaControls) {
     this._controls = controls;
-    this._app.registerControls(controls, document.getElementById('controls-' + this.UUID));
+    this._app?.registerControls(controls, document.getElementById('controls-' + this.UUID));
   }
   public attachBoard(board: CanvasChessBoard) {
     this._board = board;
-    this._app.registerBoard(board, document.getElementById('ccb-'+ this.UUID));
+    this._app?.registerBoard(board, document.getElementById('ccb-'+ this.UUID));
   }
 
   public attachScore(score: AriaScore): void {
     this._score = score;
+    this._app?.registerScore(score, document.getElementById('score-'+ this.UUID));
+    window.setTimeout(()=>{this.updateScoreData();}, 10);
   }
 
-  public attachHeader(header: AriaHeader) {
+  public updateScoreData() : void {
+    if(this._score && this._game){
+      this._score.clearSelection();
+        const gamescore = this._game.generateGameScore();
+        if (gamescore) {
+          this.gameScoreItems = gamescore;
+        } else {
+          this.gameScoreItems = [];
+        }
+        this._score.updateSelection();
+      }
+  }
+
+  public attachHeader(header: AriaHeader): void {
     this._header = header;
+    this._app?.registerHeader(header, document.getElementById('header-'+ this.UUID));
+  }
+
+  public attachStatus(status: AriaStatus): void {
+    this._status = status;
+    this._app?.registerStatus(status, document.getElementById('status-'+ this.UUID));
   }
 
   public editComment(data: GameScoreItem): void {

@@ -1,28 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "./assets/scss/modules/_fonts.scss";
-$gamescore-family: "FigurineSymbolT1";
-$gamescore-highlight: #585858ff;
-$gamescore-foreground: white;
-
-$red: #e43030;
-$green: #19a187;
-$light-blue: #00ffffff;
-$blue: #367bf0;
-$dark-blue: #265ab1;
-$maroon: #b8174c;
-$purple: #8c42ab;
-
-// Main ARIA Color Element Variables
-$textColor: var(--textColor); // Main Text Color
-$textColorAttention: var(--textColorAttention); // Attention text
-$textColorRemove: var(--textColorRemove); // Remove/Delete/Close
-$textColorAdd: var(--textColorAdd); // Add/Create/Open
-$textColorActive: var(--textColorActive); // Add/Create/Open
-$background: var(--background); // Main background Color
-$bgContainer: var(--bgContainer); // background of Containers
-$bgMenu: var(--bgMenu); // background of Menus
-$bgItem: var(--bgItem); // background of Items
 
 // Context Menu
 $bgContext: var(--bgContext); // background of Context Menu
@@ -36,61 +14,186 @@ $overlayContextBackgroundGradient: var(
 ); // Context Menu background gradient
 
 
-
-/******************* Menu *****************************************************/
-$meBackground: var(--meBackground);
-
-/************************ Menu Controls ******************************************/
-$csFill: var(--csFill);
-$csAccent: var(--csAccent);
-$csAccent2: var(--csAccent2);
+/************************ Controls ******************************************/
+// Navigation
+$csFillNV: var(--csFillNV);
+$csFill2NV: var(--csFill2NV);
+$csBorderNV: var(--csBorderNV);
+$csBorder2NV: var(--csBorder2NV);
+$csAccentNV: var(--csAccentNV);
+$csAccent2NV: var(--csAccent2NV);
+// Quick Action
+$csFillQA: var(--csFillQA);
+$csFill2QA: var(--csFill2QA);
+$csBorderQA: var(--csBorderQA);
+$csBorder2QA: var(--csBorder2QA);
+$csAccentQA: var(--csAccentQA);
+$csAccent2QA: var(--csAccent2QA);
 
 /******************* Game Score Container Variables ***************************/
 $gsTextColor: var(--gsTextColor); // Text color for game score
 $gsBackground: var(--gsBackground); // background of Containers
 $gsListBackground: var(--gsListBackground); // list background of game score
 $gsBorder: var(--gsBorder); // background of Menus
+$gsBorderRadius: var(--gsBorderRadius); // background of Menus
 $gsTextSize: var(--gsTextSize); // background of Menus
 $gsFontFamily: var(--gsFontFamily); // score font
 $gsTableItemWidth: var(--gsTableItemWidth); // width of score item in table layout
 $gsTablePlyWidth: var(--gsTablePlyWidth); // width of ply element in table layout
 
-/******************* Game Score Container Variables ***************************/
-$gsTextColorMW: var(--gsTextColorMW); // Text color for game score
-$gsBackgroundMW: var(--gsBackgroundMW); // background of Containers
-$gsBorderMW: var(--gsBorderMW); // background of Menus
-$gsTextSizeMW: var(--gsTextSizeMW); // background of Menus
+/******************* Game Score Score List ***************************/
+$gsFontFamilySL: var(--gsFontFamilySL); // Font family 
+$gsFontSizeSL: var(--gsFontSizeSL); // Font size
+$gsFontColorSL: var(--gsFontColorSL); // Font color
+$gsFontWeightSL: var(--gsFontWeightSL); // Font weight
+$gsBackgroundSL: var(--gsBackgroundSL); // Background
+$gsMarginSL: var(--gsMarginSL); // Margin
+$gsPaddingSL: var(--gsPaddingSL); // Padding
+$gsBorderSL: var(--gsBorderSL); // Border
+$gsBorderRadiusSL: var(--gsBorderRadiusSL); // Border radius
 
-/******************* Game Score Container Variables ***************************/
-$gsTextColorMB: var(--gsTextColorMB); // Text color for game score
-$gsBackgroundMB: var(--gsBackgroundMB); // background of Containers
-$gsBorderMB: var(--gsBorderMB); // background of Menus
-$gsTextSizeMB: var(--gsTextSizeMB); // background of Menus
+/******************* Game Score Score Title ***************************/
+$gsFontFamilyST: var(--gsFontFamilyST); // Font family 
+$gsFontSizeST: var(--gsFontSizeST); // Font size
+$gsFontColorST: var(--gsFontColorST); // Font color
+$gsFontWeightST: var(--gsFontWeightST); // Font weight
+$gsBackgroundST: var(--gsBackgroundST); // Background
+$gsMarginST: var(--gsMarginST); // Margin
+$gsPaddingST: var(--gsPaddingST); // Padding
+$gsBorderST: var(--gsBorderST); // Border
+$gsBorderRadiusST: var(--gsBorderRadiusST); // Border radius
 
-/******************* Game Score Highlight Variables ***************************/
-$gsTextColorHG: var(--gsTextColorHG); // Text color for highlight
-$gsAnnotationColorHG: var(--gsAnnotationColorHG); // Annotation/Comment color for highlight
-$gsBackgroundHG: var(--gsBackgroundHG); // background for highlight
-$gsBorderHG: var(--gsBorderHG); // border for highlight
+/******************* Game Score Shrink Font ***************************/
+$gsFontFamilySF: var(--gsFontFamilySF); // Font family 
+$gsFontSizeSF: var(--gsFontSizeSF); // Font size
+$gsFontColorSF: var(--gsFontColorSF); // Font color
+$gsFontWeightSF: var(--gsFontWeightSF); // Font weight
+$gsBackgroundSF: var(--gsBackgroundSF); // Background
+$gsMarginSF: var(--gsMarginSF); // Margin
+$gsPaddingSF: var(--gsPaddingSF); // Padding
+$gsBorderSF: var(--gsBorderSF); // Border
+$gsBorderRadiusSF: var(--gsBorderRadiusSF); // Border radius
 
-/******************* Game Score Annotation Variables ***************************/
-$gsTextColorAN: var(--gsTextColorAN); // Text color for highlight
-$gsBackgroundAN: var(--gsBackgroundAN); // background for highlight
-$gsBorderAN: var(--gsBorderAN); // border for highlight
+/******************* Game Score Grow Font ***************************/
+$gsFontFamilyGF: var(--gsFontFamilyGF); // Font family 
+$gsFontSizeGF: var(--gsFontSizeGF); // Font size
+$gsFontColorGF: var(--gsFontColorGF); // Font color
+$gsFontWeightGF: var(--gsFontWeightGF); // Font weight
+$gsBackgroundGF: var(--gsBackgroundGF); // Background
+$gsMarginGF: var(--gsMarginGF); // Margin
+$gsPaddingGF: var(--gsPaddingGF); // Padding
+$gsBorderGF: var(--gsBorderGF); // Border
+$gsBorderRadiusGF: var(--gsBorderRadiusGF); // Border radius
 
-/******************* Game Score Variation Variables ***************************/
-$gsTextColorVA: var(--gsTextColorVA); // Text color for highlight
-$gsBackgroundVA: var(--gsBackgroundVA); // background for highlight
-$gsBorderVA: var(--gsBorderVA); // border for highlight
+/******************* Game Score Annotation ***************************/
+$gsFontFamilyAN: var(--gsFontFamilyAN); // Font family
+$gsFontSizeAN: var(--gsFontSizeAN); // font size
+$gsFontColorAN: var(--gsFontColorAN); // Font color
+$gsFontWeightAN: var(--gsFontWeightAN); // Font weight
+$gsBackgroundAN: var(--gsBackgroundAN); // Background
+$gsMarginAN: var(--gsMarginAN); // Margin
+$gsPaddingAN: var(--gsPaddingAN); // Padding
+$gsBorderAN: var(--gsBorderAN); // Border
+$gsBorderRadiusAN: var(--gsBorderRadiusAN); // Border radius
 
 /******************* Game Score Ply Variables ***************************/
-$gsTextColorPC: var(--gsTextColorPC); // Text color for game score ply
-$gsBackgroundPC: var(--gsBackgroundPC); // background for game score ply
-$gsBorderPC: var(--gsBorderPC); // border for game score ply
+$gsFontFamilyPC: var(--gsFontFamilyPC); // Font family for game score ply
+$gsFontSizePC: var(--gsFontSizePC); // font size game score ply
+$gsFontColorPC: var(--gsFontColorPC); // Font color for game score ply
+$gsFontWeightPC: var(--gsFontWeightPC); // Font weight for game score ply
+$gsBackgroundPC: var(--gsBackgroundPC); // Background for game score ply
+$gsMarginPC: var(--gsMarginPC); // Margin for game score ply
+$gsPaddingPC: var(--gsPaddingPC); // Padding for game score ply
+$gsBorderPC: var(--gsBorderPC); // Border for game score ply
+$gsBorderRadiusPC: var(--gsBorderRadiusPC); // Border radius for game score ply
 
-/******************** Control Colors ************************************/
-$csBackground: var(--csBackground); // background for controls
-$csColor: var(--csColor); // controls color (foreground)
+/******************* Game Score Variation ***************************/
+$gsFontFamilyVA: var(--gsFontFamilyVA); // Font family
+$gsFontSizeVA: var(--gsFontSizeVA); // font size
+$gsFontColorVA: var(--gsFontColorVA); // Font color
+$gsFontWeightVA: var(--gsFontWeightVA); // Font weight
+$gsBackgroundVA: var(--gsBackgroundVA); // Background
+$gsMarginVA: var(--gsMarginVA); // Margin
+$gsPaddingVA: var(--gsPaddingVA); // Padding
+$gsBorderVA: var(--gsBorderVA); // Border
+$gsBorderRadiusVA: var(--gsBorderRadiusVA); // Border radius
+
+/******************* Game Score White Move ***************************/
+$gsFontFamilyWM: var(--gsFontFamilyWM); // Font family 
+$gsFontSizeWM: var(--gsFontSizeWM); // Font size
+$gsFontColorWM: var(--gsFontColorWM); // Font color
+$gsFontWeightWM: var(--gsFontWeightWM); // Font weight
+$gsBackgroundWM: var(--gsBackgroundWM); // Background
+$gsMarginWM: var(--gsMarginWM); // Margin
+$gsPaddingWM: var(--gsPaddingWM); // Padding
+$gsBorderWM: var(--gsBorderWM); // Border
+$gsBorderRadiusWM: var(--gsBorderRadiusWM); // Border radius
+
+/******************* Game Score Black Move ***************************/
+$gsFontFamilyBM: var(--gsFontFamilyBM); // Font family 
+$gsFontSizeBM: var(--gsFontSizeBM); // Font size
+$gsFontColorBM: var(--gsFontColorBM); // Font color
+$gsFontWeightBM: var(--gsFontWeightBM); // Font weight
+$gsBackgroundBM: var(--gsBackgroundBM); // Background
+$gsMarginBM: var(--gsMarginBM); // Margin
+$gsPaddingBM: var(--gsPaddingBM); // Padding
+$gsBorderBM: var(--gsBorderBM); // Border
+$gsBorderRadiusBM: var(--gsBorderRadiusBM); // Border radius
+
+/******************* Game Score Current Annotation ***********************/
+$gsFontFamilyCA: var(--gsFontFamilyCA); // Font family
+$gsFontSizeCA: var(--gsFontSizeCA); // font size
+$gsFontColorCA: var(--gsFontColorCA); // Font color
+$gsFontWeightCA: var(--gsFontWeightCA); // Font weight
+$gsBackgroundCA: var(--gsBackgroundCA); // Background
+$gsMarginCA: var(--gsMarginCA); // Margin
+$gsPaddingCA: var(--gsPaddingCA); // Padding
+$gsBorderCA: var(--gsBorderCA); // Border
+$gsBorderRadiusCA: var(--gsBorderRadiusCA); // Border radius
+
+/******************* Game Score Ply Variables ***************************/
+$gsFontFamilyCP: var(--gsFontFamilyCP); // Font family
+$gsFontSizeCP: var(--gsFontSizeCP); // Font size
+$gsFontColorCP: var(--gsFontColorCP); // Font color
+$gsFontWeightCP: var(--gsFontWeightCP); // Font weight
+$gsBackgroundCP: var(--gsBackgroundCP); // Background
+$gsMarginCP: var(--gsMarginCP); // Margin 
+$gsPaddingCP: var(--gsPaddingCP); // Padding 
+$gsBorderCP: var(--gsBorderCP); // Border
+$gsBorderRadiusCP: var(--gsBorderRadiusCP); // Border
+
+/******************* Game Score Variation ***************************/
+$gsFontFamilyCV: var(--gsFontFamilyCV); // Font family
+$gsFontSizeCV: var(--gsFontSizeCV); // font size
+$gsFontColorCV: var(--gsFontColorCV); // Font color
+$gsFontWeightCV: var(--gsFontWeightCV); // Font weight
+$gsBackgroundCV: var(--gsBackgroundCV); // Background
+$gsMarginCV: var(--gsMarginCV); // Margin
+$gsPaddingCV: var(--gsPaddingCV); // Padding
+$gsBorderCV: var(--gsBorderCV); // Border
+$gsBorderRadiusCV: var(--gsBorderRadiusCV); // Border radius
+
+/******************* Game Score White Move ***************************/
+$gsFontFamilyCW: var(--gsFontFamilyCW); // Font family 
+$gsFontSizeCW: var(--gsFontSizeCW); // Font size
+$gsFontColorCW: var(--gsFontColorCW); // Font color
+$gsFontWeightCW: var(--gsFontWeightCW); // Font weight
+$gsBackgroundCW: var(--gsBackgroundCW); // Background
+$gsMarginCW: var(--gsMarginCW); // Margin
+$gsPaddingCW: var(--gsPaddingCW); // Padding
+$gsBorderCW: var(--gsBorderCW); // Border
+$gsBorderRadiusCW: var(--gsBorderRadiusCW); // Border radius
+
+/******************* Game Score Black Move ***************************/
+$gsFontFamilyCB: var(--gsFontFamilyCB); // Font family 
+$gsFontSizeCB: var(--gsFontSizeCB); // Font size
+$gsFontColorCB: var(--gsFontColorCB); // Font color
+$gsFontWeightCB: var(--gsFontWeightCB); // Font weight
+$gsBackgroundCB: var(--gsBackgroundCB); // Background
+$gsMarginCB: var(--gsMarginCB); // Margin
+$gsPaddingCB: var(--gsPaddingCB); // Padding
+$gsBorderCB: var(--gsBorderBM); // Border
+$gsBorderRadiusCB: var(--gsBorderRadiusCB); // Border radius
 
 /******************** Board Colors ************************************/
 $boardBGDark: var(--boardBGDark); // board dark tile
@@ -105,7 +208,6 @@ $gsFontSize: var(--gsFontSize); // board dark tile
 $gsFontSizeAN: var(--gsFontSizeAN); // board light tile
 $gsFontSizeHG: var(--gsFontSizeHG); // board light label
 $gsFontSizeVA: var(--gsFontSizeVA); // board dark label
-$gsFontSizePC: var(--gsFontSizePC); // board dark label
 $hdrDataFontSize: var(--hdrDataFontSize); // size of player showcase data
 $hdrNameFontSize: var(--hdrNameFontSize); // size of player showcase Name
 $hdrTitleFontSize: var(--hdrTitleFontSize); // size of player showcase data
@@ -114,24 +216,3 @@ $hdrMatchDataFontSize: var(--hdrMatchDataFontSize); // size of player showcase N
 $hdrOpeningFontSize: var(--hdrMatchDataFontSize); // size of player showcase Name
 $hdrResultFontSize: var(--hdrResultFontSize); // size of player showcase Name
 $hdrRoundFontSize: var(--hdrRoundFontSize); // size of player showcase Name
-
-// General stuff
-$text-color: var(--text-color);
-$bg-outer: var(--bg-outer);
-$bg-inner: var(--bg-inner);
-
-$bg-color: #f2f3f7;
-$fg-color: #383a41;
-
-$glow-shadow: 0 0 0.5em transparentize($blue, 0.3);
-:root {
-  --bg-color: #{$bg-color};
-  --fg-color: #{$fg-color};
-
-  --red: #{$red};
-  --green: #{$green};
-  --blue: #{$blue};
-  --dark-blue: #{$dark-blue};
-  --maroon: #{$maroon};
-  --purple: #{$purple};
-}

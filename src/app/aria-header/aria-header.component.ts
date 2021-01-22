@@ -41,11 +41,14 @@ export class AriaHeader implements OnInit {
   headerContainer: HTMLElement | null = null;
 
   constructor(public aria: AriaService, public layout: LayoutService, private renderer: Renderer2) {
-    aria.attachHeader(this);
-    layout.attachHeader(this);
+
   }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
+    this.aria.attachHeader(this);
   }
 
   setHeader(map: Map<string, string>): void {

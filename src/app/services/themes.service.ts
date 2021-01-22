@@ -41,12 +41,24 @@ export class ThemeService {
 
   // Game Score Variables
   @Input() @Output() readonly gsTextColor = new BehaviorSubject<string>('black');
-  @Input() @Output() readonly gsBackground = new BehaviorSubject<string>('transparent');
-  @Input() @Output() readonly gsListBackground = new BehaviorSubject<string>('#353535');
-  @Input() @Output() readonly gsBorder = new BehaviorSubject<string>('');
-  @Input() @Output() readonly gsTextSize = new BehaviorSubject<string>('16px');
   @Input() @Output() readonly gsTableItemWidth = new BehaviorSubject<string>('70px');
   @Input() @Output() readonly gsTablePlyWidth = new BehaviorSubject<string>('48px');
+
+   // Game Score Ply Count
+  gsFontSizeSL = 14;
+  gsFontSizeST = 24;
+  gsFontSizeSF = 20;
+  gsFontSizeGF = 20;
+  gsFontSizeAN = 14;
+  gsFontSizePC = 14;
+  gsFontSizeVA = 14;
+  gsFontSizeWM = 14;
+  gsFontSizeBM = 14;
+  gsFontSizeCA = 14;
+  gsFontSizeCP = 14;
+  gsFontSizeCV = 14;
+  gsFontSizeCW = 14;
+  gsFontSizeCB = 14;
 
   // Game Score Highlight Colors
   @Input() @Output() readonly gsTextColorHG = new BehaviorSubject<string>('orange');
@@ -65,28 +77,15 @@ export class ThemeService {
   @Input() @Output() readonly gsBackgroundVA = new BehaviorSubject<string>('#353535');
   @Input() @Output() readonly gsBorderVA = new BehaviorSubject<string>('black 1px solid');
 
-  // Game Score Ply Count
-  @Input() @Output() readonly gsTextColorPC = new BehaviorSubject<string>('white');
-  @Input() @Output() readonly gsBackgroundPC = new BehaviorSubject<string>('#353535');
-  @Input() @Output() readonly gsBorderPC = new BehaviorSubject<string>('');
 
 
-  // Control Elements (Buttons, sliders, number wheels, toggle switches)
-  readonly csBackground = new BehaviorSubject<string>('#81388f');
-  readonly csColor = new BehaviorSubject<string>('#e0fffb');
-  readonly csFill = new BehaviorSubject<string>('#00ffffff');
-  readonly csFill2 = new BehaviorSubject<string>('#00ffffff');
-  readonly csAccent = new BehaviorSubject<string>('#e25400');
-  readonly csAccent2 = new BehaviorSubject<string>('#e25400');
+  // Control Elements
+  // Navigation Bar (Start, Previous, Next, End)
+
 
 
 
   // Font Sizes
-  readonly gsFontSize = new BehaviorSubject<number>(14);
-  readonly gsFontSizeHG = new BehaviorSubject<number>(14);
-  readonly gsFontSizeAN = new BehaviorSubject<number>(14);
-  readonly gsFontSizeVA = new BehaviorSubject<number>(14);
-  readonly gsFontSizePC = new BehaviorSubject<number>(14);
   readonly hdrDataFontSize = new BehaviorSubject<number>(14);
   readonly hdrNameFontSize = new BehaviorSubject<number>(14);
   readonly hdrTitleFontSize = new BehaviorSubject<number>(14);
@@ -126,70 +125,245 @@ export class ThemeService {
   }
 
   private createColorMap(): void {
-    this.propertyMap.clear();
-    this.propertyMap.set('--gsTextColorPC', this.gsTextColorPC);
-    this.propertyMap.set('--gsTextColor', this.gsTextColor);
-    this.propertyMap.set('--gsBackgroundPC', this.gsBackgroundPC);
-    this.propertyMap.set('--gsBorderPC', this.gsBorderPC);
-    this.propertyMap.set('--gsTextColorVA', this.gsTextColorVA);
-    this.propertyMap.set('--gsBackgroundVA', this.gsBackgroundVA);
-    this.propertyMap.set('--gsBorderVA', this.gsBorderVA);
-    this.propertyMap.set('--gsTextColorAN', this.gsTextColorAN);
-    this.propertyMap.set('--gsBackgroundAN', this.gsBackgroundAN);
-    this.propertyMap.set('--gsBorderAN', this.gsBorderAN);
-    this.propertyMap.set('--gsTextColorHG', this.gsTextColorHG);
-    this.propertyMap.set('--gsBackgroundHG', this.gsBackgroundHG);
-    this.propertyMap.set('--gsBackground', this.gsBackground);
-    this.propertyMap.set('--gsListBackground', this.gsListBackground);
-    this.propertyMap.set('--gsBorderHG', this.gsBorderHG);
-    this.propertyMap.set('--gsTextColorHG', this.gsTextColorHG);
-    this.propertyMap.set('--gsBackgroundHG', this.gsBackgroundHG);
-    this.propertyMap.set('--gsAnnotationColorHG', this.gsAnnotationColorHG);
-    this.propertyMap.set('--gsTableItemWidth', this.gsTableItemWidth);
-    this.propertyMap.set('--gsTablePlyWidth', this.gsTablePlyWidth);
-    // Menu
-    this.propertyMap.set('--meBackground', this.meBackground);
-    // Board
-    this.propertyMap.set('--boardLabelDark', this.boardLabelDark);
-    this.propertyMap.set('--boardLabelLight', this.boardLabelLight);
-    this.propertyMap.set('--boardBGDark', this.boardBGDark);
-    this.propertyMap.set('--boardBGLight', this.boardBGLight);
+    this.propertyMap.set('gsTextColor', this.gsTextColor);
+    this.propertyMap.set('gsTextColorVA', this.gsTextColorVA);
+    this.propertyMap.set('gsBackgroundVA', this.gsBackgroundVA);
+    this.propertyMap.set('gsBorderVA', this.gsBorderVA);
+    this.propertyMap.set('gsTextColorAN', this.gsTextColorAN);
+    this.propertyMap.set('gsBackgroundAN', this.gsBackgroundAN);
+    this.propertyMap.set('gsBorderAN', this.gsBorderAN);
+    this.propertyMap.set('gsTextColorHG', this.gsTextColorHG);
+    this.propertyMap.set('gsBackgroundHG', this.gsBackgroundHG);
+    this.propertyMap.set('gsBorderHG', this.gsBorderHG);
+    this.propertyMap.set('gsTextColorHG', this.gsTextColorHG);
+    this.propertyMap.set('gsBackgroundHG', this.gsBackgroundHG);
+    this.propertyMap.set('gsAnnotationColorHG', this.gsAnnotationColorHG);
+    this.propertyMap.set('gsTableItemWidth', this.gsTableItemWidth);
+    this.propertyMap.set('gsTablePlyWidth', this.gsTablePlyWidth);
+    
+    // Board   
+    this.propertyMap.set('boardLabelDark', this.boardLabelDark);
+    this.propertyMap.set('boardLabelLight', this.boardLabelLight);
+    this.propertyMap.set('boardBGDark', this.boardBGDark);
+    this.propertyMap.set('boardBGLight', this.boardBGLight);
 
-    // Controls
-    this.propertyMap.set('--csBackground', this.csBackground);
-    this.propertyMap.set('--csColor', this.csColor);
-    this.propertyMap.set('--csFill', this.csFill);
-    this.propertyMap.set('--csFill2', this.csFill2);
-    this.propertyMap.set('--csAccent', this.csAccent);
-    this.propertyMap.set('--csAccent2', this.csAccent2);
+    // Controls Navigation Bar
+    document.documentElement.style.setProperty('--csFillNV','#00ffffff');
+    document.documentElement.style.setProperty('--csFillNV', '#00ffffff');
+    document.documentElement.style.setProperty('--csFill2NV', 'transparent');
+    document.documentElement.style.setProperty('--csBorderNV', '2px black solid');
+    document.documentElement.style.setProperty('--csBorder2NV', 'white');
+    document.documentElement.style.setProperty('--csAccentNV', '#e25400');
+    
+    // Controls Quick Action Bar
+    document.documentElement.style.setProperty('--csFillQA', '#00ffffff');
+    document.documentElement.style.setProperty('--csFill2QA', 'transparent');
+    document.documentElement.style.setProperty('--csBorderQA', '3px black solid');
+    document.documentElement.style.setProperty('--csBorder2QA', 'transparent');
+    document.documentElement.style.setProperty('--csAccentQA', '#e25400');
+    document.documentElement.style.setProperty('--csAccent2QA', '#e25400');
+    
 
+    // Game Score Parent
+    document.documentElement.style.setProperty('--gsBorder', '2px black solid');
+    document.documentElement.style.setProperty('--gsBorderRadius', '8px');
+    document.documentElement.style.setProperty('--gsBackground', 'darkgrey');
 
+    // Game Score Score List
+    document.documentElement.style.setProperty('--gsFontFamilySL', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeSL', '14px');
+    document.documentElement.style.setProperty('--gsFontWeightSL', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorSL', 'red');
+    document.documentElement.style.setProperty('--gsBackgroundSL', 'none');
+    document.documentElement.style.setProperty('--gsMarginSL', 'none');
+    document.documentElement.style.setProperty('--gsPaddingSL', 'none');
+    document.documentElement.style.setProperty('--gsBorderSL', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusSL', '0px');
+
+    // Game Score Title
+    document.documentElement.style.setProperty('--gsFontFamilyST', 'Trebuchet MS');
+    document.documentElement.style.setProperty('--gsFontSizeST', this.gsFontSizeST + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightST', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorST', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundST', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginST', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingST', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderST', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusST', '2px');
+
+    // Game Score Shrink Font
+    document.documentElement.style.setProperty('--gsFontFamilySF', 'Brush Script MT');
+    document.documentElement.style.setProperty('--gsFontSizeSF', this.gsFontSizeSF + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightSF', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorSF', '#373dff');
+    document.documentElement.style.setProperty('--gsBackgroundSF', '#0c0c0c12');
+    document.documentElement.style.setProperty('--gsMarginSF', '0px -1px 1px 0px');
+    document.documentElement.style.setProperty('--gsPaddingSF', '0px 8px 0px 8px');
+    document.documentElement.style.setProperty('--gsBorderSF', '2px solid black');
+    document.documentElement.style.setProperty('--gsBorderRadiusSF', '2px');
+
+    // Game Score Grow Font
+    document.documentElement.style.setProperty('--gsFontFamilyGF', 'Brush Script MT');
+    document.documentElement.style.setProperty('--gsFontSizeGF', this.gsFontSizeGF + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightGF', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorGF', '#373dff');
+    document.documentElement.style.setProperty('--gsBackgroundGF', '#0c0c0c12');
+    document.documentElement.style.setProperty('--gsMarginGF', '0px 4px 1px 0px');
+    document.documentElement.style.setProperty('--gsPaddingGF', '0px 6px 0px 6px');
+    document.documentElement.style.setProperty('--gsBorderGF', '2px solid black');
+    document.documentElement.style.setProperty('--gsBorderRadiusGF', '2px');
+
+    // Game Score Annotation
+    document.documentElement.style.setProperty('--gsFontFamilyAN', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeAN', this.gsFontSizeAN + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightAN', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorAN', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundAN', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginAN', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingAN', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderAN', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusAN', '2px');
+
+    // Game Score Ply Count
+    document.documentElement.style.setProperty('--gsFontFamilyPC', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizePC', this.gsFontSizePC + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightPC', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorPC', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundPC', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginPC', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingPC', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderPC', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusPC', '2px');
+
+    // Game Score Variation
+    document.documentElement.style.setProperty('--gsFontFamilyVA', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeVA', this.gsFontSizeVA + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightVA', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorVA', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundVA', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginVA', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingVA', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderVA', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusVA', '2px');     
+
+    // Game Score White Move
+    document.documentElement.style.setProperty('--gsFontFamilyWM', 'FigurineSymbolT1');
+    document.documentElement.style.setProperty('--gsFontSizeWM', this.gsFontSizeWM + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightWM', 'none');
+    document.documentElement.style.setProperty('--gsFontColorWM', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundWM', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginWM', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingWM', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderWM', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusWM', '2px');
+
+    // Game Score Black Move
+    document.documentElement.style.setProperty('--gsFontFamilyBM', 'FigurineSymbolT1');
+    document.documentElement.style.setProperty('--gsFontSizeBM', this.gsFontSizeBM + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightBM', 'none');
+    document.documentElement.style.setProperty('--gsFontColorBM', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundBM', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginBM', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingBM', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderBM', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusBM', '2px');
+
+    //  Current Selected Annotation
+    document.documentElement.style.setProperty('--gsFontFamilyCA', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeCA', this.gsFontSizeCA + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightCA', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorCA', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundCA', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginCA', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingCA', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderCA', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusCA', '2px');
+
+    //  Current Selected Annotation
+    document.documentElement.style.setProperty('--gsFontFamilyCP', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeCP', this.gsFontSizeCP + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightCP', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorCP', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundCP', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginCP', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingCP', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderCP', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusCP', '2px');
+
+    //  Current Selected Variation
+    document.documentElement.style.setProperty('--gsFontFamilyCV', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeCV', this.gsFontSizeCV + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightCV', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorCV', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundCV', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginCV', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingCV', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderCV', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusCV', '2px');
+
+    //  Current Selected White Move
+    document.documentElement.style.setProperty('--gsFontFamilyCW', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeCW', this.gsFontSizeCW + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightCW', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorCW', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundCW', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginCW', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingCW', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderCW', '');
+    document.documentElement.style.setProperty('--gsBorderRadiusCW', '2px');
+
+    //  Current Selected Black Move
+    document.documentElement.style.setProperty('--gsFontFamilyCB', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeCB', this.gsFontSizeCB + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightCB', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorCB', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundCB', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginCB', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingCB', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderCB', '');
+    document.documentElement.style.setProperty('--gsBorderRadiusCB', '2px');
+
+   
     // Font Sizes
-    this.propertyMap.set('--gsFontSize', this.gsFontSize);
-    this.propertyMap.set('--gsFontSizeAN', this.gsFontSizeAN);
-    this.propertyMap.set('--gsFontSizeHG', this.gsFontSizeHG);
-    this.propertyMap.set('--gsFontSizeVA', this.gsFontSizeVA);
-    this.propertyMap.set('--gsFontSizePC', this.gsFontSizePC);
-    this.propertyMap.set('--hdrDataFontSize', this.hdrDataFontSize);
-    this.propertyMap.set('--hdrNameFontSize', this.hdrNameFontSize);
-    this.propertyMap.set('--hdrTitleFontSize', this.hdrTitleFontSize);
-    this.propertyMap.set('--hdrVariantFontSize', this.hdrVariantFontSize);
-    this.propertyMap.set('--hdrMatchDataFontSize', this.hdrMatchDataFontSize);
-    this.propertyMap.set('--hdrResultFontSize', this.hdrResultFontSize);
-    this.propertyMap.set('--hdrRoundFontSize', this.hdrRoundFontSize);
+    this.propertyMap.set('hdrDataFontSize', this.hdrDataFontSize);
+    this.propertyMap.set('hdrNameFontSize', this.hdrNameFontSize);
+    this.propertyMap.set('hdrTitleFontSize', this.hdrTitleFontSize);
+    this.propertyMap.set('hdrVariantFontSize', this.hdrVariantFontSize);
+    this.propertyMap.set('hdrMatchDataFontSize', this.hdrMatchDataFontSize);
+    this.propertyMap.set('hdrResultFontSize', this.hdrResultFontSize);
+    this.propertyMap.set('hdrRoundFontSize', this.hdrRoundFontSize);
 
     this.propertyMap.forEach((value, key) => {
       if (typeof value.value == "string") {
         (value as BehaviorSubject<string>).subscribe((newVal) => {
-          document.documentElement.style.setProperty(key, newVal);
+          document.documentElement.style.setProperty('--' + key, newVal);
         });
       } else {
         (value as BehaviorSubject<number>).subscribe((newVal) => {
-          document.documentElement.style.setProperty(key, newVal + "px");
+          document.documentElement.style.setProperty('--' + key, newVal + "px");
         });
       }
     });
   }
+
+  public rescaleScoreFont(scale: number): void {
+    // for all game score font sizes
+    // set the document property to value * scale
+    // end
+    document.documentElement.style.setProperty('--gsFontSizeSL', (this.gsFontSizeSL *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizePC', (this.gsFontSizePC *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeAN', (this.gsFontSizeAN *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeVA', (this.gsFontSizeVA *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeWM', (this.gsFontSizeWM *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeBM', (this.gsFontSizeBM *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeCA', (this.gsFontSizeCA *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeCP', (this.gsFontSizeCP *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeCV', (this.gsFontSizeCV *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeCW', (this.gsFontSizeCW *scale) + 'px');
+    document.documentElement.style.setProperty('--gsFontSizeCB', (this.gsFontSizeCB *scale) + 'px');
+  }
+
+
   public settings(): object {
     let settings = {};
     this.propertyMap.forEach((behavior, key) => {
@@ -201,6 +375,15 @@ export class ThemeService {
 
   public setSettings(settings: object): void {
     for (let key in settings) {
+      const docValue = document.documentElement.style.getPropertyValue('--' + key);
+      const value = settings[key];
+      if(docValue) {
+        if (typeof value == "string") {
+          document.documentElement.style.setProperty('--' + key, value);
+        } else {
+          document.documentElement.style.setProperty('--' + key, value + "px");
+        }
+      }
       if (this.propertyMap.has(key)) {
         const subject = this.propertyMap.get(key);
         if (subject) {
@@ -223,9 +406,9 @@ export class ThemeService {
   initializeColorPalette(): void {
     this.propertyMap.forEach((value, key) => {
       if (typeof value.value == "string") {
-        document.documentElement.style.setProperty(key, value.value);
+        document.documentElement.style.setProperty('--' + key, value.value);
       } else {
-        document.documentElement.style.setProperty(key, value.value + "px");
+        document.documentElement.style.setProperty('--' + key, value.value + "px");
       }
     });
   }

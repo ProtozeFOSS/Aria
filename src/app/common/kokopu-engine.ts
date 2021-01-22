@@ -23,9 +23,6 @@ export class GameScoreItem {
             if (previous) {
                 if (previous.move.moveColor() == 'w') {
                     this.type |= GameScoreType.HalfPly;
-                    if (!previous.move.comment()) {
-                        this.type |= GameScoreType.Group;
-                    }
                 }
             }
             if (variations && variations.length > 0) {
@@ -36,9 +33,6 @@ export class GameScoreItem {
                 let comment = null;
                 if (previous && previous.move) {
                     comment = previous.move.comment();
-                }
-                if ((!previous && this.move.moveColor() == 'w') || !comment) {
-                    this.type |= GameScoreType.Group;
                 }
             }
         }

@@ -9,91 +9,100 @@
     user-select: none;
 }
 
-.button {
+.buttonNV {
     @extend .noselect;
     position: absolute;
-    border: black 2px solid;
-    background: $csBackground;
+    background: $csFill2NV;
+    color: $csAccentNV;
+    text-align: center;
+    border-radius: 0px;
+    border: $csBorder2NV 2px solid;
+    stroke:$csAccentNV;
+    top:-1px;
+    bottom:-1px;
+    fill: none;
+}
+
+.buttonQA {
+    @extend .noselect;
+    position: absolute;
+    background: $csFill2QA;
+    color: $csAccentQA;
+    stroke: $csAccentQA;
     text-align: center;
     border-radius: 2px;
+    fill: none;
 }
 
 .action-container{
     @extend .noselect;
-    background: $csBackground;
+    background: $csFillQA;
     border: none;
     border-radius: 2px;
     position:absolute;
     height:48px;
-    width: 100%;
+    width: calc(100% - 4px);
+    border: $csBorderQA;
 }
 .navigation-container{
     @extend .noselect;
     position:absolute;
-    top: 42px;
+    background:$csFillNV;
+    top: 48px;
     width: 100%;
     left:0px;
-    height:64px;
+    height:51px;
+    border: $csBorderNV;
 }
 
 .start {
-    @extend .noselect;
-    left: -1px;
-    width: 14%;
-    top: 6px;
-    bottom: 6px;
+    @extend .buttonNV;
+    left: 0px;
 }
 .previous {
-    @extend .noselect;
-    left: calc(14% - 2px);
-    width: calc(22% - 2px);
-    top: 6px;
-    bottom: 6px;
+    @extend .buttonNV;
 }
 .next {
-    @extend .noselect;
-    width: calc(50% + 3px);
-    left: calc(36% - 5px);
-    top:6px;
-    bottom:6px;
+    @extend .buttonNV;
 }
 .end {
-    @extend .noselect;
-    width: calc(14% + 2px);
-    right: -1px;
-    top:6px;
-    bottom:6px;
+    @extend .buttonNV;
+    right: 2px;
 }
 
 .play{
-    @extend .noselect;
+    @extend .buttonQA;
     position:absolute;
-    width: 34%;
-    left: 4px;
+    width: 35%;
+    left: 1px;
+    top: 2px;
+    bottom:4px;
+    border: $csBorder2QA;
+    border-radius: 8px;
+}
+
+.view{
+    @extend .buttonQA;
+    position:absolute;
+    width: 12%;
+    left: calc(36.5% + 8px);
     top: 4px;
     bottom:4px;
-    border: $csColor solid 2px;
-    border-radius: 6px;
 }
+
+
 .shrink{
-    @extend .noselect;
+    @extend .buttonQA;
     position:absolute;
     width: 12%;
     left: calc(49.5% + 12px);
     top: 4px;
     bottom:4px;
 }
-.settings{
-    @extend .noselect;
-    position:absolute;
-    width: 12%;
-    right: 2px;
-    top: 4px;
-    bottom:4px;
-}
+
 
 .grow {
-    @extend .noselect;
+    @extend .buttonQA;
     position:absolute;
     width: 12%;
     left: calc(63.5% + 16px);
@@ -101,12 +110,20 @@
     bottom:4px;
 }
 
-
-.view{
-    @extend .noselect;
+.toggleScore {
+    @extend .buttonQA;
     position:absolute;
     width: 12%;
-    left: calc(36.5% + 8px);
+    right: calc(4% + 2px);
+    top: 4px;
+    bottom:4px; 
+}
+
+.settings{
+    @extend .buttonQA;
+    position:absolute;
+    width: 12%;
+    right: 4px;
     top: 4px;
     bottom:4px;
 }
@@ -115,33 +132,45 @@
     @extend .noselect;
     position: absolute;
     left:4%;
-    width: 90%;
-    height: 90%;
-    top:5%;
-    stroke: $csColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: flat;
-    fill: none;
+    width: 96%;
+    height: 96%;
+    top:2%;
 }
+.featherThicc  {
+    @extend .feather;
+    stroke-width: 2.5;
+}.featherShrink{
+    @extend .feather;
+    stroke-width:1.6;
+    top:8%;
+    height: 82%;
+}.featherGrow{
+    @extend .feather;
+    stroke-width:1.8;
+    height:104%;
+    top:-8%;
+}
+
+
 .feather-play  {
-    @extend .noselect;
+    @extend .feather;
     position: absolute;
     left:6px;
     width: 32px;
     height: 80%;
     top:10%;
-    stroke: $csColor;
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
     fill: none;
 }
 .timer {
-    @extend .noselect;
+    @extend .feather;
     text-align: center;
-    color:$csColor;
+    stroke:$csAccent2QA;
+    color:$csAccent2QA;
     line-height: 38px;
     margin-left: 24px;
-    font-size: 18px;
+    font-size: 26px;
+    font-weight: bold;
 }

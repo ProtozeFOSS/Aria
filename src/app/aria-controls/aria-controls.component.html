@@ -1,5 +1,5 @@
-<div class="action-container" #actContainerElement>
-    <div (click)="toggleAutoPlay()" class="play" #playElement>
+<div class="action-container" >
+    <div (click)="toggleAutoPlay()" class="buttonQA play" >
             <svg class="feather-play">
                     <use [ngStyle]="{'visibility': playing ? 'visible':'hidden'}"
                             xlink:href="assets/images/feather-sprite.svg#pause" />
@@ -8,43 +8,49 @@
             </svg>
             <div class="timer">{{timeLeft}}</div>
     </div>
-    <div (click)="aria.rotateBoardOrientation()" class="view" #rotateElement>
-            <svg class="feather">
+    <div (click)="aria.rotateBoardOrientation()" class="buttonQA view" >
+            <svg class="featherThicc">
                     <use xlink:href="assets/images/feather-sprite.svg#refresh-cw" />
             </svg>
     </div>
-    <div (click)="aria.toggleScoreType()" class="settings" #settingsElement>
-            <svg class="feather-play">
-                    <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Flow) ? 'visible':'hidden'}"
-                            xlink:href="assets/images/feather-sprite.svg#align-justify" />
-                    <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Table) ? 'visible':'hidden'}"
-                            xlink:href="assets/images/feather-sprite.svg#align-left" />
-            </svg>
-    </div>
-    <div (click)="layout.shrink()" class="shrink" #shrinkElement>
-            <svg class="feather">
-                    <use xlink:href="assets/images/feather-sprite.svg#minus" />
+
+    <div (click)="layout.shrink()" class="buttonQA shrink" >
+            <svg class="featherShrink">
+                    <use xlink:href="assets/images/feather-sprite.svg#pawn-icon" />
             </svg>
     </div>
 
-    <div (click)="layout.grow()" class="grow" #growElement>
-            <svg class="feather">
-                    <use xlink:href="assets/images/feather-sprite.svg#plus" />
-            </svg>
+    <div (click)="layout.grow()" class="buttonQA grow" >
+        <svg class="featherGrow">
+                <use xlink:href="assets/images/feather-sprite.svg#pawn-icon" />
+        </svg>
     </div>
-
+    <div (click)="aria.toggleScoreType()" class="buttonQA toggleScore" #view>
+        <svg class="featherThicc">
+                <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Flow) ? 'visible':'hidden'}"
+                        xlink:href="assets/images/feather-sprite.svg#align-justify" />
+                <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Table) ? 'visible':'hidden'}"
+                        xlink:href="assets/images/feather-sprite.svg#align-left" />
+        </svg>
 </div>
-<div class="navigation-container" #navContainerElement>
-    <div (click)="moveToStart($event);" class="button start"><svg class="feather" #homeElement>
+    <div (click)="aria.openSettings()" class="buttonQA settings" #settings>
+        <svg class="featherThicc">
+                <use [ngStyle]="{'visibility':aria.showSettings.value  ? 'visible':'hidden'}"
+                        xlink:href="assets/images/feather-sprite.svg#sliders" />
+        </svg>
+</div>
+</div>
+<div class="navigation-container" >
+    <div (click)="moveToStart($event);" class="buttonNV start" #start><svg class="featherThicc" >
                     <use xlink:href="assets/images/feather-sprite.svg#rewind" />
             </svg></div>
-    <div (click)="previous($event);" class="button previous"><svg class="feather" #previousElement>
+    <div (click)="back($event);" class="buttonNV previous" #previous><svg class="featherThicc" >
                     <use xlink:href="assets/images/feather-sprite.svg#chevron-left" />
             </svg></div>
-    <div (click)="advance($event);" class="button next"><svg class="feather" #nextElement>
+    <div (click)="forward($event);" class="buttonNV next" #next><svg class="featherThicc" >
                     <use xlink:href="assets/images/feather-sprite.svg#chevron-right" />
             </svg></div>
-    <div (click)="moveToEnd($event);" class="button end"><svg class="feather" #endElement>
+    <div (click)="moveToEnd($event);" class="buttonNV end" #end><svg class="featherThicc" >
                     <use xlink:href="assets/images/feather-sprite.svg#fast-forward" />
             </svg></div>
 </div>

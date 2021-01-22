@@ -57,7 +57,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
 
   // initialization
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    this.aria.attachBoard(this);
+  }
 
   ngAfterViewInit(): void {
     fabric.Object.prototype.transparentCorners = false;

@@ -2,43 +2,59 @@
 
 .gsi-container {  
   display: inline-flex;
-  line-height: $gsFontSize;
+  line-height: calc( $gsFontSize + 2px);
+  font-size: $gsFontSize;
   margin: 2px;
   padding-left:2px;
 }
 
 .gsi-move{
   white-space: nowrap;
-  color: $gsTextColor;
-  font-size: $gsFontSize;
-  font-family: $gsFontFamily;
-  background: $gsBackground;
+  color: $gsFontColorWM;
+  font-size: $gsFontSizeWM;
+  font-family: $gsFontFamilyWM;
+  background: $gsBackgroundWM;
+  margin: $gsMarginWM;
+  border: $gsBorderWM;
+  padding: $gsPaddingWM;
+  border-radius: $gsBorderRadiusWM;
 }
+.gsi-move.HalfPly{
+  white-space: nowrap;
+  color: $gsFontColorBM;
+  font-size: $gsFontSizeBM;
+  font-family: $gsFontFamilyBM;
+  background:  $gsBackgroundBM;
+  margin: $gsMarginBM;
+  border: $gsBorderBM;
+  padding: $gsPaddingBM;
+  border-radius: $gsBorderRadiusBM;
+ }
+
 
 .gsi-ply{
-  color: $gsTextColor;
-  font-weight: bold;
+  font-family: $gsFontFamilyPC;
+  font-weight: $gsFontWeightPC;
   font-size: $gsFontSizePC;
   background: $gsBackgroundPC;
+  color: $gsFontColorPC;
+  border: $gsBorderPC;
+  margin: $gsMarginPC;
+  border-radius: $gsBorderRadiusPC;
 }
 
+
 .gsi-comment{
-  color: $gsTextColorAN;
+  color: $gsFontColorAN;
   margin-left: 4px;
   font-size: $gsFontSizeAN;
   background: $gsBackgroundAN;
 }
 
 .Current{
-  background: $gsBackgroundHG;
-  color: $gsTextColorHG;
-  border:$gsBorderHG;
-  font-size: $gsFontSizeHG;
-  line-height: $gsFontSizeHG;
 }
 
 .Current.gsi-comment{
-  color: $gsAnnotationColorHG;
 }
 
 .Current.gsi-ply{
@@ -63,32 +79,31 @@
 
 /************************************ Game Score Group **************************/
 .Group.gsi-container {
-  color: $gsTextColor;
+  color: $gsFontColorSL;
 }
 .Group.gsi-container-hg{
-  background: $gsBackgroundHG;
-  border: $gsBorderHG;
   line-height: $gsFontSize;
 }
 .Group.gsi-move {
   padding-left: 2px;
-  line-height: $gsFontSize;
+  line-height: $gsFontSizeSL;
 }
 
 .Group.gsi-ply {
-  background: $gsBackgroundPC;
-  border-radius: 2px;
-  margin-right: 2px;
-  border: $gsBorderAN;
-  font-size: $gsFontSize;
+  font-family: $gsFontFamilyPC;
+  font-weight: $gsFontWeightPC;
+  font-size: $gsFontSizePC;
   line-height: $gsFontSize;
+  background: $gsBackgroundPC;
+  color: $gsFontColorPC;
+  border: $gsBorderPC;
+  padding: $gsPaddingPC;
+  margin: $gsMarginPC;
+  border-radius: $gsBorderRadiusPC;
 }
 
 .Group.gsi-ply-highlight {
-  background: $gsBackgroundHG;
-  color: $gsTextColorHG;
-  border:$gsBorderHG;
-  line-height: $gsFontSize;
+  line-height: $gsFontSizeSL;
 }
 
 
@@ -96,12 +111,10 @@
 
 /************************************* Annotation Group **************************/
 .Annotation.gsi-container {
-  color: $gsTextColor;
-  line-height: $gsTextSize;
+  color: $gsFontColorAN;
+  line-height: $gsFontSizeAN;
 }
 .Annotation.gsi-container-hg{
-  background: $gsBackgroundHG;
-  border: $gsBorderHG;
   line-height: $gsTextSize;
 }
 .Annotation.gsi-move {
@@ -117,9 +130,6 @@
   line-height: $gsTextSize;
 }
 .Annotation.gsi-ply-highlight {
-  background: $gsBackgroundHG;
-  color: $gsTextColorHG;
-  border:$gsBorderHG;
   line-height: $gsTextSize;
 }
 
@@ -137,7 +147,7 @@
 .Variation.gsi-container {
   border: white dashed 2px;
   background: $gsBackground;
-  color: $gsTextColor;
+  color: $gsFontColorVA;
   padding: 2px;
 }
 

@@ -1,5 +1,83 @@
 @import "../../styles.scss";
 
+.container{
+  background:$gsBackground;
+  // margin:$gsMargin;
+  // padding:$gsPadding;
+  border:$gsBorder;
+  border-radius:$gsBorderRadius;
+}
+
+.titleContainer{
+  display:flex;
+  height:auto;
+  line-height:$gsFontSizeST;
+  flex-flow:row nowrap;
+}
+
+.scoreText{
+  font-size: $gsFontSizeST;
+  font-family: $gsFontFamilyST;
+  font-weight: $gsFontWeightST;
+  color: $gsFontColorST;
+  background: $gsBackgroundST;
+  border: $gsBorderST;
+  padding: $gsPaddingST;
+  margin: $gsMarginST;
+  border-radius: $gsBorderRadiusST;
+  flex-grow:4;
+}
+
+.noselect{
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+
+}
+
+.shrinkFont{
+  @extend .noselect;
+  font-size: $gsFontSizeSF;
+  font-family: $gsFontFamilySF;
+  font-weight: $gsFontWeightSF;
+  color: $gsFontColorSF;
+  background: $gsBackgroundSF;
+  border: $gsBorderSF;
+  padding: $gsPaddingSF;
+  margin: $gsMarginSF;
+  border-radius: $gsBorderRadiusSF;
+}
+.fontScale{
+  @extend .noselect;
+  font-size: $gsFontSizeSF;
+  font-family: $gsFontFamilySF;
+  font-weight: $gsFontWeightSF;
+  color: $gsFontColorSF;
+  background: $gsBackgroundSF;
+  border: $gsBorderSF;
+  padding: $gsPaddingSF;
+  margin: $gsMarginSF;
+  border-radius: $gsBorderRadiusSF;
+
+}
+
+
+.growFont{
+  @extend .noselect;
+  font-size: $gsFontSizeGF;
+  font-family: $gsFontFamilyGF;
+  font-weight: $gsFontWeightGF;
+  color: $gsFontColorGF;
+  background: $gsBackgroundGF;
+  border: $gsBorderGF;
+  padding: $gsPaddingGF;
+  margin: $gsMarginGF;
+  border-radius: $gsBorderRadiusGF;
+}
+
+
 score-flow{
   width:100%;
   height:100%;

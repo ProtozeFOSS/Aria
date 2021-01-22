@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { Aria } from './app.component';
 
 
-const routes: Routes = [{ path: '', redirectTo: 'Aria', pathMatch: 'full' },
+const routes: Routes = [{ path: '', redirectTo: '', pathMatch: 'full' },
 { path: '', component: Aria, pathMatch: 'full' },
 { path: ':settings', component: Aria, pathMatch: 'full' }];
 @NgModule({

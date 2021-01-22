@@ -43,9 +43,9 @@ export class Aria {
       this.route.queryParams.subscribe(params => {
         if (params) {
           try {
-            console.log(params);
             const decoded = atob(params.settings);
             const settings_obj = JSON.parse(decoded);
+            console.log(settings_obj);
             this.applyJsonSettings(settings_obj);
           } catch (any) {
   
@@ -55,18 +55,6 @@ export class Aria {
       console.log('ID: ' + this.aria.UUID);
     }
     ngAfterViewInit() {
-      this.layout.boardElement = document.getElementById('ccb-' + this.aria.UUID);
-      this.layout.controlsElement = document.getElementById('controls-' + this.aria.UUID);
-      this.layout.statusElement = document.getElementById('status-' + this.aria.UUID);
-      this.layout.headerElement = document.getElementById('header-' + this.aria.UUID);
-      //this.layout.resizeElement = document.getElementById('resize-handle-' + this.aria.UUID);
-  
-      this.aria.attachAria(this);
-      this.layout.initializeLayout(this);
-      if (this.gameScoreComponent) {
-        //this.gameScoreComponent.resizeHandleEvent = this.layout.onSliderDrag.bind(this.layout);
-        //this.gameScoreComponent.resizeTouchEvent = this.layout.onSliderTouch.bind(this.layout);
-      }
       this.themes.boardBGLight.subscribe((light) => {
         if (this.canvasBoardComponent) {
           this.canvasBoardComponent.setLightTile(light);
@@ -77,21 +65,16 @@ export class Aria {
           this.canvasBoardComponent.setDarkTile(dark);
         }
       });
-      //this.aria.loadPGN(TestPGNData + this.pgnData.nativeElement.value);
       window.onkeydown = this.keyEvent.bind(this);
       window.onmessage = this.onMessage.bind(this);
-      this.aria.loadSettings();
+      this.aria.attachAria(this);
+      this.layout.initializeLayout(this);
       this.themes.initializeColorPalette();
-      window.onresize = ()=>{
-        if(!this.resizing) {
-          this.resizing = window.setTimeout(()=>{
-            this.layout.resizeLayout(window.innerWidth, window.innerHeight);
-            this.resizing = null;
-          },10);
-        }
-      }
-      window.setTimeout(()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);},200);
-      window.setTimeout(()=>{this.aria.loadPGN(TestPGNData);}, 180);
+      window.onresize = ()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);};
+      window.setTimeout(()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);},20);
+      window.setTimeout(()=>{
+        this.aria.loadPGN(TestPGNData);},
+        180);
     }
     mouseMoved(event: MouseEvent): void {
       if (this.gameScoreComponent) {
@@ -109,6 +92,21 @@ export class Aria {
       this.layout.boardElement = element;
     }
 
+    public registerScore(score: AriaScore, element: HTMLElement): void {
+      this.layout.gameScore  = score;
+      this.layout.gameScoreElement = element;
+    }
+
+    public registerHeader(header: AriaHeader, element: HTMLElement): void {
+      this.layout.header = header;
+      this.layout.headerElement = element;
+    }
+
+    public registerStatus(status: AriaStatus, element: HTMLElement): void {
+      this.layout.status = status;
+      this.layout.statusElement = element;
+    }
+
     public autoPlayActive(): boolean {
       if (this.controlsComponent) {
         return this.controlsComponent.playing;
@@ -119,9 +117,9 @@ export class Aria {
     public applyJsonSettings(settings: object): boolean {
       if (settings) {
         // @ts-ignore
-        if (settings[THEMES]) {
+        if (settings.theme) {
           // @ts-ignore
-          this.themes.setSettings(settings[THEMES]);
+          this.themes.setSettings(settings.theme);
         }
         return true;
       }

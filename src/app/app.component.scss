@@ -5,6 +5,7 @@
     height: 100%;
     display:flex;
     flex-direction: column;
+    overflow-x:hidden;
 }
 .sbs-portrait{
     order:2;
@@ -26,7 +27,7 @@
     right:0px;
     left:0px;
     overflow: hidden;
-    max-height:clear;
+    max-height:unset;
 }.header2{
     @extend .header;
     position:relative;
@@ -35,7 +36,7 @@
     right:0px;
     left:0px;
     overflow: hidden;
-    max-height:clear;
+    max-height:unset;
 
 }.header3{
     @extend .header;
@@ -52,18 +53,18 @@
 }.board1{
     @extend .board;
     position:relative;
-    order:0;
     flex-grow:1;
 }.board2{
     @extend .board;
     position:relative;
-    order:0;
     flex-grow: 1;
 }.board3{
     @extend .board;
+    position:absolute;
 
 }.board4{
     @extend .board;
+    position:absolute;
 
 }
 
@@ -72,56 +73,58 @@
 }.score1{
     @extend .score;
     flex-grow:1;
-    order:2;
+    order:4;
     overflow-y:visible;
     height:auto;
+    margin-top:8px;
 }.score2{
     @extend .score;
     order:1;
     flex-grow:1;
-    height:auto;
+    overflow-y:auto;
 }
 
 .controls{
     position:absolute;
-    height:99px;
-    width:100%;
-    left:0px;
-    right:0px;
+    height: 100px;
+    order:3;
 }.controls1{
     @extend .controls;
     position:relative;
-    order:1;
     flex-grow:2;
+    bottom:unset;
+    left:0px;
+    width:100%;
 }.controls2{
-    @extend .controls;
-    position:relative;
-    order:2;
-    flex-grow:2;
+    @extend .controls1;
 }.controls3{
     @extend .controls;
-    left:0px;
-    width:100%;
-
+    left:unset;
+    right: 0px; 
+    bottom: 64px;
 }.controls4{
-    @extend .controls;
-    left:0px;
-    width:100%;
-
+    @extend .controls3;
 }
 
 .status{
-
+    position:relative;
+    order:2;   
 }.status1{
     @extend .status;
-    order:3;    
+    right:unset;
+    bottom:unset;
 }.status2{
-    @extend .status;
-    order:2;    
+    @extend .status1; 
+    order:4;
+    right:unset;
+    bottom:unset;
 }.status3{
-    @extend .status;    
+    position:absolute;
+    @extend .status;
+    right:0px;
+    bottom:8px;
 }.status4{
-    @extend .status;    
+    @extend .status3;
 }
 
 

@@ -6,8 +6,37 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    /* width */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: transparent;
+      width: 6px;
+      height: 6px;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: rgb(37, 37, 37);
+      border-radius: 4px;
+      width: 6px;
+      height: 6px;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgb(27, 55, 192);
+      width: 6px;
+      height: 6px;
+    }
+  </style>
 </head>
-<body style="margin:0px;">
+<body style="margin:0px;overflow-x:hidden;">
   <aria></aria>
 </body>
 </html>

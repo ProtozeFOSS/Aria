@@ -7,6 +7,8 @@ import {
   Output,
   OnChanges,
   SimpleChanges,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
 import { AriaService } from 'src/app/services/aria.service';
 import { FlowItem } from './flow-item/flow-item.component';
@@ -19,6 +21,7 @@ import { FlowItem } from './flow-item/flow-item.component';
 
 export class ScoreFlow implements OnInit, OnChanges {
   @ViewChildren(FlowItem) scoreItems!: QueryList<FlowItem>;
+  @ViewChild('container') container!: ElementRef | null;
   @Output() currentItem: FlowItem | null = null;
   constructor(public aria: AriaService) { }
 
@@ -62,6 +65,28 @@ export class ScoreFlow implements OnInit, OnChanges {
   }
 
   resize(width: number, height: number): void {
-
+    if (this.container) {
+      const div = this.container.nativeElement;
+      const border = document.documentElement.style.getPropertyValue('--gsBorderSL');
+      const borderWidth = (parseFloat(border) * 2);
+      if(borderWidth) {
+        width -= borderWidth;
+        height -= borderWidth;
+      }
+      if(height <= 0) { 
+        div.style.height = 'auto';  
+        div.style.overflowY = 'visible';      
+      }else {
+        div.style.height = height + 'px';
+        div.style.overflowY = 'scroll';
+      }
+      if(width <= 0) {
+        div.style.width ='100%';
+        div.style.maxWidth = '';
+      } else {
+        div.style.width = width + 'px';
+        div.style.maxWidth = width + 'px';
+      }
+    }
   }
 }
