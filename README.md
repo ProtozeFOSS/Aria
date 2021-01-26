@@ -2,6 +2,14 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.1.
 
+## Preparing Software Tools
+1. Download and install NPM https://www.npmjs.com/get-npm 
+2. Download and install Git (Google for your OS)
+3. Use git (or download as a zip) to fetch the repository
+4. Using commandline navigate to the projects folder
+5. run `npm install` from the root directory of the repository to install all dependencies.
+> After dependencies are installed, you should be ready to continue.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
