@@ -6,22 +6,23 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-## Running unit tests
+When building for release there are a few directory paths that will need updated.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Environment Variables
 
-## Running end-to-end tests
+Under environment.ts and (prod) you'll find multiple file paths that are used through Aria.
+>https://angular.io/guide/build
+They currently work for deploy without any additional changes. A combination of environment variables and ng CLI command for build `base-href` and `deploy-url`. There is no `correct` way to deploy, this is dependent on your usecase.
+>More about Angular deployment - https://angular.io/guide/deployment
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+For building Aria and deploying to a folder {webdomain}`/Aria`
+>`ng build --prod --deploy-url "Aria/"` 
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Most likely you want a folder on your webserver that contains the Aria build folder.
+Some other location (or via back-end html injection) generate an iFrame that will reference the `index.html in Aria deploy folder` as the src attribute. This is critical as communication with Aria is done through the Window.message() API. 

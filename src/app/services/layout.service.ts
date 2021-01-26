@@ -119,15 +119,29 @@ export class LayoutService {
       this.board?.setSize(boardWidth);
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
+      this.aria.sendLayoutChanged(this.state);
     }else {
       window.setTimeout(()=>{this.rtl(width, height);}, 100);
     }
   }
 
-  private rtp(width: number, height: number) {
+  private rtp(width: number, height: number) { 
+    width = width < 320 ? 320:width;
     let boardWidth = Math.floor(width * this.preferredRatioPortrait);
-    boardWidth = boardWidth < 192 ? 192 : boardWidth; // board minimum size 192
-    let state = width < 480 ? 1:((width - boardWidth) >= 272 ? 2:1);
+    if(boardWidth < 96) {
+      boardWidth = 96;
+      this.preferredRatioPortrait = (96/width);
+    }
+    let state = width < 460 ? 1:((width - boardWidth) >= 230 ? 2:1);
+    // States have minimum sizes
+    /****************************
+     *  - State 1 - Complete Portrait 
+     *  Minimum width is 340 
+     *  Minimum height is 740
+     *  - State 2 SBS Portrait 
+     *  Minimum width is 530 
+     *  Minimum Height is 620  
+     * */
     if(state != this.state) {
       this.state = state;
       window.setTimeout(()=>{this.rtp(width, height)}, 20);
@@ -139,7 +153,8 @@ export class LayoutService {
       this.gameScoreElement.style.left = '';
       this.gameScoreElement.style.top = '';
       switch (this.state) {
-        case 1: {         
+        case 1: {
+          height = height < 610 ? 610: height;       
           if (this.layoutDirection) { // RTL
             this.boardElement.style.marginLeft = (width - boardWidth)/2 + 'px';
           } else {
@@ -152,6 +167,7 @@ export class LayoutService {
           break;
         }
         case 2: {
+          height = height < 580 ? 580: height; 
           this.boardElement.style.marginLeft = '';       
           if (this.layoutDirection) { // RTL
             this.boardElement.style.order = '0';
@@ -160,7 +176,7 @@ export class LayoutService {
             this.boardElement.style.order = '1';
             this.gameScoreElement.style.order = '0'; 
           }
-          const gsWidth = (width - (8 +  boardWidth));   
+          const gsWidth = Math.floor(width - (6 +  boardWidth));   
           this.gameScoreElement.style.height = boardWidth + 'px';
           this.gameScoreElement.style.width = gsWidth + 'px';
           this.gameScoreElement.style.maxWidth = gsWidth + 'px';   
@@ -185,18 +201,13 @@ export class LayoutService {
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
       this.header?.resize(width, -1);
+      this.aria.sendLayoutChanged(this.state);
     }else {
       window.setTimeout(()=>{this.rtp(width, height);}, 100);
     }
   }
 
-  public rescaleGamescoreFont(scale: number): void {
-    // for all game score font sizes
-    // set the document property to value * scale
-    // end
-    console.log('Scale:' + scale);
-  }
-
+ 
   initializeLayout(aria: Aria): void {
     this.aria = aria;
     this.board = aria.canvasBoardComponent;

@@ -3,6 +3,21 @@ import { Component, Renderer2, OnInit, ViewChild } from '@angular/core';
 import { AriaService, ScoreViewType } from '../services/aria.service';
 import { LayoutService } from '../services/layout.service';
 
+const icons = {
+  Settings : 'sliders',
+  FlowScore : 'align-left',
+  TableScore : 'align-justify',
+  Pawn : 'pawn-icon',
+  Flip : 'refresh-cw',
+  Play : 'play',
+  Pause : 'pause',
+  Start: 'rewind',
+  Previous: 'chevron-left',
+  Next: 'chevron-right',
+  End: 'fast-forward'
+}
+
+
 @Component({
   selector: 'aria-controls',
   templateUrl: './aria-controls.component.html',
@@ -18,6 +33,7 @@ export class AriaControls implements OnInit {
   @ViewChild('previous') previous!: ElementRef | null;
   @ViewChild('next') next!: ElementRef | null;
   @ViewChild('end') end!: ElementRef | null;
+  icons = icons;
   constructor(private renderer: Renderer2, public aria: AriaService, public layout: LayoutService) { }
 
   ngOnInit(): void {

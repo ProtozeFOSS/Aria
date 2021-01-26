@@ -2,55 +2,55 @@
     <div (click)="toggleAutoPlay()" class="buttonQA play" >
             <svg class="feather-play">
                     <use [ngStyle]="{'visibility': playing ? 'visible':'hidden'}"
-                            xlink:href="assets/images/feather-sprite.svg#pause" />
+                        attr.xlink:href={{icons.Pause|iconpipe}} />
                     <use [ngStyle]="{'visibility': !playing ? 'visible':'hidden'}"
-                            xlink:href="assets/images/feather-sprite.svg#play" />
+                        attr.xlink:href={{icons.Play|iconpipe}} />
             </svg>
             <div class="timer">{{timeLeft}}</div>
     </div>
     <div (click)="aria.rotateBoardOrientation()" class="buttonQA view" >
             <svg class="featherThicc">
-                    <use xlink:href="assets/images/feather-sprite.svg#refresh-cw" />
+                    <use attr.xlink:href={{icons.Flip|iconpipe}} />
             </svg>
     </div>
 
     <div (click)="layout.shrink()" class="buttonQA shrink" >
             <svg class="featherShrink">
-                    <use xlink:href="assets/images/feather-sprite.svg#pawn-icon" />
+                    <use attr.xlink:href={{icons.Pawn|iconpipe}} />
             </svg>
     </div>
 
     <div (click)="layout.grow()" class="buttonQA grow" >
         <svg class="featherGrow">
-                <use xlink:href="assets/images/feather-sprite.svg#pawn-icon" />
+                <use attr.xlink:href={{icons.Pawn|iconpipe}} />
         </svg>
     </div>
     <div (click)="aria.toggleScoreType()" class="buttonQA toggleScore" #view>
         <svg class="featherThicc">
                 <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Flow) ? 'visible':'hidden'}"
-                        xlink:href="assets/images/feather-sprite.svg#align-justify" />
+                attr.xlink:href={{icons.FlowScore|iconpipe}} />
                 <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Table) ? 'visible':'hidden'}"
-                        xlink:href="assets/images/feather-sprite.svg#align-left" />
+                attr.xlink:href={{icons.TableScore|iconpipe}} />
         </svg>
 </div>
     <div (click)="aria.openSettings()" class="buttonQA settings" #settings>
         <svg class="featherThicc">
                 <use [ngStyle]="{'visibility':aria.showSettings.value  ? 'visible':'hidden'}"
-                        xlink:href="assets/images/feather-sprite.svg#sliders" />
+                attr.xlink:href={{icons.Settings|iconpipe}} />
         </svg>
 </div>
 </div>
 <div class="navigation-container" >
     <div (click)="moveToStart($event);" class="buttonNV start" #start><svg class="featherThicc" >
-                    <use xlink:href="assets/images/feather-sprite.svg#rewind" />
+                    <use attr.xlink:href={{icons.Start|iconpipe}} />
             </svg></div>
     <div (click)="back($event);" class="buttonNV previous" #previous><svg class="featherThicc" >
-                    <use xlink:href="assets/images/feather-sprite.svg#chevron-left" />
+                    <use attr.xlink:href={{icons.Previous|iconpipe}} />
             </svg></div>
     <div (click)="forward($event);" class="buttonNV next" #next><svg class="featherThicc" >
-                    <use xlink:href="assets/images/feather-sprite.svg#chevron-right" />
+                    <use attr.xlink:href={{icons.Next|iconpipe}} />
             </svg></div>
     <div (click)="moveToEnd($event);" class="buttonNV end" #end><svg class="featherThicc" >
-                    <use xlink:href="assets/images/feather-sprite.svg#fast-forward" />
+                    <use attr.xlink:href={{icons.End|iconpipe}} />
             </svg></div>
 </div>

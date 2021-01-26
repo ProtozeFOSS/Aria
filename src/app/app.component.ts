@@ -8,13 +8,13 @@ import { AriaService } from './services/aria.service';
 import { AriaControls } from './aria-controls/aria-controls.component';
 import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/themes.service';
-import { TestPGNData } from '../test-pgn';
 import { ElementRef } from '@angular/core';
 enum JSRPC {
   setPGN = 'setPGN',
   onSettings = 'onSettings',
   getSettings = 'getSettings',
-  scaleTo = 'scaleTo'
+  layoutChanged = 'layoutChanged',
+  setSize = 'setSize'
 }
 
 
@@ -72,9 +72,6 @@ export class Aria {
       this.themes.initializeColorPalette();
       window.onresize = ()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);};
       window.setTimeout(()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);},20);
-      window.setTimeout(()=>{
-        this.aria.loadPGN(TestPGNData);},
-        180);
     }
     mouseMoved(event: MouseEvent): void {
       if (this.gameScoreComponent) {
@@ -135,6 +132,16 @@ export class Aria {
       }
       return message;
     }
+
+    private postMessage(message){
+      if(message.length && self!=top){
+        parent.postMessage(message, parent.origin);
+      }
+    }
+
+    public sendLayoutChanged(state: number): void {
+        this.postMessage(this.createParentMessage(JSRPC.layoutChanged, {width:document.body.scrollWidth,height:document.body.scrollHeight,state}));
+    }
   
     public onMessage(event: any): void {
       if (event && event.data && (typeof event.data === 'string')) {
@@ -158,14 +165,12 @@ export class Aria {
             }
             case JSRPC.getSettings: {
               let message = this.createParentMessage(JSRPC.onSettings, this.getSettings());
-              if (message.length) {
-                parent.postMessage(message, parent.origin);
-              }
+                this.postMessage(message);
               break;
             }
-            case JSRPC.scaleTo: {
+            case JSRPC.setSize: {
               if (message_obj.height && message_obj.width) {
-                this.scaleTo(message_obj.width, message_obj.height);
+                this.layout.resizeLayout(message_obj.width, message_obj.height);
               }
               break;
             }
@@ -181,15 +186,9 @@ export class Aria {
   
     public saveSettings(settings: any) {
       let message = this.createParentMessage(JSRPC.onSettings, settings);
-      if (message.length) {
-        parent.postMessage(message, parent.origin);
-      }
+        this.postMessage(message);
     }
-  
-    public scaleTo(width: number, height: number) {
-  
-    }
-  
+
     public applyDefaultSettings(): boolean {
       this.themes.initializeColorPalette();
       return true;

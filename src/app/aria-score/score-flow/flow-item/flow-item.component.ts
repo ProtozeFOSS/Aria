@@ -40,7 +40,7 @@ export class FlowItem implements OnInit, AfterViewInit, OnChanges {
         if (!showing) {
           this.gsiPly.nativeElement.remove();
         } else {
-          this.ply = this.data.move.fullMoveNumber().toString() + '.';
+          this.ply = (this.data.move.fullMoveNumber() + (this.isFullPly() ? 0:.5)) + '.';
         }
       }
       if (this.data.move) {
@@ -67,7 +67,8 @@ export class FlowItem implements OnInit, AfterViewInit, OnChanges {
       if (!showing) {
         this.gsiPly.nativeElement.remove();
       } else {
-        window.setTimeout(() => { this.ply = this.data.move.fullMoveNumber().toString() + '.'; },
+        window.setTimeout(() => { 
+          this.ply = (this.data.move.fullMoveNumber() + (this.isFullPly() ? 0:.5)) + '.';},
           10);
       }
     }

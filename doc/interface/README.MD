@@ -274,3 +274,16 @@ The Controls element is locked at 100px tall but often times will expand to its 
 | `gsBorderRadiusCB` | *number* | `2 (pixels)` | Sets the border radius |
 | `gsMarginCB` | *box description string* | `0px 0px 2px 0px` | Sets the margin |
 | `gsPaddingCB` | *box description string* | `1px 1px 1px 1px` | Sets the padding |
+
+
+
+
+
+// Just added Branched state in Themes and Created variables in CSS. Now I need to plumb it into flow-item.scss - continue clean up here.
+// Get the old game with variations loading in again
+// Add the dark theme back.
+// Get the keymap default settings and add loading from url for other services
+
+
+#### Citations for resources used
+> Pawn SVG (grow and shrink board) https://www.svgrepo.com/svg/130252/pawn

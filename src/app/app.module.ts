@@ -17,7 +17,7 @@ import { FlowItem } from './aria-score/score-flow/flow-item/flow-item.component'
 import { AriaService } from './services/aria.service';
 import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/themes.service';
-
+import { IconPipe } from './icon.pipe';
 
 @NgModule({
   declarations: [
@@ -33,6 +33,7 @@ import { ThemeService } from './services/themes.service';
     TableItem,
     ScoreFlow,
     FlowItem,
+    IconPipe
   ],
   imports: [
     BrowserModule,

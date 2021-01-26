@@ -10,7 +10,7 @@ import { STOCK_IMAGE, PlayerData, AriaService } from '../services/aria.service';
 })
 export class AriaHeader implements OnInit {
   environment = environment;
-  @Input() variant: string = 'Classical';
+  @Input() variant: string = 'Chess';
   @Input() event: string = '';
   @Input() eventDate: string = '';
   @Input() setDate: string = '';

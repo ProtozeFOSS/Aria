@@ -52,11 +52,13 @@ export class ThemeService {
   gsFontSizeAN = 14;
   gsFontSizePC = 14;
   gsFontSizeVA = 14;
+  gsFontSizeBH = 14;
   gsFontSizeWM = 14;
   gsFontSizeBM = 14;
   gsFontSizeCA = 14;
-  gsFontSizeCP = 14;
+  gsFontSizeCP = 18;
   gsFontSizeCV = 14;
+  gsFontSizeCH = 14;
   gsFontSizeCW = 14;
   gsFontSizeCB = 14;
 
@@ -234,7 +236,7 @@ export class ThemeService {
     document.documentElement.style.setProperty('--gsPaddingPC', '1px 1px 1px 1px');
     document.documentElement.style.setProperty('--gsBorderPC', 'none');
     document.documentElement.style.setProperty('--gsBorderRadiusPC', '2px');
-
+    
     // Game Score Variation
     document.documentElement.style.setProperty('--gsFontFamilyVA', 'Arial');
     document.documentElement.style.setProperty('--gsFontSizeVA', this.gsFontSizeVA + 'px');
@@ -245,6 +247,17 @@ export class ThemeService {
     document.documentElement.style.setProperty('--gsPaddingVA', '1px 1px 1px 1px');
     document.documentElement.style.setProperty('--gsBorderVA', 'none');
     document.documentElement.style.setProperty('--gsBorderRadiusVA', '2px');     
+
+    // Game Score Branched Variation
+    document.documentElement.style.setProperty('--gsFontFamilyBH', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeBH', this.gsFontSizeBH + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightBH', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorBH', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundBH', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginBH', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingBH', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderBH', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusBH', '2px');
 
     // Game Score White Move
     document.documentElement.style.setProperty('--gsFontFamilyWM', 'FigurineSymbolT1');
@@ -279,11 +292,11 @@ export class ThemeService {
     document.documentElement.style.setProperty('--gsBorderCA', 'none');
     document.documentElement.style.setProperty('--gsBorderRadiusCA', '2px');
 
-    //  Current Selected Annotation
+    //  Current Selected Ply Count
     document.documentElement.style.setProperty('--gsFontFamilyCP', 'Arial');
     document.documentElement.style.setProperty('--gsFontSizeCP', this.gsFontSizeCP + 'px');
     document.documentElement.style.setProperty('--gsFontWeightCP', 'bold');
-    document.documentElement.style.setProperty('--gsFontColorCP', 'black');
+    document.documentElement.style.setProperty('--gsFontColorCP', 'blue');
     document.documentElement.style.setProperty('--gsBackgroundCP', 'transparent');
     document.documentElement.style.setProperty('--gsMarginCP', '0px 0px 2px 0px');
     document.documentElement.style.setProperty('--gsPaddingCP', '1px 1px 1px 1px');
@@ -301,26 +314,37 @@ export class ThemeService {
     document.documentElement.style.setProperty('--gsBorderCV', 'none');
     document.documentElement.style.setProperty('--gsBorderRadiusCV', '2px');
 
+    // Game Score Current Branched Variation
+    document.documentElement.style.setProperty('--gsFontFamilyCH', 'Arial');
+    document.documentElement.style.setProperty('--gsFontSizeCH', this.gsFontSizeCH + 'px');
+    document.documentElement.style.setProperty('--gsFontWeightCH', 'bold');
+    document.documentElement.style.setProperty('--gsFontColorCH', 'black');
+    document.documentElement.style.setProperty('--gsBackgroundCH', 'transparent');
+    document.documentElement.style.setProperty('--gsMarginCH', '0px 0px 2px 0px');
+    document.documentElement.style.setProperty('--gsPaddingCH', '1px 1px 1px 1px');
+    document.documentElement.style.setProperty('--gsBorderCH', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusCH', '2px');
+
     //  Current Selected White Move
     document.documentElement.style.setProperty('--gsFontFamilyCW', 'Arial');
     document.documentElement.style.setProperty('--gsFontSizeCW', this.gsFontSizeCW + 'px');
     document.documentElement.style.setProperty('--gsFontWeightCW', 'bold');
     document.documentElement.style.setProperty('--gsFontColorCW', 'black');
-    document.documentElement.style.setProperty('--gsBackgroundCW', 'transparent');
+    document.documentElement.style.setProperty('--gsBackgroundCW', 'grey');
     document.documentElement.style.setProperty('--gsMarginCW', '0px 0px 2px 0px');
     document.documentElement.style.setProperty('--gsPaddingCW', '1px 1px 1px 1px');
-    document.documentElement.style.setProperty('--gsBorderCW', '');
+    document.documentElement.style.setProperty('--gsBorderCW', '2px solid black');
     document.documentElement.style.setProperty('--gsBorderRadiusCW', '2px');
 
     //  Current Selected Black Move
     document.documentElement.style.setProperty('--gsFontFamilyCB', 'Arial');
     document.documentElement.style.setProperty('--gsFontSizeCB', this.gsFontSizeCB + 'px');
     document.documentElement.style.setProperty('--gsFontWeightCB', 'bold');
-    document.documentElement.style.setProperty('--gsFontColorCB', 'black');
-    document.documentElement.style.setProperty('--gsBackgroundCB', 'transparent');
+    document.documentElement.style.setProperty('--gsFontColorCB', 'white');
+    document.documentElement.style.setProperty('--gsBackgroundCB', 'black');
     document.documentElement.style.setProperty('--gsMarginCB', '0px 0px 2px 0px');
     document.documentElement.style.setProperty('--gsPaddingCB', '1px 1px 1px 1px');
-    document.documentElement.style.setProperty('--gsBorderCB', '');
+    document.documentElement.style.setProperty('--gsBorderCB', '2px solid grey');
     document.documentElement.style.setProperty('--gsBorderRadiusCB', '2px');
 
    

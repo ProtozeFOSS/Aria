@@ -18,7 +18,35 @@
   border: $gsBorderWM;
   padding: $gsPaddingWM;
   border-radius: $gsBorderRadiusWM;
+}.Current.gsi-move{
+  font-family: $gsFontFamilyCW;
+  font-weight: $gsFontWeightCW;
+  font-size: $gsFontSizeCW;
+  background: $gsBackgroundCW;
+  color: $gsFontColorCW;
+  border: $gsBorderCW;
+  margin: $gsMarginCW;
+  border-radius: $gsBorderRadiusCW;
+}.Variation.gsi-move{
+  font-family: $gsFontFamilyVA;
+  font-weight: $gsFontWeightVA;
+  font-size: $gsFontSizeVA;
+  background: $gsBackgroundVA;
+  color: $gsFontColorVA;
+  border: $gsBorderVA;
+  margin: $gsMarginVA;
+  border-radius: $gsBorderRadiusVA;
+}.Current.Variation.gsi-move{
+  font-family: $gsFontFamilyCV;
+  font-weight: $gsFontWeightCV;
+  font-size: $gsFontSizeCV;
+  background: $gsBackgroundCV;
+  color: $gsFontColorCV;
+  border: $gsBorderCV;
+  margin: $gsMarginCV;
+  border-radius: $gsBorderRadiusCV;
 }
+
 .gsi-move.HalfPly{
   white-space: nowrap;
   color: $gsFontColorBM;
@@ -29,7 +57,34 @@
   border: $gsBorderBM;
   padding: $gsPaddingBM;
   border-radius: $gsBorderRadiusBM;
- }
+ }.HalfPly.Current.gsi-move{
+  font-family: $gsFontFamilyCB;
+  font-weight: $gsFontWeightCB;
+  font-size: $gsFontSizeCB;
+  background: $gsBackgroundCB;
+  color: $gsFontColorCB;
+  border: $gsBorderCB;
+  margin: $gsMarginCB;
+  border-radius: $gsBorderRadiusCB;
+}.HalfPly.Variation.gsi-move{
+  font-family: $gsFontFamilyVA;
+  font-weight: $gsFontWeightVA;
+  font-size: $gsFontSizeVA;
+  background: $gsBackgroundVA;
+  color: $gsFontColorVA;
+  border: $gsBorderVA;
+  margin: $gsMarginVA;
+  border-radius: $gsBorderRadiusVA;
+}.HalfPly.Current.Variation.gsi-move{
+  font-family: $gsFontFamilyCV;
+  font-weight: $gsFontWeightCV;
+  font-size: $gsFontSizeCV;
+  background: $gsBackgroundCV;
+  color: $gsFontColorCV;
+  border: $gsBorderCV;
+  margin: $gsMarginCV;
+  border-radius: $gsBorderRadiusCV;
+}
 
 
 .gsi-ply{
@@ -41,7 +96,18 @@
   border: $gsBorderPC;
   margin: $gsMarginPC;
   border-radius: $gsBorderRadiusPC;
+}.Current.gsi-ply{
+  font-family: $gsFontFamilyCP;
+  font-weight: $gsFontWeightCP;
+  font-size: $gsFontSizeCP;
+  background: $gsBackgroundCP;
+  color: $gsFontColorCP;
+  border: $gsBorderCP;
+  margin: $gsMarginCP;
+  border-radius: $gsBorderRadiusCP;
 }
+
+
 
 
 .gsi-comment{
@@ -57,9 +123,7 @@
 .Current.gsi-comment{
 }
 
-.Current.gsi-ply{
-  color: rgb(0, 212, 250);
-}
+
 
 .Current.Variation.gsi-container{
   border:rgb(0, 212, 250) 2px dashed;

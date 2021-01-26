@@ -118,6 +118,17 @@ $gsPaddingVA: var(--gsPaddingVA); // Padding
 $gsBorderVA: var(--gsBorderVA); // Border
 $gsBorderRadiusVA: var(--gsBorderRadiusVA); // Border radius
 
+/******************* Game Score Branched Variation ********************/
+$gsFontFamilyBH: var(--gsFontFamilyBH); // Font family
+$gsFontSizeBH: var(--gsFontSizeBH); // font size
+$gsFontColorBH: var(--gsFontColorBH); // Font color
+$gsFontWeightBH: var(--gsFontWeightBH); // Font weight
+$gsBackgroundBH: var(--gsBackgroundBH); // Background
+$gsMarginBH: var(--gsMarginBH); // Margin
+$gsPaddingBH: var(--gsPaddingBH); // Padding
+$gsBorderBH: var(--gsBorderBH); // Border
+$gsBorderRadiusBH: var(--gsBorderRadiusBH); // Border radius
+
 /******************* Game Score White Move ***************************/
 $gsFontFamilyWM: var(--gsFontFamilyWM); // Font family 
 $gsFontSizeWM: var(--gsFontSizeWM); // Font size
@@ -151,7 +162,7 @@ $gsPaddingCA: var(--gsPaddingCA); // Padding
 $gsBorderCA: var(--gsBorderCA); // Border
 $gsBorderRadiusCA: var(--gsBorderRadiusCA); // Border radius
 
-/******************* Game Score Ply Variables ***************************/
+/******************* Game Score Current Ply Variables ***********************/
 $gsFontFamilyCP: var(--gsFontFamilyCP); // Font family
 $gsFontSizeCP: var(--gsFontSizeCP); // Font size
 $gsFontColorCP: var(--gsFontColorCP); // Font color
@@ -162,7 +173,7 @@ $gsPaddingCP: var(--gsPaddingCP); // Padding
 $gsBorderCP: var(--gsBorderCP); // Border
 $gsBorderRadiusCP: var(--gsBorderRadiusCP); // Border
 
-/******************* Game Score Variation ***************************/
+/******************* Game Score Current Variation ***************************/
 $gsFontFamilyCV: var(--gsFontFamilyCV); // Font family
 $gsFontSizeCV: var(--gsFontSizeCV); // font size
 $gsFontColorCV: var(--gsFontColorCV); // Font color
@@ -172,6 +183,17 @@ $gsMarginCV: var(--gsMarginCV); // Margin
 $gsPaddingCV: var(--gsPaddingCV); // Padding
 $gsBorderCV: var(--gsBorderCV); // Border
 $gsBorderRadiusCV: var(--gsBorderRadiusCV); // Border radius
+
+/******************* Game Score Current Branched Variation ****************/
+$gsFontFamilyCH: var(--gsFontFamilyCH); // Font family
+$gsFontSizeCH: var(--gsFontSizeCH); // font size
+$gsFontColorCH: var(--gsFontColorCH); // Font color
+$gsFontWeightCH: var(--gsFontWeightCH); // Font weight
+$gsBackgroundCH: var(--gsBackgroundCH); // Background
+$gsMarginCH: var(--gsMarginCH); // Margin
+$gsPaddingCH: var(--gsPaddingCH); // Padding
+$gsBorderCH: var(--gsBorderCH); // Border
+$gsBorderRadiusCH: var(--gsBorderRadiusCH); // Border radius
 
 /******************* Game Score White Move ***************************/
 $gsFontFamilyCW: var(--gsFontFamilyCW); // Font family 
