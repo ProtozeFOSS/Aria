@@ -34,7 +34,7 @@ export class Aria {
   
   resizing: number | null = null;
   constructor(public aria: AriaService,
-    public themes: ThemeService,
+    public theme: ThemeService,
     public layout: LayoutService,
     private route: ActivatedRoute){
       const date = new Date();
@@ -46,18 +46,19 @@ export class Aria {
             const settings_obj = JSON.parse(decoded);
             console.log(settings_obj);
             this.applyJsonSettings(settings_obj);
-          } catch (any) {}
+          } catch (any) {
+          }
         }
       });
       console.log('ID: ' + this.aria.UUID);
     }
     ngAfterViewInit() {
-      this.themes.boardBGLight.subscribe((light) => {
+      this.theme.boardBGLight.subscribe((light) => {
         if (this.canvasBoardComponent) {
           this.canvasBoardComponent.setLightTile(light);
         }
       });
-      this.themes.boardBGDark.subscribe((dark) => {
+      this.theme.boardBGDark.subscribe((dark) => {
         if (this.canvasBoardComponent) {
           this.canvasBoardComponent.setDarkTile(dark);
         }
@@ -66,9 +67,9 @@ export class Aria {
       window.onmessage = this.onMessage.bind(this);
       this.aria.attachAria(this);
       this.layout.initializeLayout(this);
-      this.themes.initializeColorPalette();
+      this.theme.initializeColorPalette();
       window.onresize = ()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);};
-      window.setTimeout(()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);},20);
+      window.setTimeout(()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);window['ARIA'] = {theme:this.theme, aria:this.aria, layout:this.layout};},20);
     }
     mouseMoved(event: MouseEvent): void {
       if (this.gameScoreComponent) {
@@ -113,7 +114,7 @@ export class Aria {
         // @ts-ignore
         if (settings.theme) {
           // @ts-ignore
-          this.themes.setSettings(settings.theme);
+          this.theme.setSettings(settings.theme);
         }
         // @ts-ignore
         if(settings.layout) {
@@ -202,19 +203,19 @@ export class Aria {
     }
 
     public applyDefaultSettings(): boolean {
-      this.themes.initializeColorPalette();
+      this.theme.initializeColorPalette();
       return true;
     }
   
     public getSettings(): object {
-      const themeSettings = this.themes.settings();
+      const themeSettings = this.theme.settings();
       const layoutSettings = this.layout.settings();
       const ariaSettings = this.aria.settings();
       return { themes: themeSettings, layout: layoutSettings, aria: ariaSettings };
     }
   
     public getJsonSettings(): string {
-      const themeSettings = this.themes.settings();
+      const themeSettings = this.theme.settings();
       const layoutSettings = this.layout.settings();
       const ariaSettings = this.aria.settings();
       return JSON.stringify({ themes: themeSettings, layout: layoutSettings, aria: ariaSettings });

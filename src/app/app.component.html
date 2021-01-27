@@ -1,12 +1,12 @@
 <div class="container">
 <aria-header id="header-{{aria.UUID}}" class="header{{layout.state}}"></aria-header>
 <div class="sbs-portrait" *ngIf="layout.state == 2">
-  <canvas-chessboard (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent id="ccb-{{aria.UUID}}" boardID="{{aria.UUID}}" [theme]="themes.boardTheme()"
+  <canvas-chessboard (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent id="ccb-{{aria.UUID}}" boardID="{{aria.UUID}}" [theme]="theme.boardTheme()"
   [showLabels]="aria.showLabels.value" class="board{{layout.state}}">
 </canvas-chessboard>
   <aria-score id="score-{{aria.UUID}}" class="score{{layout.state}}"></aria-score>
 </div>
-<canvas-chessboard *ngIf="layout.state != 2" (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent id="ccb-{{aria.UUID}}" boardID="{{aria.UUID}}" [theme]="themes.boardTheme()"
+<canvas-chessboard *ngIf="layout.state != 2" (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent id="ccb-{{aria.UUID}}" boardID="{{aria.UUID}}" [theme]="theme.boardTheme()"
   [showLabels]="aria.showLabels.value" class="board{{layout.state}}">
 </canvas-chessboard>
 <aria-score *ngIf="layout.state == 1" id="score-{{aria.UUID}}" class="score{{layout.state}}"></aria-score>
