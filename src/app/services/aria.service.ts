@@ -20,10 +20,32 @@ export interface GameData {
   opening?: string;
   country?: string;
 }
+
 export enum ScoreViewType {
   Table = 101,
   Flow = 202
 };
+
+export enum Actions {
+  ToggleAutoPlay = 0,
+  RotateBoard = 1,
+  ShrinkBoard = 2,
+  GrowBoard = 3,
+  ShrinkFont = 4,
+  GrowFont = 5,
+  ToggleScoreView = 6,
+  MoveToStart = 7,
+  Previous = 8,
+  Next = 9,
+  MoveToEnd = 10,
+  AutoPlayTime = 11,
+  MoveToFirstGame = 12,
+  PreviousGame = 13,
+  NextGame = 14,
+  MoveToLastGame = 15
+};
+
+
 
 
 export const STOCK_IMAGE = environment.imagesPath + 'player.png';
@@ -77,6 +99,8 @@ export class AriaService {
   private _app: Aria | null = null;
   readonly isVariant = new BehaviorSubject<boolean>(false);
 
+  // Keymap
+  @Output() keymap: Map<string, any> = new Map<string, any>();
 
   // Visual Settings
   constructor() {
@@ -93,13 +117,121 @@ export class AriaService {
     });
     this.autoPlaySpeed.subscribe((value)=>{
       this._controls?.setTimer(value);
-    })
+    });    
+    this.loadKeymap();
   }
 
   public settings(): object {
-    let settings = {};
+    var settings = {};
     return settings;
   }
+
+  public setSettings(settings: object) {
+    // @ts-ignore
+    if(settings.keymap) {
+      // @ts-ignore
+      for (var prop in settings.keymap) {
+        // @ts-ignore
+        if (Object.prototype.hasOwnProperty.call(settings.keymap, prop)) { 
+          // @ts-ignore
+          const actionID = settings.keymap[prop];
+          switch(actionID) { // fill in the actions here
+            case Actions.ToggleAutoPlay:{
+              this.keymap.set(prop, this.toggleAutoPlay.bind(this));
+              break;
+            }
+            case Actions.RotateBoard:{
+              this.keymap.set(prop, this.rotateBoardOrientation.bind(this));
+              break;
+            }
+            case Actions.ShrinkBoard:{
+              if(this._app && this._app.layout) {
+                this.keymap.set(prop, this._app.layout.shrink.bind(this._app.layout));
+              }
+              break;
+            }
+            case Actions.GrowBoard:{
+              if(this._app && this._app.layout) {
+                this.keymap.set(prop, this._app.layout.grow.bind(this._app.layout));
+              }
+              break;
+            }
+            case Actions.ToggleScoreView:{
+              this.keymap.set(prop, this.toggleScoreType.bind(this));
+              break;
+            }
+            case Actions.MoveToStart:{
+              this.keymap.set(prop, this.moveToStart.bind(this));
+              break;
+            }
+            case Actions.Previous:{
+              this.keymap.set(prop, this.previous.bind(this));
+              break;
+            }
+            case Actions.Next:{
+              this.keymap.set(prop, this.advance.bind(this));
+              break;
+            }
+            case Actions.MoveToEnd:{
+              this.keymap.set(prop, this.moveToEnd.bind(this));
+              break;
+            }
+            case Actions.AutoPlayTime:{
+              // Should be encoded
+              // "6:1251" - Key '6' sets autoplay value to 1251(ms)
+              // "q:800" - Key 'q' sets autoplay value to 800(ms)
+              let values = prop.split(':');
+              if(values.length == 2) {
+                const time = parseInt(values[1]);
+                if(!isNaN(time)){
+                  this.keymap.set(values[0], ()=>{this.autoPlaySpeed.next(time);});
+                }
+              }
+            }
+            case Actions.MoveToFirstGame:{
+              //this.keymap.set(prop, this.moveToStart.bind(this));
+              break;
+            }
+            case Actions.PreviousGame:{
+              //this.keymap.set(prop, this.previous.bind(this));
+              break;
+            }
+            case Actions.NextGame:{
+              //this.keymap.set(prop, this..bind(this));
+              break;
+            }
+            case Actions.MoveToLastGame:{
+              //this.keymap.set(prop, this.moveToEnd.bind(this));
+              break;
+            }
+            default:{
+              console.log('Invalid Action ID in aria.keymap setting:' + prop + ' -> Invalid (' + actionID + ')' );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  public loadKeymap(): void {
+    // initial default keymap
+    this.keymap.set('Space', this.toggleAutoPlay.bind(this));
+    this.keymap.set('Home', this.moveToStart.bind(this));
+    this.keymap.set('End', this.moveToEnd.bind(this));
+    this.keymap.set('ArrowRight', this.advance.bind(this));
+    this.keymap.set('ArrowLeft', this.previous.bind(this));
+    this.keymap.set('i', this.rotateBoardOrientation.bind(this));
+  }
+
+  public keyEvent(event: any): void {
+    if (this.keymap.has(event.key)) {
+      const action = this.keymap.get(event.key);
+      if(action) {
+        action();
+      }
+    }
+  }
+
 
   public moveToStart(): void {
     while (this.previous()) { }

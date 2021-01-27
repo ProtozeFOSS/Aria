@@ -54,6 +54,10 @@ export class LayoutService {
     return settings;
   }
 
+  public setSettings(settings: object) {
+    
+  }
+
   private rtl(width: number, height: number) {
     let boardWidth = Math.ceil(width * this.preferredRatioLandscape);
     boardWidth = boardWidth > (height - 2) ? height-2 : boardWidth;
@@ -119,7 +123,7 @@ export class LayoutService {
       this.board?.setSize(boardWidth);
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
-      this.aria.sendLayoutChanged(this.state);
+      this.aria.sendLayoutChanged(width, height, this.state);
     }else {
       window.setTimeout(()=>{this.rtl(width, height);}, 100);
     }
@@ -201,7 +205,7 @@ export class LayoutService {
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
       this.header?.resize(width, -1);
-      this.aria.sendLayoutChanged(this.state);
+      this.aria.sendLayoutChanged(width, height, this.state);
     }else {
       window.setTimeout(()=>{this.rtp(width, height);}, 100);
     }

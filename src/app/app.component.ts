@@ -31,13 +31,12 @@ export class Aria {
   @ViewChild(AriaStatus) statusComponent!: AriaStatus | null;
   @Output() gameScoreWidth: number = 389;
   @Output() oldWidth: number = 0;
-  @Output() keymap: Map<string, any> = new Map<string, any>();
+  
   resizing: number | null = null;
   constructor(public aria: AriaService,
     public themes: ThemeService,
     public layout: LayoutService,
     private route: ActivatedRoute){
-      this.loadKeymap();
       const date = new Date();
       this.aria.UUID = 'ARIA-' + date.getTime().toString();
       this.route.queryParams.subscribe(params => {
@@ -47,9 +46,7 @@ export class Aria {
             const settings_obj = JSON.parse(decoded);
             console.log(settings_obj);
             this.applyJsonSettings(settings_obj);
-          } catch (any) {
-  
-          }
+          } catch (any) {}
         }
       });
       console.log('ID: ' + this.aria.UUID);
@@ -65,7 +62,7 @@ export class Aria {
           this.canvasBoardComponent.setDarkTile(dark);
         }
       });
-      window.onkeydown = this.keyEvent.bind(this);
+      window.onkeydown = this.aria.keyEvent.bind(this.aria);
       window.onmessage = this.onMessage.bind(this);
       this.aria.attachAria(this);
       this.layout.initializeLayout(this);
@@ -118,6 +115,16 @@ export class Aria {
           // @ts-ignore
           this.themes.setSettings(settings.theme);
         }
+        // @ts-ignore
+        if(settings.layout) {
+          // @ts-ignore
+          this.layout.setSettings(settings.layout);
+        }
+        // @ts-ignore
+        if(settings.aria) {
+          // @ts-ignore
+          this.aria.setSettings(settings.aria);
+        }
         return true;
       }
       return false;
@@ -139,8 +146,13 @@ export class Aria {
       }
     }
 
-    public sendLayoutChanged(state: number): void {
-        this.postMessage(this.createParentMessage(JSRPC.layoutChanged, {width:document.body.scrollWidth,height:document.body.scrollHeight,state}));
+    public sendLayoutChanged(width:number, height:number, state: number): void {
+        height = Math.max(
+          document.body.scrollHeight, document.documentElement.scrollHeight,
+          document.body.offsetHeight, document.documentElement.offsetHeight,
+          document.body.clientHeight, document.documentElement.clientHeight, height
+        );
+        this.postMessage(this.createParentMessage(JSRPC.layoutChanged, {width:width,height,state}));
     }
   
     public onMessage(event: any): void {
@@ -215,24 +227,9 @@ export class Aria {
       }
     }
   
-    protected loadKeymap(): void {
-      // initial default keymap
-      this.keymap.set('Space', () => { this.aria.toggleAutoPlay(); });
-      this.keymap.set('Home', () => { this.aria.moveToStart(); });
-      this.keymap.set('End', () => { this.aria.moveToEnd(); });
-      this.keymap.set('ArrowRight', () => { this.aria.advance(); });
-      this.keymap.set('ArrowLeft', () => { this.aria.previous(); });
-      this.keymap.set('KeyI', () => { this.aria.rotateBoardOrientation(); });
-    }
+
   
-    keyEvent(event: any): void {
-      console.log(event);
-      if (this.keymap.has(event.code)) {
-        console.log('Got this key: ' + event.code);
-        const action = this.keymap.get(event.code);
-        action();
-      }
-    }
+    
   
     touchMoved(event: TouchEvent): void {
       if (this.gameScoreComponent) {
