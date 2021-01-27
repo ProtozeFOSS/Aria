@@ -123,10 +123,27 @@ export class LayoutService {
       this.board?.setSize(boardWidth);
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
-      this.aria.sendLayoutChanged(width, height, this.state);
+         height = Math.max(
+          document.body.scrollHeight, document.documentElement.scrollHeight,
+          document.body.offsetHeight, document.documentElement.offsetHeight,
+          document.body.clientHeight, document.documentElement.clientHeight, height
+        );
+        this.layoutChanged(width,height,state);
+      this.sendLayoutChanged(width, height, this.state);
     }else {
       window.setTimeout(()=>{this.rtl(width, height);}, 100);
     }
+  }
+
+  public layoutChanged(width: number, height:number, state: number)
+  {}
+  private sendLayoutChanged(width:number, height:number, state: number): void {
+      height = Math.max(
+        document.body.scrollHeight, document.documentElement.scrollHeight,
+        document.body.offsetHeight, document.documentElement.offsetHeight,
+        document.body.clientHeight, document.documentElement.clientHeight, height
+      );
+      this.layoutChanged(width,height,state);
   }
 
   private rtp(width: number, height: number) { 
@@ -205,7 +222,7 @@ export class LayoutService {
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
       this.header?.resize(width, -1);
-      this.aria.sendLayoutChanged(width, height, this.state);
+      this.sendLayoutChanged(width, height, this.state);
     }else {
       window.setTimeout(()=>{this.rtp(width, height);}, 100);
     }

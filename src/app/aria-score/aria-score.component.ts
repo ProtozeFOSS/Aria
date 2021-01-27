@@ -117,6 +117,7 @@ export class AriaScore implements OnInit {
     this.fontScale += .01;
     this.scaleText = (Math.round(this.fontScale * 100) + '%').padStart(4,"\u200D");
     this.theme.rescaleScoreFont(this.fontScale);
+    this.layout.resizeLayout(window.innerWidth, window.innerHeight);
   }
 
   shrinkFont(): void {
@@ -126,6 +127,7 @@ export class AriaScore implements OnInit {
     }
     this.scaleText = (Math.round(this.fontScale * 100) + '%').padStart(4,"\u200D");
     this.theme.rescaleScoreFont(this.fontScale);
+    this.layout.resizeLayout(window.innerWidth, window.innerHeight);
   }
 
   ignoreEvent(event: MouseEvent): void {

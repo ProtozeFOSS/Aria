@@ -147,14 +147,7 @@ export class Aria {
       }
     }
 
-    public sendLayoutChanged(width:number, height:number, state: number): void {
-        height = Math.max(
-          document.body.scrollHeight, document.documentElement.scrollHeight,
-          document.body.offsetHeight, document.documentElement.offsetHeight,
-          document.body.clientHeight, document.documentElement.clientHeight, height
-        );
-        this.postMessage(this.createParentMessage(JSRPC.layoutChanged, {width:width,height,state}));
-    }
+
   
     public onMessage(event: any): void {
       if (event && event.data && (typeof event.data === 'string')) {
