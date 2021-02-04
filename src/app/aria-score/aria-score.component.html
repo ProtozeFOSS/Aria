@@ -1,11 +1,16 @@
 <div class="container" #container>
 <div class="titleContainer" #title>
     <div class="scoreText">Score</div>
-    <div class="shrinkFont" (mousedown)="startShrink()" (mouseleave)="stopGrow()" (mouseup)="stopShrink()">a</div>
-    <div class="fontScale">{{scaleText}}</div>
-    <div class="growFont" (mousedown)="startGrow()" (mouseleave)="stopGrow()" (mouseup)="stopGrow()">A</div>
-    <!-- <div class="shrink-text">a</div>
-    <div class="grow-text">A</div> -->
+    <div class="shrinkFont" (mousedown)="startShrink()" (mouseleave)="stopShrink()" (mouseup)="stopShrink()">
+        <svg class="feather">
+            <use  attr.xlink:href="{{(theme.gsIconSF | iconpipe)}}" />
+        </svg>
+    </div>
+    <div class="growFont" (mousedown)="startGrow()" (mouseleave)="stopGrow()" (mouseup)="stopGrow()">
+        <svg class="feather">
+            <use attr.xlink:href="{{(theme.gsIconGF | iconpipe)}}"  />
+        </svg>
+    </div>
 </div>
 <score-flow id="score-flow-{{aria.UUID}}" *ngIf="aria.scoreViewType.value === ScoreViewType.Flow">
 </score-flow>

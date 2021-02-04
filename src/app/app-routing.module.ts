@@ -5,7 +5,7 @@ import { Aria } from './app.component';
 
 const routes: Routes = [{ path: '*/index.html', redirectTo: '', pathMatch: 'full' },
 { path: '', component: Aria, pathMatch: 'full' },
-{ path: ':settings', component: Aria, pathMatch: 'full' }];
+{ path: ':data', component: Aria, pathMatch: 'full' }];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

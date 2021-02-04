@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, ViewChild, ElementRef } from '@angular/core';
 import { fabric } from 'fabric';
 import { BehaviorSubject } from 'rxjs';
-import { ChessMove } from '../common/kokopu-engine';
+import { ChessMove} from '../common/kokopu-engine';
 import { ThemeService } from '../services/themes.service';
 import { AriaService } from '../services/aria.service';
 import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames, Color } from './types';
@@ -24,6 +24,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   @Input() interactive = true;
   @Input() showLabels = false;
   @Input() boardID: string = '';
+  protected position: any = null;
   container: HTMLElement | null = null;
   protected promotionDialog: fabric.Group | null = null;
   protected knightButton: fabric.Group | null = null;
@@ -105,9 +106,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   private generateBoard(): void {
     this.generateBoardObjects();
-    const position = this.aria.getGame()?.getPosition();
-    if (position) {
-      this.setBoardToPosition(position);
+    this.position == null ? this.aria.getGame()?.getPosition():this.position;
+    if (this.position) {
+      this.setBoardToPosition(this.position);
     }
   }
 
@@ -1191,10 +1192,6 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     return { x, y } as Coordinate;
   }
 
-  public updatePieceAnimation(x: number, y: number): void {
-
-  }
-
   setDarkTile(color: string): void {
     if (this.tiles.length != 0 && this.theme) {
       for (let index = 0; index < 64; index++) {
@@ -1308,6 +1305,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   public setBoardToPosition(position: any): void {
     this.clearMaterial();
     if (position) {
+    this.position = position;
       for (let index = 0; index < 64; ++index) {
         const squareData = position.square(SquareNames[index]);
         // get the first and last of the role and color

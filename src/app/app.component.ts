@@ -8,7 +8,7 @@ import { AriaService } from './services/aria.service';
 import { AriaControls } from './aria-controls/aria-controls.component';
 import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/themes.service';
-import { ElementRef } from '@angular/core';
+import { TestPGNData, TESTANNOTATION } from './test-pgn';
 enum JSRPC {
   setPGN = 'setPGN',
   onSettings = 'onSettings',
@@ -42,13 +42,14 @@ export class Aria {
       this.route.queryParams.subscribe(params => {
         if (params) {
           try {
-            const decoded = atob(params.settings);
+            const decoded = atob(params.data);
             const settings_obj = JSON.parse(decoded);
             console.log(settings_obj);
             this.applyJsonSettings(settings_obj);
           } catch (any) {
           }
         }
+        this.aria.loadPGN(TestPGNData + TESTANNOTATION);
       });
       console.log('ID: ' + this.aria.UUID);
     }
@@ -64,12 +65,12 @@ export class Aria {
         }
       });
       window.onkeydown = this.aria.keyEvent.bind(this.aria);
-      window.onmessage = this.onMessage.bind(this);
       this.aria.attachAria(this);
       this.layout.initializeLayout(this);
       this.theme.initializeColorPalette();
+      window['ARIA'] = {theme:this.theme, aria:this.aria, layout:this.layout};
       window.onresize = ()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);};
-      window.setTimeout(()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);window['ARIA'] = {theme:this.theme, aria:this.aria, layout:this.layout};},20);
+      window.setTimeout(()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);},30);
     }
     mouseMoved(event: MouseEvent): void {
       if (this.gameScoreComponent) {
@@ -109,92 +110,28 @@ export class Aria {
       return false;
     }
   
-    public applyJsonSettings(settings: object): boolean {
-      if (settings) {
+    public applyJsonSettings(data: object): boolean {
+      if (data) {
         // @ts-ignore
-        if (settings.theme) {
+        if (data.theme) {
           // @ts-ignore
-          this.theme.setSettings(settings.theme);
+          this.theme.setSettings(data.theme);
         }
         // @ts-ignore
-        if(settings.layout) {
+        if(data.layout) {
           // @ts-ignore
-          this.layout.setSettings(settings.layout);
+          this.layout.setSettings(data.layout);
         }
         // @ts-ignore
-        if(settings.aria) {
+        if(data.aria) {
           // @ts-ignore
-          this.aria.setSettings(settings.aria);
+          this.aria.setSettings(data.aria);
         }
         return true;
       }
       return false;
     }
-    private createParentMessage(type: string, data: any): string {
-      let message = '';
-      try {
-        message = JSON.stringify({ type, data });
-      } catch {
-        console.log('Failed creating parent message for type:' + type);
-        console.log(data);
-      }
-      return message;
-    }
-
-    private postMessage(message){
-      if(message.length && self!=top){
-        parent.postMessage(message, parent.origin);
-      }
-    }
-
-
   
-    public onMessage(event: any): void {
-      if (event && event.data && (typeof event.data === 'string')) {
-        let message_obj = null;
-        try {
-          message_obj = JSON.parse(event.data);
-        } catch (error) {
-          console.log('Bad JSON data - Window ARIA Message');
-          console.log(error);
-          return;
-        }
-        if (message_obj.type) {
-          switch (message_obj.type) {
-            case JSRPC.setPGN: {
-              if (message_obj.pgn) {
-                const pgn = message_obj.pgn;
-                this.aria.loadPGN(pgn);
-                //parent.postMessage('Loaded PGN succesfully.', parent.origin);
-              }
-              break;
-            }
-            case JSRPC.getSettings: {
-              let message = this.createParentMessage(JSRPC.onSettings, this.getSettings());
-                this.postMessage(message);
-              break;
-            }
-            case JSRPC.setSize: {
-              if (message_obj.height && message_obj.width) {
-                this.layout.resizeLayout(message_obj.width, message_obj.height);
-              }
-              break;
-            }
-            default: {
-              console.log('Invalid ARIA Message:\n');
-              console.log(event.data);
-              break;
-            }
-          }
-        }
-      }
-    }
-  
-    public saveSettings(settings: any) {
-      let message = this.createParentMessage(JSRPC.onSettings, settings);
-        this.postMessage(message);
-    }
-
     public applyDefaultSettings(): boolean {
       this.theme.initializeColorPalette();
       return true;

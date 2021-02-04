@@ -7,6 +7,11 @@ import { ThemeService } from '../services/themes.service';
 import { ScoreFlow } from './score-flow/score-flow.component';
 import { ScoreTable } from './score-table/score-table.component';
 
+const icons = {
+  Smaller : 'chevron-down',
+  Larger : 'chevron-up',
+}
+
 @Component({
   selector: 'aria-score',
   templateUrl: './aria-score.component.html',
@@ -23,8 +28,8 @@ export class AriaScore implements OnInit {
   GameScoreType = GameScoreType;
   ScoreViewType = ScoreViewType;
   @Input() fontScale = 1.0; //TODO: Move out to Aria
-  scaleText = (Math.round(this.fontScale * 100) + '%').padStart(4,"\u200D");
   scaleTimer = null;
+  icons = icons;
 
   constructor(public aria: AriaService, public layout: LayoutService, public theme: ThemeService) {
 
@@ -115,7 +120,6 @@ export class AriaScore implements OnInit {
 
   growFont(): void {
     this.fontScale += .01;
-    this.scaleText = (Math.round(this.fontScale * 100) + '%').padStart(4,"\u200D");
     this.theme.rescaleScoreFont(this.fontScale);
     this.layout.resizeLayout(window.innerWidth, window.innerHeight);
   }
@@ -125,7 +129,6 @@ export class AriaScore implements OnInit {
     if(this.fontScale < 0.02) {
       this.fontScale = 0.02;
     }
-    this.scaleText = (Math.round(this.fontScale * 100) + '%').padStart(4,"\u200D");
     this.theme.rescaleScoreFont(this.fontScale);
     this.layout.resizeLayout(window.innerWidth, window.innerHeight);
   }

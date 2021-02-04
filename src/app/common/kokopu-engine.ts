@@ -1,6 +1,6 @@
 
 //@ts-ignore
-import { isMoveDescriptor, Game as KGame, Variation as KVariation, MoveDescriptor, Node as KNode, Position as KPosition, pgnRead, Database as KDatabase } from 'kokopu';
+import { isMoveDescriptor, Game as KGame, Variation as KVariation, MoveDescriptor, Node as KNode, Position as KPosition, pgnRead, Database as KDatabase, fen } from 'kokopu';
 import { SquareNames } from '../canvas-chessboard/types';
 
 export class GameScoreItem {
@@ -146,6 +146,19 @@ export class ChessGame {
         }
         return games;
     }
+
+    static getPositionFromFEN(fen: string) : any {
+        const position = new KPosition();
+
+        try{
+            position.fen(fen);
+            return position;
+        }catch{
+
+        }
+        return null;
+    }
+
     static isMoveDescriptor(move: any): boolean {
         return isMoveDescriptor(move);
     }

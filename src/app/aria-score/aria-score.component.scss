@@ -37,39 +37,36 @@
 
 }
 
+.feather  {
+  @extend .noselect;
+  height:100%;
+  width:100%;
+  fill:none;
+}
+
 .shrinkFont{
   @extend .noselect;
-  font-size: $gsFontSizeSF;
-  font-family: $gsFontFamilySF;
-  font-weight: $gsFontWeightSF;
-  color: $gsFontColorSF;
+  width:$gsWidthSF;
+  max-width:$gsWidthSF;
+  height:$gsHeightSF;
+  max-height:$gsHeightSF;
+  stroke-width: 3;
+  stroke:$gsStrokeSF;
   background: $gsBackgroundSF;
   border: $gsBorderSF;
   padding: $gsPaddingSF;
   margin: $gsMarginSF;
   border-radius: $gsBorderRadiusSF;
 }
-.fontScale{
-  @extend .noselect;
-  font-size: $gsFontSizeSF;
-  font-family: $gsFontFamilySF;
-  font-weight: $gsFontWeightSF;
-  color: $gsFontColorSF;
-  background: $gsBackgroundSF;
-  border: $gsBorderSF;
-  padding: $gsPaddingSF;
-  margin: $gsMarginSF;
-  border-radius: $gsBorderRadiusSF;
-
-}
-
 
 .growFont{
   @extend .noselect;
-  font-size: $gsFontSizeGF;
-  font-family: $gsFontFamilyGF;
-  font-weight: $gsFontWeightGF;
-  color: $gsFontColorGF;
+  width:$gsWidthGF;
+  max-width:$gsWidthGF;
+  height:$gsHeightGF;
+  max-height:$gsHeightGF;
+  stroke-width: $gsStrokeWidthGF;
+  stroke: $gsStrokeGF;
   background: $gsBackgroundGF;
   border: $gsBorderGF;
   padding: $gsPaddingGF;

@@ -75,10 +75,14 @@ export class ThemeService {
   @Input() @Output() readonly gsTextSizeAN = new BehaviorSubject<string>('16px');
 
   // Game Score Variation Colors
-  @Input() @Output() readonly gsTextColorVA = new BehaviorSubject<string>('white');
-  @Input() @Output() readonly gsBackgroundVA = new BehaviorSubject<string>('#353535');
-  @Input() @Output() readonly gsBorderVA = new BehaviorSubject<string>('black 1px solid');
+  readonly gsTextColorVA = new BehaviorSubject<string>('white');
+  readonly gsBackgroundVA = new BehaviorSubject<string>('#353535');
+  readonly gsBorderVA = new BehaviorSubject<string>('black 1px solid');
 
+
+  // Game Score SVG Icon properties
+  gsIconSF = 'chevron-down';
+  gsIconGF = 'chevron-up';
 
 
   // Control Elements
@@ -194,26 +198,26 @@ export class ThemeService {
     document.documentElement.style.setProperty('--gsBorderRadiusST', '2px');
 
     // Game Score Shrink Font
-    document.documentElement.style.setProperty('--gsFontFamilySF', 'Brush Script MT');
-    document.documentElement.style.setProperty('--gsFontSizeSF', this.gsFontSizeSF + 'px');
-    document.documentElement.style.setProperty('--gsFontWeightSF', 'bold');
-    document.documentElement.style.setProperty('--gsFontColorSF', '#373dff');
-    document.documentElement.style.setProperty('--gsBackgroundSF', '#0c0c0c12');
-    document.documentElement.style.setProperty('--gsMarginSF', '0px -1px 1px 0px');
-    document.documentElement.style.setProperty('--gsPaddingSF', '0px 8px 0px 8px');
-    document.documentElement.style.setProperty('--gsBorderSF', '2px solid black');
-    document.documentElement.style.setProperty('--gsBorderRadiusSF', '2px');
+    document.documentElement.style.setProperty('--gsWidthSF', '20px');
+    document.documentElement.style.setProperty('--gsHeightSF', '20px');
+    document.documentElement.style.setProperty('--gsStrokeWidthSF', '1.5');
+    document.documentElement.style.setProperty('--gsStrokeSF', '#ee75ff');
+    document.documentElement.style.setProperty('--gsBackgroundSF', '#0c0c0c6b');
+    document.documentElement.style.setProperty('--gsMarginSF', '-3px 3px 0px 0px');
+    document.documentElement.style.setProperty('--gsPaddingSF', '2px 3px 3px 3px');
+    document.documentElement.style.setProperty('--gsBorderSF', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusSF', '4px');
 
     // Game Score Grow Font
-    document.documentElement.style.setProperty('--gsFontFamilyGF', 'Brush Script MT');
-    document.documentElement.style.setProperty('--gsFontSizeGF', this.gsFontSizeGF + 'px');
-    document.documentElement.style.setProperty('--gsFontWeightGF', 'bold');
-    document.documentElement.style.setProperty('--gsFontColorGF', '#373dff');
-    document.documentElement.style.setProperty('--gsBackgroundGF', '#0c0c0c12');
-    document.documentElement.style.setProperty('--gsMarginGF', '0px 4px 1px 0px');
-    document.documentElement.style.setProperty('--gsPaddingGF', '0px 6px 0px 6px');
-    document.documentElement.style.setProperty('--gsBorderGF', '2px solid black');
-    document.documentElement.style.setProperty('--gsBorderRadiusGF', '2px');
+    document.documentElement.style.setProperty('--gsWidthGF', '26px');
+    document.documentElement.style.setProperty('--gsHeightGF', '26px');
+    document.documentElement.style.setProperty('--gsStrokeWidthGF', '3');
+    document.documentElement.style.setProperty('--gsStrokeGF', '#62bdff');
+    document.documentElement.style.setProperty('--gsBackgroundGF', '#0c0c0c6b');
+    document.documentElement.style.setProperty('--gsMarginGF', '-4px 4px 0px 0px');
+    document.documentElement.style.setProperty('--gsPaddingGF', '0px 0px 0px 0px');
+    document.documentElement.style.setProperty('--gsBorderGF', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusGF', '4px');
 
     // Game Score Annotation
     document.documentElement.style.setProperty('--gsFontFamilyAN', 'Arial');
@@ -413,10 +417,16 @@ export class ThemeService {
         if (subject) {
           // @ts-ignore
           subject.next(settings[key]);
+          if (typeof value.value == "string") {
+            document.documentElement.style.setProperty('--' + key, value);
+          } else {
+            document.documentElement.style.setProperty('--' + key, value + "px");
+          }
         }
+      }else if(this[key] != undefined) {
+        this[key] = value;
       }
     }
-    this.initializeColorPalette();
   }
 
   setDarkColorPalette(): void {

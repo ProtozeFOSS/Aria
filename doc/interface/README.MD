@@ -20,7 +20,7 @@ There are two methods to pass settings.
     - `Aria`
   2. Convert JS settings object to string.
   3. Convert the JS string to base64.
-  4. Pass the base64 string to **Aria** using the `settings` URL parameter.
+  4. Pass the base64 string to **Aria** using the `data` URL parameter.
 
 `/aria.html?settings=eyJ0aGvtZXMiOnsiLs1nc1R1eHRDb2xvclBDIjox1`
 
@@ -29,28 +29,26 @@ There are two methods to pass settings.
 
 ### `2.) By JS Method`
 ------
-Using the aria.js file, developers can pass settings asynchronously from client side. This allows integration with other data fetching methods and asynchronous techniques. Or if desired a custom menu can be used. To pass data by method, get an instance/handle to the Aria iframe you wish to change and then call the appropriate methods. 
-
-`Colors and font sizes` are passed through the `setTheme` method.
-
-`Layout and Components` are passed through the `setLayout` method.
-
-
-### `setTheme(theme: Object)`
-
-----------
+Aria exposes the JS interface through the `window` property `Aria`  *window['Aria']* will get you a reference to the interface. Each service is then fully exposed to the developer. Below the variable `a1` represents the interface to the Aria instance with id `aria`.
 ```
-  var theme = {gsFontSize:22, gsFontColor:'white'};
-
-  var aria = new Aria('aria-iframe-id');
-  ...
-  aria.setTheme(theme);
+var a1 = null;
+var element = document.getElementById('aria1');
+if(iFrame) {
+    if(element && element.contentWindow['ARIA']) {
+        a1 = element.contentWindow['ARIA'];
+    }
+}else {
+    if(window['ARIA']) {
+        a1 = window['ARIA'];
+    }
+}        
+var theme = {boardBGDark:'brown', boardBGLight:'beige'};
+a1.theme.setSettings(theme);
+a1.aria.loadPGN(TestPGNData);
 ```
- Only valid variables names will be used (so check closely). There is no error checking on the value. If you decide to send the game score text color as string `rad` instead of string `red` - you can. It just wont work!😉 Send valid color strings only.
+This allows integration with other data fetching methods and asynchronous techniques. Or if desired a custom menu can be used.
 
-### `setLayout(layout: Object)`
-
-
+Only valid variables names will be used (so check closely). There is no error checking on the value. If you decide to send the game score text color as string `rad` instead of string `red` - you can. It just wont work!😉 Send valid color strings only.
 
 ## **User Experience -** *Themes and layout Details*
 The user interface can be configured using the Aria Menu.
@@ -157,23 +155,26 @@ The Controls element is locked at 100px tall but often times will expand to its 
 | `gsMarginST` | *box description string* | `0px 0px 0px 0px` | Sets the margin(top right bottom left) |
 | `gsPaddingST` | *box description string* | `0px 2px 8px 2px` | Sets the padding for the score list |
 |**Shrink Font**| | | Score title shrink font button |
-| `gsFontFamilySF` | *string* | | Sets the font family |
-| `gsFontSizeSF` | *number* | | Sets the font size |
-| `gsFontWeightSF` | *color string* | | Sets the font weight |
-| `gsFontColorSF` | *color string* | | Sets the font color |
+| `gsIconSF` | *string* | | SVG icon name to use (feathericons.com) |
+| `gsWidthSF` | *string* | | Sets the width of background/button |
+| `gsHeightSF` | *number* | | Sets the height of background/button |
+| `gsStrokeWidthSF` | *color string* | | Sets the thickness of the SVG stroke |
+| `gsStrokeSF` | *color string* | | Sets the color of the SVG stroke |
 | `gsBackgroundSF` | *color string* | | Sets the background |
 | `gsBorderSF` | *color string* | `solid 2px black` | Sets the border |
 | `gsMarginSF` | *box description string* | `0px 0px 0px 0px` | Sets the margin (top right bottom left) |
 | `gsPaddingSF` | *box description string* | `0px 2px 8px 2px` | Sets the padding |
 |**Grow Font**| | | Score title grow font button |
-| `gsFontFamilyGF` | *string* | | Sets the font family |
-| `gsFontSizeGF` | *number* | | Sets the font size |
-| `gsFontWeightGF` | *color string* | | Sets the font weight |
-| `gsFontColorGF` | *color string* | | Sets the font color |
+| `gsIconGF` | *string* | | SVG icon name to use (feathericons.com) |
+| `gsWidthGF` | *string* | | Sets the width of background/button |
+| `gsHeightGF` | *number* | | Sets the height of background/button |
+| `gsStrokeWidthGF` | *color string* | | Sets the thickness of the SVG stroke |
+| `gsStrokeGF` | *color string* | | Sets the color of the SVG stroke |
 | `gsBackgroundGF` | *color string* | | Sets the background |
 | `gsBorderGF` | *color string* | `solid 2px black` | Sets the border |
 | `gsMarginGF` | *box description string* | `0px 0px 0px 0px` | Sets the margin(top right bottom left) |
 | `gsPaddingGF` | *box description string* | `0px 2px 8px 2px` | Sets the padding |
+| `gsBorderRadiusGF` | *number* | `2 (pixels)` | Sets the border radius |
 |**Annotation**||| Annotation styling is applied only to the annotated text|
 | `gsFontFamilyAN` | *string* | | Sets the Font Family of Game Score Annotation |
 | `gsFontSizeAN` | *number* | | Sets the Font Size of Game Score Annotation |
@@ -275,14 +276,18 @@ The Controls element is locked at 100px tall but often times will expand to its 
 | `gsMarginCB` | *box description string* | `0px 0px 2px 0px` | Sets the margin |
 | `gsPaddingCB` | *box description string* | `1px 1px 1px 1px` | Sets the padding |
 
+More elements and their properties might be added to the theme service over time.
 
+# `Aria Service`
+The aria service works as the core. Bringing the engine together with the visual components, the responsibility of the service is to synchronize the two. Actions performed in the UX need to be passed to the engine. Events within the engine, must propagate back to the UX.
+| Property | Type | Description |
+|:---------|:-------------:|--------:|
+| `fen` | *Valid FEN string*  | Sets the starting fen position of th engine and board (ignored if PGN also supplied) |
+| `pgn` | *number*  | Sets the PGN to the engine |
+| `game` | *number (int)* | Sets the starting game (starts at 1) |
+| `startPly` | *number (int)* | Sets the starting move |
+| `keymap` | *object=>{KeyName:ActionID}* | Sets the assigned keymap |
 
-
-
-// Just added Branched state in Themes and Created variables in CSS. Now I need to plumb it into flow-item.scss - continue clean up here.
-// Get the old game with variations loading in again
-// Add the dark theme back.
-// Get the keymap default settings and add loading from url for other services
 
 
 #### Citations for resources used

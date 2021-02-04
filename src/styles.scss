@@ -64,10 +64,10 @@ $gsBorderST: var(--gsBorderST); // Border
 $gsBorderRadiusST: var(--gsBorderRadiusST); // Border radius
 
 /******************* Game Score Shrink Font ***************************/
-$gsFontFamilySF: var(--gsFontFamilySF); // Font family 
-$gsFontSizeSF: var(--gsFontSizeSF); // Font size
-$gsFontColorSF: var(--gsFontColorSF); // Font color
-$gsFontWeightSF: var(--gsFontWeightSF); // Font weight
+$gsHeightSF: var(--gsHeightSF); // Font family 
+$gsWidthSF: var(--gsWidthSF); // Font size
+$gsStrokeSF: var(--gsStrokeSF); // Font color
+$gsStrokeWidthSF: var(--gsStrokeWidthSF); // Font weight
 $gsBackgroundSF: var(--gsBackgroundSF); // Background
 $gsMarginSF: var(--gsMarginSF); // Margin
 $gsPaddingSF: var(--gsPaddingSF); // Padding
@@ -75,10 +75,10 @@ $gsBorderSF: var(--gsBorderSF); // Border
 $gsBorderRadiusSF: var(--gsBorderRadiusSF); // Border radius
 
 /******************* Game Score Grow Font ***************************/
-$gsFontFamilyGF: var(--gsFontFamilyGF); // Font family 
-$gsFontSizeGF: var(--gsFontSizeGF); // Font size
-$gsFontColorGF: var(--gsFontColorGF); // Font color
-$gsFontWeightGF: var(--gsFontWeightGF); // Font weight
+$gsHeightGF: var(--gsHeightGF); // Font family 
+$gsWidthGF: var(--gsWidthGF); // Font size
+$gsStrokeGF: var(--gsStrokeGF); // Font color
+$gsStrokeWidthGF: var(--gsStrokeWidthGF); // stroke width
 $gsBackgroundGF: var(--gsBackgroundGF); // Background
 $gsMarginGF: var(--gsMarginGF); // Margin
 $gsPaddingGF: var(--gsPaddingGF); // Padding

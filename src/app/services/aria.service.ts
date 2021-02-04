@@ -89,6 +89,7 @@ export class AriaService {
   @Output() gameScoreItems: GameScoreItem[] = [];
   @Output() gameResult: string = '';
   @Output() currentIndex = -1;
+  @Output() currentGame = -1;
   @Output() currentItem: GameScoreItem | null = null;
 
   private _board: CanvasChessBoard | null = null;
@@ -127,6 +128,28 @@ export class AriaService {
   }
 
   public setSettings(settings: object) {
+    // @ts-ignore
+    if(settings.fen) {
+      if(this._board){
+        // @ts-ignore
+        const position = ChessGame.getPositionFromFEN(settings.fen);
+        if(position) {
+          this._board.setBoardToPosition(position);
+        }
+      }
+    }
+    // @ts-ignore
+    if(settings.pgn) {
+      // @ts-ignore
+      this.loadPGN(settings.pgn);
+      // @ts-ignore
+      if(settings.startPly) {
+        // navigate to a node
+        // @ts-ignore
+        this.navigateToNode(settings.startPly);
+      }
+    }
+
     // @ts-ignore
     if(settings.keymap) {
       // @ts-ignore
@@ -486,31 +509,29 @@ export class AriaService {
 
   public selectGame(index: number) {
     if (index >= 0 && index <= this._games.length) {
+      this.currentGame = index;
       this._game = this._games[index];
-      window.setTimeout(() => {
-        this._score?.clearSelection();
-        const gamescore = this._game?.generateGameScore();
-        if (gamescore) {
-          this.gameScoreItems = gamescore;
-        } else {
-          this.gameScoreItems = [];
+      this._score?.clearSelection();
+      const gamescore = this._game?.generateGameScore();
+      if (gamescore) {
+        this.gameScoreItems = gamescore;
+      } else {
+        this.gameScoreItems = [];
+      }
+      this._board?.setBoardToPosition(this._game?.getPosition());
+      this._score?.updateSelection();
+      const headerData = this._game?.generateHeaderData();
+      if (headerData) {
+        const result = headerData.get('Result');
+        if (result) {
+          this.gameResult = result;
         }
-        this._board?.setBoardToPosition(this._game?.getPosition());
-        this._score?.updateSelection();
-        const headerData = this._game?.generateHeaderData();
-        if (headerData) {
-          const result = headerData.get('Result');
-          if (result) {
-            this.gameResult = result;
-          }
-          if (this._header) {
-            this._header.setHeader(headerData);
-            this._header.currentGame = index;
-            this._header.gameCount = this._games.length;
-          }
+        if (this._header) {
+          this._header.setHeader(headerData);
+          this._header.currentGame = index;
+          this._header.gameCount = this._games.length;
         }
-        window.setTimeout(()=>{this._app.layout.resizeLayout(window.innerWidth, window.innerHeight);},60);
-      }, 1);
+      }
     }
   }
 
@@ -535,7 +556,14 @@ export class AriaService {
   public attachScore(score: AriaScore): void {
     this._score = score;
     this._app?.registerScore(score, document.getElementById('score-'+ this.UUID));
-    window.setTimeout(()=>{this.updateScoreData();}, 10);
+    window.setTimeout(()=>{this.updateScoreData();}, 1);
+    const gamescore = this._game?.generateGameScore();
+    if (gamescore) {
+      this.gameScoreItems = gamescore;
+    } else {
+      this.gameScoreItems = [];
+    }
+    this._score?.updateSelection(); 
   }
 
   public updateScoreData() : void {
@@ -554,6 +582,20 @@ export class AriaService {
   public attachHeader(header: AriaHeader): void {
     this._header = header;
     this._app?.registerHeader(header, document.getElementById('header-'+ this.UUID));
+    if(this._game){
+      const headerData = this._game?.generateHeaderData();
+      if (headerData) {
+        const result = headerData.get('Result');
+        if (result) {
+          this.gameResult = result;
+        }
+        if (this._header) {
+          this._header.setHeader(headerData);
+          this._header.currentGame = this.currentGame;
+          this._header.gameCount = this._games.length;
+        }
+      }
+    }
   }
 
   public attachStatus(status: AriaStatus): void {
@@ -748,7 +790,6 @@ export class AriaService {
     //     this._cookies.setCookie('', 0);
     //   }
     // }
-    this._app?.saveSettings(this.createJsonSettings());
   }
 
   public loadSettings(): string {

@@ -77,7 +77,6 @@ export class LayoutService {
     }
     this.header?.resize(c2width, hheight);
     this.board?.setSize(boardWidth);
-    this.board?.requestRedraw();
     if (this.boardElement && this.headerElement && this.statusElement && this.controlsElement) {
       this.boardElement.style.marginBottom = '0px';
       switch (this.state) {
@@ -131,7 +130,7 @@ export class LayoutService {
         this.layoutChanged(width,height,state);
       this.sendLayoutChanged(width, height, this.state);
     }else {
-      window.setTimeout(()=>{this.rtl(width, height);}, 100);
+      window.setTimeout(()=>{this.rtl(width, height);}, 20);
     }
   }
 
@@ -224,7 +223,7 @@ export class LayoutService {
       this.header?.resize(width, -1);
       this.sendLayoutChanged(width, height, this.state);
     }else {
-      window.setTimeout(()=>{this.rtp(width, height);}, 100);
+      window.setTimeout(()=>{this.rtp(width, height);}, 20);
     }
   }
 
