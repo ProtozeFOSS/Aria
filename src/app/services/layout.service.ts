@@ -46,6 +46,10 @@ export class LayoutService {
   controlsElement: HTMLElement | null = null;
   statusElement: HTMLElement | null = null;
   headerElement: HTMLElement | null = null;
+  public enableHeader = true;
+  public enableScore = true;
+  public enableControls = true;
+  public enableStatus = true;
   state: number = 3;
   constructor() { }
 
@@ -77,16 +81,18 @@ export class LayoutService {
     }
     this.header?.resize(c2width, hheight);
     this.board?.setSize(boardWidth);
-    if (this.boardElement && this.headerElement && this.statusElement && this.controlsElement) {
+    if (this.boardElement) {
       this.boardElement.style.marginBottom = '0px';
       switch (this.state) {
         case 3: { // landscape full
-          this.headerElement.style.maxHeight = hheight + 'px';
-          this.headerElement.style.height = hheight + 'px';
-          this.headerElement.style.width = c2width + 'px';
-          this.headerElement.style.right = '0px';
-          this.headerElement.style.left = '';
-          this.header?.resize(c2width, hheight);
+          if(this.headerElement){
+            this.headerElement.style.maxHeight = hheight + 'px';
+            this.headerElement.style.height = hheight + 'px';
+            this.headerElement.style.width = c2width + 'px';
+            this.headerElement.style.right = '0px';
+            this.headerElement.style.left = '';
+            this.header?.resize(c2width, hheight);
+          }
           if (this.layoutDirection) { // RTL
             this.boardElement.style.left = '2px';
             this.boardElement.style.right = '';
@@ -115,19 +121,17 @@ export class LayoutService {
           break;
         }
       }
-      this.statusElement.style.width = (c2width - 4) + 'px';
-      this.status?.resize(c2width, 32);
-      this.controlsElement.style.width = c2width + 'px';
-      this.controls?.resize(c2width, 100);
+      if(this.statusElement){
+        this.statusElement.style.width = (c2width - 4) + 'px';
+        this.status?.resize(c2width, 32);
+      }
+      if(this.controlsElement){
+        this.controlsElement.style.width = c2width + 'px';
+        this.controls?.resize(c2width, 100);
+      }
       this.board?.setSize(boardWidth);
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
-         height = Math.max(
-          document.body.scrollHeight, document.documentElement.scrollHeight,
-          document.body.offsetHeight, document.documentElement.offsetHeight,
-          document.body.clientHeight, document.documentElement.clientHeight, height
-        );
-        this.layoutChanged(width,height,state);
       this.sendLayoutChanged(width, height, this.state);
     }else {
       window.setTimeout(()=>{this.rtl(width, height);}, 20);
@@ -167,11 +171,13 @@ export class LayoutService {
       window.setTimeout(()=>{this.rtp(width, height)}, 20);
       return;
     }
-    if (this.boardElement && this.gameScoreElement && this.headerElement && this.statusElement && this.controlsElement) {
-      this.boardElement.style.marginBottom = '2px';
-      this.gameScoreElement.style.right = '';
-      this.gameScoreElement.style.left = '';
-      this.gameScoreElement.style.top = '';
+    if (this.boardElement) {
+      this.boardElement.style.marginBottom = '2px';      
+      if(this.gameScoreElement){        
+        this.gameScoreElement.style.right = '';
+        this.gameScoreElement.style.left = '';
+        this.gameScoreElement.style.top = '';
+      }
       switch (this.state) {
         case 1: {
           height = height < 610 ? 610: height;       
@@ -179,48 +185,60 @@ export class LayoutService {
             this.boardElement.style.marginLeft = (width - boardWidth)/2 + 'px';
           } else {
             this.boardElement.style.marginRight = (width - boardWidth)/2 + 'px';
+          }      
+          if(this.gameScoreElement){  
+            this.gameScoreElement.style.maxWidth = '';
+            this.gameScoreElement.style.width = '100%';
+            this.gameScoreElement.style.height = 'auto';
+            this.gameScore?.resize(width, -1);
           }
-          this.gameScoreElement.style.maxWidth = '';
-          this.gameScoreElement.style.width = '100%';
-          this.gameScoreElement.style.height = 'auto';
-          this.gameScore?.resize(width, -1);
           break;
         }
         case 2: {
           height = height < 580 ? 580: height; 
-          this.boardElement.style.marginLeft = '';       
-          if (this.layoutDirection) { // RTL
-            this.boardElement.style.order = '0';
-            this.gameScoreElement.style.order = '1'; 
+          this.boardElement.style.marginLeft = '';
+          if(this.gameScoreElement){         
+            if (this.layoutDirection) { // RTL
+              this.boardElement.style.order = '0';
+              this.gameScoreElement.style.order = '1'; 
+            } else {
+              this.boardElement.style.order = '1';
+              this.gameScoreElement.style.order = '0'; 
+            }
+            const gsWidth = Math.floor(width - (6 +  boardWidth));
+            this.gameScoreElement.style.height = boardWidth + 'px';
+            this.gameScoreElement.style.width = gsWidth + 'px';
+            this.gameScoreElement.style.maxWidth = gsWidth + 'px';   
+            this.gameScore?.resize(gsWidth, boardWidth);
           } else {
-            this.boardElement.style.order = '1';
-            this.gameScoreElement.style.order = '0'; 
+            this.boardElement.style.order = '0';
           }
-          const gsWidth = Math.floor(width - (6 +  boardWidth));   
-          this.gameScoreElement.style.height = boardWidth + 'px';
-          this.gameScoreElement.style.width = gsWidth + 'px';
-          this.gameScoreElement.style.maxWidth = gsWidth + 'px';   
-          this.gameScore?.resize(gsWidth, boardWidth);
           break;
         }
       }
-      this.statusElement.style.bottom = '';
-      this.statusElement.style.top = '';
-      this.statusElement.style.height = '32px';
-      this.statusElement.style.left = '';
-      this.statusElement.style.right = '';
-      this.statusElement.style.width = (width - 4) + 'px';
-      this.status?.resize(width, 32);
-      this.controlsElement.style.right = ''
-      this.controlsElement.style.width = width + 'px';
-      this.controlsElement.style.top = '';
-      this.controlsElement.style.bottom = ''; 
-      this.controlsElement.style.left = '';
-      this.controls?.resize(width, 100);
+      if(this.statusElement){
+        this.statusElement.style.bottom = '';
+        this.statusElement.style.top = '';
+        this.statusElement.style.height = '32px';
+        this.statusElement.style.left = '';
+        this.statusElement.style.right = '';
+        this.statusElement.style.width = (width - 4) + 'px';
+        this.status?.resize(width, 32);
+      }
+      if(this.controlsElement){
+        this.controlsElement.style.right = ''
+        this.controlsElement.style.width = width + 'px';
+        this.controlsElement.style.top = '';
+        this.controlsElement.style.bottom = ''; 
+        this.controlsElement.style.left = '';
+        this.controls?.resize(width, 100);
+      }
       this.board?.setSize(boardWidth);
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
-      this.header?.resize(width, -1);
+      if(this.headerElement){
+        this.header?.resize(width, -1);
+      }
       this.sendLayoutChanged(width, height, this.state);
     }else {
       window.setTimeout(()=>{this.rtp(width, height);}, 20);

@@ -280,13 +280,25 @@ More elements and their properties might be added to the theme service over time
 
 # `Aria Service`
 The aria service works as the core. Bringing the engine together with the visual components, the responsibility of the service is to synchronize the two. Actions performed in the UX need to be passed to the engine. Events within the engine, must propagate back to the UX.
-| Property | Type | Description |
-|:---------|:-------------:|--------:|
-| `fen` | *Valid FEN string*  | Sets the starting fen position of th engine and board (ignored if PGN also supplied) |
-| `pgn` | *number*  | Sets the PGN to the engine |
-| `game` | *number (int)* | Sets the starting game (starts at 1) |
-| `startPly` | *number (int)* | Sets the starting move |
-| `keymap` | *object=>{KeyName:ActionID}* | Sets the assigned keymap |
+| Property | Type | Default | Description |
+|:---------|:-----------| :------: |--------:|
+| `fen` | *Valid FEN string*  | | Sets the starting fen position of th engine and board (ignored if PGN also supplied) |
+| `pgn` | *number*  |  | Sets the PGN to the engine |
+| `game` | *number (int)* |  | Sets the starting game (starts at 1) |
+| `startPly` | *number (int)* |  | Sets the starting move |
+| `interactiveBoard` | *boolean (int)* |  | Sets if the board is interactive |
+| `interactiveControls` | *boolean (int)* |  | Sets if the controls are interactive |
+| `interactiveScore` | *boolean (int)* |  | Sets if the moves are interactive |
+| `keymap` | *object=>{KeyName:ActionID}* |  | Sets the assigned keymap |
+
+# `Layout Service`
+The layout service helps tune the what and where of the UX. Handling higher level layout decisions, this service is capable of drastically changing what "Aria" is. For instance, Aria by default is actually just a wrapper around Canvas Chess Board. Turn on the score, and you have a board that can be navigated by the score alone. Turn on only the controls, you have a "blind" game that can be watched on autoplay. Enable header, score, controls, and status and you have a full blown "PGN Viewer". A combination of enabling interactive flags in Aria service and enabling components in the layout service, allows Aria to adapt to different applications.
+| Property | Type | Default | Description |
+|:---------|:-------------:|:-------:| --------:|
+| `header` | *boolean (int)*  | **false** | Enables the header visual element |
+| `score` | *boolean (int)*  | **false** | Enables the score visual element |
+| `controls` | *boolean (int)* | **false** | Enables the controls visual element |
+| `status` | *boolean (int)* | **false** | Enables the status visual element |
 
 
 

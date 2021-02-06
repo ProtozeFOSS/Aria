@@ -81,6 +81,9 @@ export class AriaService {
   public setName: string = '';
   public setDate: string = '';
   public playerData: object = {};
+  public interactiveBoard = false;
+  public interactiveControls = true;
+  public interactiveScore = true;
   public gameData = [];
 
 
@@ -127,10 +130,33 @@ export class AriaService {
     return settings;
   }
 
+  public loadUrlHash(data: string) {
+    try {
+      const decoded = atob(data);
+      const settings_obj = JSON.parse(decoded);
+      this._app?.applyJsonSettings(settings_obj);
+    } catch (any) {
+    }
+  }
+
   public setSettings(settings: object) {
-    // @ts-ignore
-    if(settings.fen) {
-      if(this._board){
+    
+    if(this._board){
+      // @ts-ignore
+      if(settings.interactiveBoard) {
+        this.interactiveBoard = true;
+        // @ts-ignore
+        this._board.setInteractive(this.interactiveBoard);
+      }
+      // @ts-ignore
+      if(settings.interactiveControls) {
+        this.interactiveControls = true;
+        // @ts-ignore
+        this._controls.setInteractive(this.interactiveBoard);
+
+      }
+      // @ts-ignore
+      if(settings.fen) {
         // @ts-ignore
         const position = ChessGame.getPositionFromFEN(settings.fen);
         if(position) {
@@ -142,6 +168,11 @@ export class AriaService {
     if(settings.pgn) {
       // @ts-ignore
       this.loadPGN(settings.pgn);
+      // @ts-ignore
+      if(settings.game) {
+        // @ts-ignore
+        this.selectGame(settings.game-1);
+      }
       // @ts-ignore
       if(settings.startPly) {
         // navigate to a node

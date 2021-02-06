@@ -8,7 +8,7 @@ import { AriaService } from './services/aria.service';
 import { AriaControls } from './aria-controls/aria-controls.component';
 import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/themes.service';
-import { TestPGNData, TESTANNOTATION } from './test-pgn';
+import { TestPGNData } from './test-pgn';
 enum JSRPC {
   setPGN = 'setPGN',
   onSettings = 'onSettings',
@@ -49,7 +49,7 @@ export class Aria {
           } catch (any) {
           }
         }
-        this.aria.loadPGN(TestPGNData + TESTANNOTATION);
+        this.aria.loadPGN(TestPGNData);
       });
       console.log('ID: ' + this.aria.UUID);
     }
@@ -110,22 +110,22 @@ export class Aria {
       return false;
     }
   
-    public applyJsonSettings(data: object): boolean {
-      if (data) {
+    public applyJsonSettings(settings: object): boolean {
+      if (settings) {
         // @ts-ignore
-        if (data.theme) {
+        if (settings.theme) {
           // @ts-ignore
-          this.theme.setSettings(data.theme);
+          this.theme.setSettings(settings.theme);
         }
         // @ts-ignore
-        if(data.layout) {
+        if(settings.layout) {
           // @ts-ignore
-          this.layout.setSettings(data.layout);
+          this.layout.setSettings(settings.layout);
         }
         // @ts-ignore
-        if(data.aria) {
+        if(settings.aria) {
           // @ts-ignore
-          this.aria.setSettings(data.aria);
+          this.aria.setSettings(settings.aria);
         }
         return true;
       }

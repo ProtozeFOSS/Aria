@@ -27,6 +27,10 @@ export class AriaControls implements OnInit {
   public playing = false
   public timeLeft = '';
   ScoreViewType = ScoreViewType;
+  @ViewChild('autoPlay') autoPlay!: ElementRef | null;
+  @ViewChild('rotateBoard') rotateBoard!: ElementRef | null;
+  @ViewChild('shrinkBoard') shrinkBoard!: ElementRef | null;
+  @ViewChild('growBoard') growBoard!: ElementRef | null;
   @ViewChild('settings') settings!: ElementRef | null;
   @ViewChild('view') view!: ElementRef | null;
   @ViewChild('start') start!: ElementRef | null;
@@ -40,7 +44,42 @@ export class AriaControls implements OnInit {
     this.setTimer(this.aria.autoPlaySpeed.value)
   }
   ngAfterViewInit(): void {
+    this.setInteractive(this.aria.interactiveControls);
     this.aria.attachControls(this);
+  }
+
+  public setInteractive(interactive: boolean) {
+    if(this.autoPlay){
+      this.autoPlay.nativeElement.onclick = (interactive ? this.aria.toggleAutoPlay.bind(this.aria):undefined);
+    }
+    if(this.rotateBoard){
+      this.rotateBoard.nativeElement.onclick = (interactive ? this.aria.rotateBoardOrientation.bind(this.aria):undefined);
+    }
+    if(this.shrinkBoard){
+      this.shrinkBoard.nativeElement.onclick = (interactive ? this.layout.shrink.bind(this.layout):undefined);
+    }
+    if(this.growBoard){
+      this.growBoard.nativeElement.onclick = (interactive ? this.layout.grow.bind(this.layout):undefined);
+    }
+    if(this.growBoard){
+      this.growBoard.nativeElement.onclick = (interactive ? this.layout.grow.bind(this.layout):undefined);
+    }
+    // To Do: Move Toggle Score View to Score button tab
+    if(this.settings){
+      this.settings.nativeElement.onclick = (interactive ? this.aria.openSettings.bind(this.aria):undefined);
+    }
+    if(this.start){
+      this.start.nativeElement.onclick = (interactive ? this.aria.moveToStart.bind(this.aria):undefined);
+    }
+    if(this.previous){
+      this.previous.nativeElement.onclick = (interactive ? this.aria.previous.bind(this.aria):undefined);
+    }
+    if(this.next){
+      this.next.nativeElement.onclick = (interactive ? this.aria.advance.bind(this.aria):undefined);
+    }
+    if(this.end){
+      this.end.nativeElement.onclick = (interactive ? this.aria.moveToEnd.bind(this.aria):undefined);
+    }
   }
 
   public resize(width: number, height: number) {
@@ -76,30 +115,6 @@ export class AriaControls implements OnInit {
     this.renderer.setStyle(this.next.nativeElement, 'width', nextW + 'px');
     this.renderer.setStyle(this.end.nativeElement, 'width', ((width - length) - borderWidth) + 'px');
   }
-  forward(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.aria.advance();
-  }
-
-  moveToStart(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.aria.moveToStart();
-  }
-
-  back(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.aria.previous();
-  }
-
-  moveToEnd(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.aria.moveToEnd();
-  }
-
   pauseIfAutoPlay(): boolean {
     if (this.playing) {
       this.aria.toggleAutoPlay();
@@ -108,9 +123,6 @@ export class AriaControls implements OnInit {
     return false;
   }
 
-  toggleAutoPlay(): void {
-    this.aria.toggleAutoPlay();
-  }
   public setTimer(time: number) {
     this.timeLeft = (time / 1000) + 's';
   }

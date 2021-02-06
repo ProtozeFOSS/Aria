@@ -53,7 +53,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   constructor(
     public aria: AriaService,
     public themes: ThemeService
-  ) { }
+  ) {}
 
 
 
@@ -68,11 +68,14 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     if (this.boardCanvas) {
       this.canvas = new fabric.Canvas(this.boardCanvas.nativeElement);
       this.canvas.selection = false;
+      this.canvas.moveCursor = 'default';
+      this.canvas.hoverCursor = 'default';
+      this.boardCanvas.nativeElement.style.cursor = 'default';
       const waitCount = this.loadPieces();
+      this.connectMouseInput();
       waitCount.subscribe((count) => {
         if (count >= 12) {
           this.generateBoard();
-          this.connectMouseInput();
           const position = this.aria.getGame()?.getPosition();
           if (position) {
             this.setBoardToPosition(position);
@@ -81,9 +84,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           this.resizeBoardObjects(this.size);
         }
       });
-      this.canvas.hoverCursor = 'arrow';
       this.canvas.allowTouchScrolling = true;
-      this.setInteractive(this.interactive);
     }
   }
 
@@ -768,12 +769,16 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           pieceObject.set('lockUniScaling', true);
           pieceObject.set('hasControls', false);
           pieceObject.set('hasBorders', false);
-          if (!this.interactive) {
-            pieceObject.set('lockMovementX', true);
-            pieceObject.set('lockMovementY', true);
-          } else {
+          if (this.aria.interactiveBoard) {
             pieceObject.hoverCursor = 'grab';
             pieceObject.moveCursor = 'grabbing';
+            pieceObject.lockMovementX = false;
+            pieceObject.lockMovementY = false;
+          } else {
+            pieceObject.hoverCursor = 'default';
+            pieceObject.moveCursor = 'default';
+            pieceObject.lockMovementX = true;
+            pieceObject.lockMovementY = true;
           }
           const tileSizeFragment = this.tileSize / 100;
           pieceObject.scaleToHeight(Math.ceil(tileSizeFragment * 90));
@@ -950,9 +955,17 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   private connectMouseInput(): void {
-    if (this.canvas) {
-      this.canvas.on('object:moved', this.checkValidDrop.bind(this));
-      this.canvas.on('mouse:down', this.selectPiece.bind(this));
+    if (this.canvas ) 
+    {
+      if(this.aria.interactiveBoard){
+        this.canvas.on('object:moved', this.checkValidDrop.bind(this));
+        this.canvas.on('mouse:down', this.selectPiece.bind(this));
+        this.canvas.on('touch:drag', this.checkValidDrop.bind(this));
+      } else {
+        this.canvas.on('object:moved', undefined);
+        this.canvas.on('mouse:down', undefined);
+        this.canvas.on('touch:drag', undefined);
+      }
     }
   }
   private createBoardObject(type: ObjectType, x: number, y: number, selectable = false, labelText = '', isDark?: boolean): fabric.Rect | fabric.Text | null {
@@ -1044,7 +1057,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
               dark = false;
             }
           }
-          const tile = this.createBoardObject(ObjectType.Tile, col * this.tileSize + padding, row * this.tileSize + padding, true, '', dark);
+          const tile = this.createBoardObject(ObjectType.Tile, col * this.tileSize + padding, row * this.tileSize + padding, this.aria.interactiveBoard, '', dark);
           if (tile) {
             this.tiles.push({ tile });
             tiles.push(tile);
@@ -1293,12 +1306,22 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   }
 
   public setInteractive(interactive: boolean): void {
-    if (interactive) {
-      if (this.canvas) {
-      }
-    } else {
-      if (this.canvas) {
-      }
+    this.connectMouseInput();
+    if (this.canvas) {
+      this.pieces.forEach((piece)=>{
+        const pieceObject = piece.object;
+        if (interactive) {
+          pieceObject.hoverCursor = 'grab';
+          pieceObject.moveCursor = 'grabbing';
+          pieceObject.lockMovementX = false;
+          pieceObject.lockMovementY = false;
+        } else {
+          pieceObject.hoverCursor = 'default';
+          pieceObject.moveCursor = 'default';
+          pieceObject.lockMovementX = true;
+          pieceObject.lockMovementY = true;
+        }
+      });
     }
   }
 

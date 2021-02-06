@@ -1,17 +1,16 @@
 <div class="container">
-<aria-header id="header-{{aria.UUID}}" class="header{{layout.state}}"></aria-header>
+<aria-header *ngIf="layout.enableHeader" id="header-{{aria.UUID}}" class="header{{layout.state}}"></aria-header>
 <div class="sbs-portrait" *ngIf="layout.state == 2">
   <canvas-chessboard (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent id="ccb-{{aria.UUID}}" boardID="{{aria.UUID}}" [theme]="theme.boardTheme()"
-  [showLabels]="aria.showLabels.value" class="board{{layout.state}}">
-</canvas-chessboard>
-  <aria-score id="score-{{aria.UUID}}" class="score{{layout.state}}"></aria-score>
+  [showLabels]="aria.showLabels.value" class="board{{layout.state}}"></canvas-chessboard>
+  <aria-score  *ngIf="layout.enableScore" id="score-{{aria.UUID}}" class="score{{layout.state}}"></aria-score>
 </div>
 <canvas-chessboard *ngIf="layout.state != 2" (touchstart)="canvasBoardComponent.touchStart($event)" #canvasBoardComponent id="ccb-{{aria.UUID}}" boardID="{{aria.UUID}}" [theme]="theme.boardTheme()"
   [showLabels]="aria.showLabels.value" class="board{{layout.state}}">
 </canvas-chessboard>
-<aria-score *ngIf="layout.state == 1" id="score-{{aria.UUID}}" class="score{{layout.state}}"></aria-score>
-<aria-controls id="controls-{{aria.UUID}}"  class="controls{{layout.state}}"></aria-controls>
-<aria-status id="status-{{aria.UUID}}"  class="status{{layout.state}}"></aria-status>
+<aria-score *ngIf="layout.enableScore && layout.state == 1" id="score-{{aria.UUID}}" class="score{{layout.state}}"></aria-score>
+<aria-controls *ngIf="layout.enableControls" id="controls-{{aria.UUID}}"  class="controls{{layout.state}}"></aria-controls>
+<aria-status *ngIf="layout.enableStatus" id="status-{{aria.UUID}}"  class="status{{layout.state}}"></aria-status>
 </div>
  <!-- American Flag Controls  -->
 <!-- eyJ0aGVtZSI6eyJnc1RleHRDb2xvclBDIjoiYmx1ZSIsImdzVGV4dENvbG9yIjoiYmxhY2siLCJnc0JhY2tncm91bmRQQyI6InRyYW5zcGFyZW50IiwiZ3NCb3JkZXJQQyI6IiIsImdzVGV4dENvbG9yVkEiOiJ3aGl0ZSIsImdzQmFja2dyb3VuZFZBIjoiIzM1MzUzNSIsImdzQm9yZGVyVkEiOiJibGFjayAxcHggc29saWQiLCJnc1RleHRDb2xvckFOIjoiI0FFRDZGMSIsImdzQmFja2dyb3VuZEFOIjoiIzMzMzMzMyIsImdzQm9yZGVyQU4iOiIiLCJnc1RleHRDb2xvckhHIjoib3JhbmdlIiwiZ3NCYWNrZ3JvdW5kSEciOiIjMzUzNTM1IiwiZ3NCYWNrZ3JvdW5kIjoidHJhbnNwYXJlbnQiLCJnc0xpc3RCYWNrZ3JvdW5kIjoiIzM1MzUzNSIsImdzQm9yZGVySEciOiIiLCJnc0Fubm90YXRpb25Db2xvckhHIjoibGlnaHRjb3JhbCIsIm1lQmFja2dyb3VuZCI6IiMzNTM1MzUiLCJib2FyZExhYmVsRGFyayI6IiM4MTM4OGYiLCJib2FyZExhYmVsTGlnaHQiOiIjZTBmZmZiIiwiYm9hcmRCR0RhcmsiOiIjMjMzRDREIiwiYm9hcmRCR0xpZ2h0IjoiI0ZDQ0E0NiIsImNzRmlsbE5WIjoibGluZWFyLWdyYWRpZW50KDkwZGVnLCByZ2JhKDAsMjgsMTUzLDEpIDAlLCByZ2JhKDY3LDc0LDI1MSwxKSAzNSUsIHJnYmEoMjU1LDAsMCwxKSAzNiUsIHJnYmEoMjU1LDAsMCwxKSAxMDAlKSIsImNzRmlsbFFBIjoibGluZWFyLWdyYWRpZW50KDkwZGVnLCByZ2JhKDAsMjgsMTUzLDEpIDAlLCByZ2JhKDY3LDc0LDI1MSwxKSAzNSUsIHJnYmEoMjU1LDAsMCwxKSAzNiUsIHJnYmEoMjU1LDAsMCwxKSAxMDAlKSIsImNzRmlsbDJRQSI6InRyYW5zcGFyZW50IiwiY3NBY2NlbnRRQSI6IndoaXRlIiwiY3NCb3JkZXIyUUEiOiJ3aGl0ZSBzb2xpZCAycHgiLCJjc0JvcmRlcjJOViI6ImJsYWNrIiwiY3NBY2NlbnQyUUEiOiJ3aGl0ZSIsImNzQWNjZW50TlYiOiJ3aGl0ZSIsImNzQWNjZW50Mk5WIjoid2hpdGUiLCJjc0ZpbGwyTlYiOiJ0cmFuc3BhcmVudCIsImdzRm9udFNpemUiOjE2LCJnc0ZvbnRTaXplQU4iOjgsImdzRm9udFNpemVIRyI6MTYsImdzRm9udFNpemVWQSI6OCwiZ3NGb250U2l6ZVBDIjo4fSwibGF5b3V0Ijp7fSwiYXJpYSI6e319 -->

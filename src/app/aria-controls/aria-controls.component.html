@@ -1,5 +1,5 @@
 <div class="action-container" >
-    <div (click)="toggleAutoPlay()" class="buttonQA play" >
+    <div class="buttonQA play" #autoPlay>
             <svg class="feather-play">
                     <use [ngStyle]="{'visibility': playing ? 'visible':'hidden'}"
                         attr.xlink:href={{icons.Pause|iconpipe}} />
@@ -8,24 +8,24 @@
             </svg>
             <div class="timer">{{timeLeft}}</div>
     </div>
-    <div (click)="aria.rotateBoardOrientation()" class="buttonQA view" >
+    <div class="buttonQA view" #rotateBoard>
             <svg class="featherThicc">
                     <use attr.xlink:href={{icons.Flip|iconpipe}} />
             </svg>
     </div>
 
-    <div (click)="layout.shrink()" class="buttonQA shrink" >
+    <div class="buttonQA shrink" #shrinkBoard>
             <svg class="featherShrink">
                     <use attr.xlink:href={{icons.Pawn|iconpipe}} />
             </svg>
     </div>
 
-    <div (click)="layout.grow()" class="buttonQA grow" >
+    <div class="buttonQA grow" #growBoard>
         <svg class="featherGrow">
                 <use attr.xlink:href={{icons.Pawn|iconpipe}} />
         </svg>
     </div>
-    <div (click)="aria.toggleScoreType()" class="buttonQA toggleScore" #view>
+    <div class="buttonQA toggleScore" #view>
         <svg class="featherThicc">
                 <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Flow) ? 'visible':'hidden'}"
                 attr.xlink:href={{icons.FlowScore|iconpipe}} />
@@ -33,7 +33,7 @@
                 attr.xlink:href={{icons.TableScore|iconpipe}} />
         </svg>
 </div>
-    <div (click)="aria.openSettings()" class="buttonQA settings" #settings>
+    <div class="buttonQA settings" #settings>
         <svg class="featherThicc">
                 <use [ngStyle]="{'visibility':aria.showSettings.value  ? 'visible':'hidden'}"
                 attr.xlink:href={{icons.Settings|iconpipe}} />
@@ -41,16 +41,16 @@
 </div>
 </div>
 <div class="navigation-container" >
-    <div (click)="moveToStart($event);" class="buttonNV start" #start><svg class="featherThicc" >
+    <div class="buttonNV start" #start><svg class="featherThicc" >
                     <use attr.xlink:href={{icons.Start|iconpipe}} />
             </svg></div>
-    <div (click)="back($event);" class="buttonNV previous" #previous><svg class="featherThicc" >
+    <div class="buttonNV previous" #previous><svg class="featherThicc" >
                     <use attr.xlink:href={{icons.Previous|iconpipe}} />
             </svg></div>
-    <div (click)="forward($event);" class="buttonNV next" #next><svg class="featherThicc" >
+    <div class="buttonNV next" #next><svg class="featherThicc" >
                     <use attr.xlink:href={{icons.Next|iconpipe}} />
             </svg></div>
-    <div (click)="moveToEnd($event);" class="buttonNV end" #end><svg class="featherThicc" >
+    <div class="buttonNV end" #end><svg class="featherThicc" >
                     <use attr.xlink:href={{icons.End|iconpipe}} />
             </svg></div>
 </div>
