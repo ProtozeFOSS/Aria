@@ -50,6 +50,7 @@ export class Aria {
           }
         }
       });
+      this.aria.loadPGN(TestPGNData);
     }
     ngAfterViewInit() {
       window.onkeydown = this.aria.keyEvent.bind(this.aria);

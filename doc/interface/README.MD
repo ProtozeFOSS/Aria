@@ -115,10 +115,13 @@ Some `Borders` are full border descriptors; `csBorder2NV` is only a color. `Colo
 Below are all Aria Theme variables listed in table format by their parent component and then sub component. When styling Aria, you have access to all of these properties.
 
 ## **Board Properties**
-> **NOTE** - The board properties are accessed through `theme.board`.
 
 ### `Chess Pieces`
 **TODO:** Add detailed description of chess pieces here
+
+> **NOTE** - The board properties are accessed through `theme.board`.
+> 
+> To change the light tile color use `theme.board.lightTL`. See the complete property table below.
 
 | Name | Type  | Default | Description |
 |:--------------|:-----:|:--------:|:-----------------------|
