@@ -1282,10 +1282,10 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
 
   }
 
-  public setSize(size: number): void {
-    this.size = size;
+  public setSize(size: number): number {
     this.tileSize = Math.floor(size / 8);
-    this.requestRedraw();
+    size = this.size = this.tileSize * 8;
+    
     if (this.canvas) {
       this.canvas.width = size;
       this.canvas.height = size;
@@ -1293,26 +1293,9 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         width: size,
         height: size,
       });
-      // this.resizeBoardObjects(size);
-      // if (this.pieceAnimation) {
-      //   const col = this.pieceAnimation.col;
-      //   const row = this.pieceAnimation.row;
-      //   const tileSizeFragment = this.tileSize / 100;
-      //   const piecePadding = Math.ceil(tileSizeFragment * 3) + 1;
-      //   let xDest = 0;
-      //   let yDest = 0;
-      //   if (this.settings.orientation === 'white') {
-      //     xDest = (col * this.tileSize) + piecePadding;
-      //     yDest = ((7 - row) * this.tileSize) + piecePadding;
-      //   } else {
-      //     xDest = ((7 - col) * this.tileSize) + piecePadding;
-      //     yDest = (row * this.tileSize) + piecePadding;
-      //   }
-      //   this.pieceAnimation.x = xDest;
-      //   this.pieceAnimation.y = yDest;
-      // }
-      // this.canvas.requestRenderAll();
     }
+    this.requestRedraw();
+    return size;
   }
 
   public setInteractive(interactive: boolean): void {

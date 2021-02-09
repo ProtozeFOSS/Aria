@@ -49,6 +49,8 @@
 
 .board{
     position: absolute;
+    border: 2px solid black;
+    padding-right:-1px;
     order:1;
 }.board1{
     @extend .board;

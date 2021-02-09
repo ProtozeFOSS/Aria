@@ -274,6 +274,8 @@ export class AriaService {
     this.keymap.set('End', this.moveToEnd.bind(this));
     this.keymap.set('ArrowRight', this.advance.bind(this));
     this.keymap.set('ArrowLeft', this.previous.bind(this));
+    this.keymap.set('-', ()=>{this._app.layout.shrink()});
+    this.keymap.set('=', ()=>{this._app.layout.grow()});
     this.keymap.set('i', this.rotateBoardOrientation.bind(this));
     this.keymap.set(']', this.nextGame.bind(this));
     this.keymap.set('[', this.previousGame.bind(this));

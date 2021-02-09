@@ -8,18 +8,6 @@ import { AriaControls } from '../aria-controls/aria-controls.component';
 import { AriaStatus } from '../aria-status/aria-status.component';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
-function debounce(func: any, wait: number) {
-  let timeout = -1;
-
-  return function executedFunction(...args: any) {
-    const later = () => {
-      timeout = -1;
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
 
 @Injectable({
   providedIn: 'root',
@@ -64,9 +52,13 @@ export class LayoutService {
 
   private rtl(width: number, height: number) {
     let boardWidth = Math.ceil(width * this.preferredRatioLandscape);
+    
+    boardWidth = this.board?.setSize(boardWidth);
     boardWidth = boardWidth > (height - 2) ? height-2 : boardWidth;
     boardWidth = boardWidth < 192 ? 192 : boardWidth;
+    boardWidth = this.board?.setSize(boardWidth);
     let c2width = width - (boardWidth + 16);
+    
     if (c2width < 300) {
       let diff = 300 - c2width;
       c2width = 300;
@@ -80,7 +72,6 @@ export class LayoutService {
       return;
     }
     this.header?.resize(c2width, hheight);
-    this.board?.setSize(boardWidth);
     if (this.boardElement) {
       this.boardElement.style.marginBottom = '0px';
       switch (this.state) {
@@ -129,7 +120,7 @@ export class LayoutService {
         this.controlsElement.style.width = c2width + 'px';
         this.controls?.resize(c2width, 100);
       }
-      this.board?.setSize(boardWidth);
+      boardWidth = this.board?.setSize(boardWidth);
       this.boardElement.style.width = boardWidth + 'px';
       this.boardElement.style.height = boardWidth + 'px';
       this.sendLayoutChanged(width, height, this.state);
@@ -158,7 +149,7 @@ export class LayoutService {
 
   private rtp(width: number, height: number) { 
     width = width < 320 ? 320:width;
-    let boardWidth = Math.floor(width * this.preferredRatioPortrait);
+    let boardWidth = this.board?.setSize(Math.ceil(width * this.preferredRatioPortrait));
     if(boardWidth < 96) {
       boardWidth = 96;
       this.preferredRatioPortrait = (96/width);
@@ -178,6 +169,9 @@ export class LayoutService {
       window.setTimeout(()=>{this.rtp(width, height)}, 20);
       return;
     }
+    boardWidth = this.board?.setSize(boardWidth);
+    this.boardElement.style.width = boardWidth + 'px';
+    this.boardElement.style.height = boardWidth + 'px';
     if (this.boardElement) {
       this.boardElement.style.marginBottom = '2px';      
       if(this.gameScoreElement){        
@@ -205,18 +199,24 @@ export class LayoutService {
           height = height < 580 ? 580: height; 
           this.boardElement.style.marginLeft = '';
           if(this.gameScoreElement){         
+            const gsWidth = Math.floor(width - boardWidth) - 12;
+            const margin = (width - (boardWidth + gsWidth))/4 + 'px';
             if (this.layoutDirection) { // RTL
               this.boardElement.style.order = '0';
-              this.gameScoreElement.style.order = '1'; 
+              this.gameScoreElement.style.order = '1';
+              this.gameScoreElement.style.marginLeft = margin; 
+              this.boardElement.style.marginLeft = margin; 
             } else {
               this.boardElement.style.order = '1';
               this.gameScoreElement.style.order = '0'; 
+              this.gameScoreElement.style.marginRight = margin;
+              this.boardElement.style.marginRight = margin; 
             }
-            const gsWidth = Math.floor(width - (6 +  boardWidth));
-            this.gameScoreElement.style.height = boardWidth + 'px';
+            this.gameScoreElement.style.height = (boardWidth + 4) +  'px';
+            this.gameScoreElement.style.maxHeight = (boardWidth + 4) + 'px';
             this.gameScoreElement.style.width = gsWidth + 'px';
             this.gameScoreElement.style.maxWidth = gsWidth + 'px';   
-            this.gameScore?.resize(gsWidth, boardWidth);
+            this.gameScore?.resize(gsWidth, boardWidth + 4);
           } else {
             this.boardElement.style.order = '0';
           }
@@ -240,9 +240,7 @@ export class LayoutService {
         this.controlsElement.style.left = '';
         this.controls?.resize(width, 100);
       }
-      this.board?.setSize(boardWidth);
-      this.boardElement.style.width = boardWidth + 'px';
-      this.boardElement.style.height = boardWidth + 'px';
+
       if(this.headerElement){
         this.header?.resize(width, -1);
       }
