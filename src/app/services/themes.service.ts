@@ -1,7 +1,8 @@
 import { Injectable, Output, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BoardTheme } from '../canvas-chessboard/types';
+import { BoardTheme, PieceType } from '../canvas-chessboard/types';
 import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,12 +28,10 @@ export class ThemeService {
   @Input() readonly overlayContextBackgroundGradient = 'linear-gradient(153deg, rgba(199,199,199,0.9051995798319328) 41%, rgba(249,249,249,0.8911939775910365) 83%)';
 
 
-  // Board Colors
-  @Input() @Output() readonly boardBGDark = new BehaviorSubject<string>('#81388f');
-  @Input() @Output() readonly boardBGLight = new BehaviorSubject<string>('#e0fffb');
-  @Input() @Output() readonly boardLabelDark = new BehaviorSubject<string>('#81388f');
-  @Input() @Output() readonly boardLabelLight = new BehaviorSubject<string>('#e0fffb');
-  @Input() @Output() readonly boardPieceSet = new BehaviorSubject<string>(environment.piecesPath + 'merida/');
+  // Board properties 
+  @Input() @Output() boardTheme : BoardTheme = new BoardTheme(
+    '#e0fffb', '#81388f','#e0fffb', '#81388f', 10, 'Cambria',
+     environment.piecesPath + 'merida/',PieceType.Split, '.svg', '');
 
 
   // Menu
@@ -101,9 +100,7 @@ export class ThemeService {
   readonly hdrRoundFontSize = new BehaviorSubject<number>(14);
 
   @Output() propertyMap = new Map<string, BehaviorSubject<string> | BehaviorSubject<number>>();
-  // Menu specific Colors
 
-  // Title Colors
   constructor() {
     // Game Score
     this.createColorMap();
@@ -120,14 +117,6 @@ export class ThemeService {
         color
       );
     }
-  }
-
-  boardTheme(): BoardTheme {
-    return new BoardTheme(
-      this.boardBGLight.value,
-      this.boardBGDark.value,
-      this.boardPieceSet.value
-    );
   }
 
   private createColorMap(): void {
@@ -147,11 +136,6 @@ export class ThemeService {
     this.propertyMap.set('gsTableItemWidth', this.gsTableItemWidth);
     this.propertyMap.set('gsTablePlyWidth', this.gsTablePlyWidth);
     
-    // Board   
-    this.propertyMap.set('boardLabelDark', this.boardLabelDark);
-    this.propertyMap.set('boardLabelLight', this.boardLabelLight);
-    this.propertyMap.set('boardBGDark', this.boardBGDark);
-    this.propertyMap.set('boardBGLight', this.boardBGLight);
 
     // Controls Navigation Bar
     document.documentElement.style.setProperty('--csFillNV','#00ffffff');
@@ -401,7 +385,16 @@ export class ThemeService {
     return settings;
   }
 
+  public setBoardTheme(board: object): void {
+    for (let key in board) {
+      if(this.boardTheme[key]) {
+        this.boardTheme[key] = board[key];
+      }
+    }
+  }
+
   public setSettings(settings: object): void {
+    //@ts-ignore
     for (let key in settings) {
       const docValue = document.documentElement.style.getPropertyValue('--' + key);
       const value = settings[key];

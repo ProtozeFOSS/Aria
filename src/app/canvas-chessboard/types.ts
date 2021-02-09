@@ -71,16 +71,23 @@ export const SquareNames = [
     promoted?: boolean;
   }
   
+  export enum PieceType {
+    Split = 0,
+    Sheet = 1
+  }
+
   export class BoardTheme {
     constructor(
-      public tileLight: string = '',
-      public tileDark: string = '',
-      public pieceSet: string = '',
-      public isSpriteSheet = false,
-      public fileExtension = '.svg',
-      public labelFontSize = 14,
-      public labelFontFamily = 'Cambria',
-      public labelFontWeight = 'bold'
+      public lightTL: string = '',
+      public darkTL: string = '',
+      public lightLB: string = '',
+      public darkLB: string = '',
+      public fontSizeLB = 10,
+      public fontFamilyLB = 'Cambria',
+      public fontFamilyPC: string = '',
+      public typePC = PieceType.Split,
+      public extensionPC = '.svg',
+      public fontColorPM = 'white'
     ) { }
   }
   

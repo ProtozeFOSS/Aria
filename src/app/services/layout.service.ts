@@ -76,7 +76,7 @@ export class LayoutService {
     const state = c2width > 586 ? 3 : 4;
     if(state != this.state) {
       this.state = state;
-      window.setTimeout(()=>{this.rtl(width, height)}, 20);
+      window.setTimeout(()=>{this.rtl(width, height);}, 20);
       return;
     }
     this.header?.resize(c2width, hheight);
@@ -140,13 +140,20 @@ export class LayoutService {
 
   public layoutChanged(width: number, height:number, state: number)
   {}
-  private sendLayoutChanged(width:number, height:number, state: number): void {
-      height = Math.max(
-        document.body.scrollHeight, document.documentElement.scrollHeight,
-        document.body.offsetHeight, document.documentElement.offsetHeight,
-        document.body.clientHeight, document.documentElement.clientHeight, height
-      );
-      this.layoutChanged(width,height,state);
+  public sendLayoutChanged(width:number, height:number, state: number): void {
+    switch(state) {
+      case 1:{ height = Math.max(document.body.clientHeight, document.documentElement.clientHeight, height); break;}
+      case 2:{
+        height = Math.max(document.body.clientHeight, document.documentElement.clientHeight, height);
+        height = Math.min(document.body.scrollHeight, document.documentElement.scrollHeight,document.body.offsetHeight, document.documentElement.offsetHeight, height);
+        break;
+      }
+      default:{
+        height = Math.max(Math.min(window.innerHeight, document.body.clientHeight, document.documentElement.clientHeight,document.body.scrollHeight, document.documentElement.scrollHeight,document.body.offsetHeight,
+          document.documentElement.offsetHeight), height);
+        break;}
+    }
+    this.layoutChanged(width,height,state);
   }
 
   private rtp(width: number, height: number) { 

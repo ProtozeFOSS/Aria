@@ -1,4 +1,4 @@
-import { Component, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AriaHeader } from './aria-header/aria-header.component';
 import { AriaStatus } from './aria-status/aria-status.component';
@@ -29,6 +29,7 @@ export class Aria {
   @ViewChild(AriaControls) controlsComponent: AriaControls;
   @ViewChild(AriaHeader) headerComponent!: AriaHeader | null;
   @ViewChild(AriaStatus) statusComponent!: AriaStatus | null;
+  @ViewChild('container') container!: ElementRef | null;
   @Output() gameScoreWidth: number = 389;
   @Output() oldWidth: number = 0;
   
@@ -44,40 +45,22 @@ export class Aria {
           try {
             const decoded = atob(params.data);
             const settings_obj = JSON.parse(decoded);
-            console.log(settings_obj);
             this.applyJsonSettings(settings_obj);
           } catch (any) {
           }
         }
-        this.aria.loadPGN(TestPGNData);
       });
-      console.log('ID: ' + this.aria.UUID);
     }
     ngAfterViewInit() {
-      this.theme.boardBGLight.subscribe((light) => {
-        if (this.canvasBoardComponent) {
-          this.canvasBoardComponent.setLightTile(light);
-        }
-      });
-      this.theme.boardBGDark.subscribe((dark) => {
-        if (this.canvasBoardComponent) {
-          this.canvasBoardComponent.setDarkTile(dark);
-        }
-      });
       window.onkeydown = this.aria.keyEvent.bind(this.aria);
       this.aria.attachAria(this);
       this.layout.initializeLayout(this);
       this.theme.initializeColorPalette();
       window['ARIA'] = {theme:this.theme, aria:this.aria, layout:this.layout};
-      window.onresize = ()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);};
-      window.setTimeout(()=>{this.layout.resizeLayout(window.innerWidth, window.innerHeight);},30);
-    }
-    mouseMoved(event: MouseEvent): void {
-      if (this.gameScoreComponent) {
-        //this.gameScoreComponent.resizeHandleEvent(event);
-        if (event.buttons === 0) {
-        }
-      }
+      window.onresize = ()=>{
+        this.layout.resizeLayout(this.container.nativeElement.clientWidth, window.innerHeight);
+      };
+      window.setTimeout(()=>{this.layout.resizeLayout(this.container.nativeElement.clientWidth, window.innerHeight);},30);
     }
     public registerControls(controls: AriaControls, element: HTMLElement): void {
       this.layout.controls  = controls;
@@ -102,18 +85,19 @@ export class Aria {
       this.layout.status = status;
       this.layout.statusElement = element;
     }
-
-    public autoPlayActive(): boolean {
-      if (this.controlsComponent) {
-        return this.controlsComponent.playing;
-      }
-      return false;
-    }
   
     public applyJsonSettings(settings: object): boolean {
       if (settings) {
         // @ts-ignore
         if (settings.theme) {
+          // @ts-ignore          
+          if(settings.theme.board) {
+            //@ts-ignore
+            this.theme.setBoardTheme(settings.theme.board);
+            this.canvasBoardComponent?.setTheme(this.theme.boardTheme);
+            //@ts-ignore
+            delete settings.theme.board;
+          }
           // @ts-ignore
           this.theme.setSettings(settings.theme);
         }
@@ -150,22 +134,4 @@ export class Aria {
       const ariaSettings = this.aria.settings();
       return JSON.stringify({ themes: themeSettings, layout: layoutSettings, aria: ariaSettings });
     }
-  
-  
-    public toggleAutoPlay(): void {
-      if (this.aria) {
-        this.aria.toggleAutoPlay();
-      }
-    }
-  
-
-  
-    
-  
-    touchMoved(event: TouchEvent): void {
-      if (this.gameScoreComponent) {
-        //this.resizeTouchEvent(event);
-      }
-    }
-
 }

@@ -4,7 +4,8 @@ import { BehaviorSubject } from 'rxjs';
 import { ChessMove} from '../common/kokopu-engine';
 import { ThemeService } from '../services/themes.service';
 import { AriaService } from '../services/aria.service';
-import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames, Color } from './types';
+import { LabelState, BoardTheme, BoardSettings, Piece, SquareNames, Color, PieceType } from './types';
+import { environment } from 'src/environments/environment';
 
 export type Coordinate = { x: number, y: number };
 
@@ -32,7 +33,10 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   protected rookButton: fabric.Group | null = null;
   protected queenButton: fabric.Group | null = null;
   protected pieceAnimation: { piece: fabric.Group, x: number, y: number, col: number, row: number } | null = null;
-  @Input() theme: BoardTheme = new BoardTheme();
+  @Input() theme: BoardTheme =  new BoardTheme(
+    '#e0fffb', '#81388f','#e0fffb', '#81388f', 10, 'Cambria',
+     environment.piecesPath + 'merida/',PieceType.Split, '.svg', '');
+
   settings: BoardSettings = new BoardSettings();
   @Output() pieceMap = new Map<string, fabric.Group>();
   @Output() pieces: { tile: number; object: fabric.Group }[] = [];
@@ -53,7 +57,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
   constructor(
     public aria: AriaService,
     public themes: ThemeService
-  ) {}
+  ) { this.theme = themes.boardTheme; }
 
 
 
@@ -117,12 +121,12 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     piece: string,
     subject: BehaviorSubject<number>
   ): void {
-    if (this.theme?.pieceSet) {
-      if (this.theme.isSpriteSheet) {
+    if (this.theme.fontFamilyPC) {
+      if (this.theme.typePC == PieceType.Sheet) { // ToDo: build code to load from Spritesheet
       } else {
-        if (this.theme.fileExtension === '.svg') {
+        if (this.theme.extensionPC === '.svg') {
           fabric.loadSVGFromURL(
-            this.theme.pieceSet + piece + this.theme.fileExtension,
+            this.theme.fontFamilyPC + piece + this.theme.extensionPC,
             (objects, options) => {
               const obj = fabric.util.groupSVGElements(
                 objects,
@@ -135,6 +139,8 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
               subject.next(subject.value + 1);
             }
           );
+        } else { // load image
+
         }
       }
     }
@@ -267,7 +273,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       const bg = new fabric.Rect({
         height: height,
         width: width,
-        fill: this.themes.bgMenu,
+        fill: this.themes.background,
         left: (this.size - width) / 2,
         top: (this.size - height) / 2,
         rx: width * 0.02,
@@ -406,7 +412,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         tileToClone.tile?.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
-          tile.set('stroke', this.themes.gsTextColorHG.value);
+          tile.set('stroke', this.themes.gsTextColorHG);
           tile.set('strokeWidth', 2);
           tile.set('top', 0);
           tile.set('left', 0);
@@ -456,7 +462,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
         tileToClone.tile?.clone((tile: fabric.Object) => {
           tile.set('originX', 'left');
           tile.set('originY', 'top');
-          tile.set('stroke', this.themes.gsTextColorHG.value);
+          tile.set('stroke', this.themes.gsTextColorHG);
           tile.set('strokeWidth', 2);
           tile.set('top', 0);
           tile.set('left', 0);
@@ -635,6 +641,11 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       }
       this.canvas?.requestRenderAll();
     }
+  }
+
+  setTheme(theme: BoardTheme): void {
+    this.theme = theme;
+    this.requestRedraw();
   }
 
   showPromotionDialog(move: ChessMove) {
@@ -973,12 +984,11 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
     switch (type) {
       case ObjectType.Label: {
         object = new fabric.Text(labelText, {
-          fontSize: this.theme.labelFontSize, left: x, top: y, fontFamily: this.theme.labelFontFamily,
-          fontWeight: this.theme.labelFontWeight
+          fontSize: this.theme.fontSizeLB, left: x, top: y, fontFamily: this.theme.fontFamilyLB
         }) as fabric.Object;
 
         if (isDark !== undefined && isDark !== null) {
-          object.set('fill',isDark ? this.themes.boardLabelDark.value : this.themes.boardLabelLight.value);
+          object.set('fill',isDark ? this.theme.darkLB : this.theme.lightLB);
         }
         break;
       }
@@ -988,7 +998,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
           height: this.tileSize,
         });
         if (isDark !== undefined && isDark !== null) {
-          object.set('fill', isDark ? this.themes.boardBGDark.value : this.themes.boardBGLight.value);
+          object.set('fill', isDark ? this.theme.darkTL : this.theme.lightTL);
         }
         break;
       }
@@ -1082,7 +1092,7 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
               }
             }
             if (row == 7) {
-              const rank = this.createBoardObject(ObjectType.Label, ((this.tileSize * (col + 1)) - this.theme.labelFontSize / 2) - padding, size - this.theme.labelFontSize, false, labelText, !dark);
+              const rank = this.createBoardObject(ObjectType.Label, ((this.tileSize * (col + 1)) - this.theme.fontSizeLB / 2) - padding, size - this.theme.fontSizeLB, false, labelText, !dark);
               if (rank) {
                 labels.push(rank);
                 this.labels.push(rank);
@@ -1228,12 +1238,12 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       if (this.labels.length) {
         this.labels.forEach((label: fabric.Object) => {
           // @ts-ignore
-          if (label && label.get('fill') === this.theme.tileDark) {
+          if (label && label.get('fill') === this.theme.darkTL) {
             label.setColor(color);
           }
         });
       }
-      this.theme.tileDark = color;
+      this.theme.darkTL = color;
       this.canvas?.requestRenderAll();
     }
   }
@@ -1261,12 +1271,12 @@ export class CanvasChessBoard implements OnInit, AfterViewInit {
       if (this.labels.length) {
         this.labels.forEach((label: fabric.Object) => {
           // @ts-ignore
-          if (label && label.get('fill') === this.theme.tileLight) {
+          if (label && label.get('fill') === this.theme.lightTL) {
             label.setColor(color);
           }
         });
       }
-      this.theme.tileLight = color;
+      this.theme.lightTL = color;
       this.canvas?.requestRenderAll();
     }
 

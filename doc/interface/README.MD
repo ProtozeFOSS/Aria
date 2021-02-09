@@ -10,8 +10,7 @@ There are 3 'interfaces' to work with and adjust in Aria.
 ## **Methods for configuring Aria Settings**
 
 There are two methods to pass settings.
-### `1.) By URL`
--------------
+# `1.) By URL`
   applies the settings before the initialization of any user interface components. So the settings are visually seamless. To pass settings be URL:
   1. Create JS settings object.
   > *With 3 root objects.*
@@ -22,42 +21,40 @@ There are two methods to pass settings.
   3. Convert the JS string to base64.
   4. Pass the base64 string to **Aria** using the `data` URL parameter.
 
-`/aria.html?settings=eyJ0aGvtZXMiOnsiLs1nc1R1eHRDb2xvclBDIjox1`
+`Aria/?data=eyJ0aGvtZXMiOnsiLs1nc1R1eHRDb2xvclBDIjox1`
 
-***By URL** is the preferrred method for encoding settings served from a **Web Server**.*
+> ***By URL** is the preferrred method for encoding settings served from a **Web Server**.*
+> Below are detailed tables on the available URL values for each service
+## `Aria Service`
+The aria service works as the core. Bringing the engine together with the visual components, the responsibility of the service is to synchronize the two. Actions performed in the UX need to be passed to the engine. Events within the engine, must propagate back to the UX.
+| Property | Type | Default | Description |
+|:---------|:-----------| :------: |--------:|
+| `fen` | *Valid FEN string*  | | Sets the starting fen position of th engine and board (ignored if PGN also supplied) |
+| `pgn` | *number*  |  | Sets the PGN to the engine **Be careful not to overflow source property! If the PGN is VERY large, pass it with the `loadPGN` JS method on Aria at runtime.** |
+| `game` | *number (int)* |  | Sets the starting game (starts at 1) |
+| `startPly` | *number (int)* |  | Sets the starting move |
+| `interactiveBoard` | *boolean (int)* |  | Sets if the board is interactive |
+| `interactiveControls` | *boolean (int)* |  | Sets if the controls are interactive |
+| `interactiveScore` | *boolean (int)* |  | Sets if the moves are interactive |
+| `keymap` | *object=>{KeyName:ActionID}* |  | Sets the assigned keymap |
 
-
-### `2.) By JS Method`
-------
-Aria exposes the JS interface through the `window` property `Aria`  *window['Aria']* will get you a reference to the interface. Each service is then fully exposed to the developer. Below the variable `a1` represents the interface to the Aria instance with id `aria`.
-```
-var a1 = null;
-var element = document.getElementById('aria1');
-if(iFrame) {
-    if(element && element.contentWindow['ARIA']) {
-        a1 = element.contentWindow['ARIA'];
-    }
-}else {
-    if(window['ARIA']) {
-        a1 = window['ARIA'];
-    }
-}        
-var theme = {boardBGDark:'brown', boardBGLight:'beige'};
-a1.theme.setSettings(theme);
-a1.aria.loadPGN(TestPGNData);
-```
-This allows integration with other data fetching methods and asynchronous techniques. Or if desired a custom menu can be used.
-
-Only valid variables names will be used (so check closely). There is no error checking on the value. If you decide to send the game score text color as string `rad` instead of string `red` - you can. It just wont work!😉 Send valid color strings only.
-
-## **User Experience -** *Themes and layout Details*
+## **User Experience -** *Layout and Theme Details*
 The user interface can be configured using the Aria Menu.
-The Aria Menu and Aria itself do not share a codebase. This allows other menus and controls to be developed for Aria and integrated seamlessly. 
+The Aria Menu and Aria itself do not share a codebase. This allows other menus and controls to be developed for Aria and integrated seamlessly. For instance, Aria by default is actually just a wrapper around Canvas Chess Board. Turn on the score, and you have a board that can be navigated by the score alone. Turn on only the controls, you have a "blind" game that can be navigated on autoplay. Enable header, score, controls, and status and you have a full blown "PGN Viewer". A combination of enabling interactive flags in Aria service and enabling components in the layout service, allows Aria to adapt to different applications. 
 >Below are tables to help developers/users understand the variables available and how to set them.
 
+## `Layout Service`
+The layout service helps tune the what and where of the UX. Handling higher level layout decisions, this service is capable of drastically changing what "Aria" is.
 
-# Theme Service
-> Understanding the variable naming system might help you understand the structure of the internal theme service. The theme service is used to **style** Aria. Colors, font sizes, families, etcetera can be configured through the Theme setting. **SKIP** to the `Variable Tables` section for the full list of variable names and descriptions. Otherwise, below is a breakdown of how variable names are produced.
+| Property | Type | Default | Description |
+|:---------|:-------------:|:-------:| --------:|
+| `header` | *boolean (int)*  | **false** | Enables the header visual element |
+| `score` | *boolean (int)*  | **false** | Enables the score visual element |
+| `controls` | *boolean (int)* | **false** | Enables the controls visual element |
+| `status` | *boolean (int)* | **false** | Enables the status visual element |
+
+## `Theme Service`
+ Understanding the variable naming system might help you understand the structure of the internal theme service. The theme service is used to **style** Aria. Colors, font sizes, families, etcetera can be configured through the Theme setting. **SKIP** to the `Variable Tables` section for the full list of variable names and descriptions. Otherwise, below is a breakdown of how variable names are produced.
 ### `Prefix Table`
  A Prefix is used for all variable names. The prefix helps represents the parent component and is always lowercase.
 
@@ -116,9 +113,27 @@ Some `Borders` are full border descriptors; `csBorder2NV` is only a color. `Colo
 
 # `Theme Variable Tables`
 Below are all Aria Theme variables listed in table format by their parent component and then sub component. When styling Aria, you have access to all of these properties.
+
+## **Board Properties**
+> **NOTE** - The board properties are accessed through `theme.board`.
+
+### `Chess Pieces`
+**TODO:** Add detailed description of chess pieces here
+
+| Name | Type  | Default | Description |
+|:--------------|:-----:|:--------:|:-----------------------|
+|**Tiles** |||
+|`lightTL`| *color string* | | Sets the light tile color|
+|`darkTL`| *color string* | | Sets the dark tile color|
+|`lightLB`| *color string* | | Sets the light label color|
+|`darkLB`| *color string* | | Sets the dark label color|
+|`fontSizeLB`| *color string* | | Sets the light label color|
+|`fontFamilyPC`| *color string* | | Sets the font family (directory) used for pieces. See a detailed description of pieces above.
+|`typePC`| *color string* | | Sets the image type for parsing and loading pieces (Spritesheet or Split images)
+|`extensionPC`| *color string* | | Set the actual format of the data *(SVG or PNG)*. This can also be used to allow other images to be used (desktop vs mobile). See the long explanation on Pieces above. 
 ## **Control Properties**
 | Name | Type  | Default | Description |
-|:--------------:|:-----:|:--------:|:-----------------------|
+|:--------------|:-----:|:--------:|:-----------------------|
 |**Navigation Bar** |||
 | `csFillNV` | *solid/gradient color* | | Background fill for the navigation bar |
 | `csFill2NV` | *solid/gradient color* | | Background fill for the Buttons on the navigation bar |
@@ -277,28 +292,31 @@ The Controls element is locked at 100px tall but often times will expand to its 
 | `gsPaddingCB` | *box description string* | `1px 1px 1px 1px` | Sets the padding |
 
 More elements and their properties might be added to the theme service over time.
+> End of URL Service Definitions
 
-# `Aria Service`
-The aria service works as the core. Bringing the engine together with the visual components, the responsibility of the service is to synchronize the two. Actions performed in the UX need to be passed to the engine. Events within the engine, must propagate back to the UX.
-| Property | Type | Default | Description |
-|:---------|:-----------| :------: |--------:|
-| `fen` | *Valid FEN string*  | | Sets the starting fen position of th engine and board (ignored if PGN also supplied) |
-| `pgn` | *number*  |  | Sets the PGN to the engine |
-| `game` | *number (int)* |  | Sets the starting game (starts at 1) |
-| `startPly` | *number (int)* |  | Sets the starting move |
-| `interactiveBoard` | *boolean (int)* |  | Sets if the board is interactive |
-| `interactiveControls` | *boolean (int)* |  | Sets if the controls are interactive |
-| `interactiveScore` | *boolean (int)* |  | Sets if the moves are interactive |
-| `keymap` | *object=>{KeyName:ActionID}* |  | Sets the assigned keymap |
+# `2.) By JS Method`
+Aria exposes the JS interface through the `window` property `Aria`  *window['Aria']* will get you a reference to the interface. Each service is then fully exposed to the developer. Below the variable `a1` represents the interface to the Aria instance with id `aria`.
+```
+var a1 = null;
+var element = document.getElementById('aria1');
+if(iFrame) {
+    if(element && element.contentWindow['ARIA']) {
+        a1 = element.contentWindow['ARIA'];
+    }
+}else {
+    if(window['ARIA']) {
+        a1 = window['ARIA'];
+    }
+}        
+var theme = {boardBGDark:'brown', boardBGLight:'beige'};
+a1.theme.setSettings(theme);
+a1.aria.loadPGN(TestPGNData);
+```
+This allows integration with other data fetching methods and asynchronous techniques. Or if desired a custom menu can be used.
 
-# `Layout Service`
-The layout service helps tune the what and where of the UX. Handling higher level layout decisions, this service is capable of drastically changing what "Aria" is. For instance, Aria by default is actually just a wrapper around Canvas Chess Board. Turn on the score, and you have a board that can be navigated by the score alone. Turn on only the controls, you have a "blind" game that can be watched on autoplay. Enable header, score, controls, and status and you have a full blown "PGN Viewer". A combination of enabling interactive flags in Aria service and enabling components in the layout service, allows Aria to adapt to different applications.
-| Property | Type | Default | Description |
-|:---------|:-------------:|:-------:| --------:|
-| `header` | *boolean (int)*  | **false** | Enables the header visual element |
-| `score` | *boolean (int)*  | **false** | Enables the score visual element |
-| `controls` | *boolean (int)* | **false** | Enables the controls visual element |
-| `status` | *boolean (int)* | **false** | Enables the status visual element |
+Only valid variables names will be used (so check closely). There is no error checking on the value. If you decide to send the game score text color as string `rad` instead of string `red` - you can. It just wont work!😉 Send valid color strings only.
+
+
 
 
 

@@ -149,7 +149,6 @@ export class ChessGame {
 
     static getPositionFromFEN(fen: string) : any {
         const position = new KPosition();
-
         try{
             position.fen(fen);
             return position;
@@ -509,7 +508,8 @@ export class ChessGame {
 
 
     public resetEngine(): void {
-        this.position = this.game.initialPosition();
+        this.position = this.game.mainVariation().initialPosition();
+        this.currentIndex = 0;
         this.currentNode = null;
         this.aria.updateStatus(this.position.turn());
     }

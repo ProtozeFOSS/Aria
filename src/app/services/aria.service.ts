@@ -288,10 +288,10 @@ export class AriaService {
 
 
   public moveToStart(): void {
-    while (this.previous()) { }
+    this.navigateToNode(-1);
   }
   public moveToEnd(): void {
-    while (this.advance()) { }
+    this.navigateToNode(this.gameScoreItems.length-1);
   }
 
   public isStartingPosition(): boolean {
@@ -328,6 +328,13 @@ export class AriaService {
     return 0;
   }
   public navigateToNode(index: number) {
+    if (index === -1) {
+      this.resetEngine();
+      this._board?.setBoardToPosition(this._game.getPosition());
+      this._board?.requestRedraw();
+      this._score?.clearSelection();
+      return;
+    }
     if (this.currentIndex < index) {
       while (this.currentIndex < index) {
         const next = this.gameScoreItems[++this.currentIndex] as GameScoreItem;
@@ -337,37 +344,34 @@ export class AriaService {
             if (nodeMove) {
               this.makeBoardMove(nodeMove);
             }
+          } else {
+            this.currentIndex = index;
           }
+        } else {
+          this.currentIndex = index;
         }
       }
-      this.currentIndex = index;
-      if (this._score) {
-        this._score.updateSelection();
-      }
-      return;
-    }
-    while (this.currentIndex > index) {
-      const node = this.gameScoreItems[this.currentIndex];
-      let prev = null;
-      if (this.currentIndex > 0) {
-        prev = this.gameScoreItems[this.currentIndex - 1];
-      }
-      if (prev && node) {
-        if (this.unPlay(node.move, prev.move)) {
-          const nodeMove = ChessMove.fromNode(node.move);
-          if (nodeMove) {
-            this.reverseBoardMove(nodeMove);
+    } else {
+      while (this.currentIndex > index) {
+        const node = this.gameScoreItems[this.currentIndex];
+        let prev = null;
+        if (this.currentIndex > 0) {
+          prev = this.gameScoreItems[this.currentIndex - 1];
+        }
+        if (prev && node) {
+          if (this.unPlay(node.move, prev.move)) {
+            const nodeMove = ChessMove.fromNode(node.move);
+            if (nodeMove) {
+              this.reverseBoardMove(nodeMove);
+            }
           }
         }
+        --this.currentIndex;
       }
-      --this.currentIndex;
-    }
-    if (index === -1) {
-      this.resetEngine();
-      this.redrawBoard();
     }
     if (this._score) {
       this._score.updateSelection();
+      window.setTimeout(()=>{this._app.layout.sendLayoutChanged(window.innerWidth,window.innerHeight,this._app.layout.state)},100);
     }
   }
   protected autoAdvance(): void {
@@ -563,6 +567,7 @@ export class AriaService {
           this._header.gameCount = this._games.length;
         }
       }
+      window.setTimeout(()=>{this._app.layout.resizeLayout(document.body.clientWidth,window.innerHeight)},1);
     }
   }
 
@@ -810,6 +815,8 @@ export class AriaService {
     if (this._game) {
       this._game.resetEngine();
     }
+    this.currentIndex = -1;
+    this.currentItem = null;
   }
 
   public saveSettings(): void {
