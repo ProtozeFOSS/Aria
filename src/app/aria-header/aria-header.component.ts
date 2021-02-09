@@ -178,19 +178,7 @@ export class AriaHeader implements OnInit {
     }
   }
 
-  previousGame(): void {
-    if (this.currentGame > 0) {
-      --this.currentGame;
-    }
-    if (this.currentGame >= 0) {
-      this.aria.selectGame(this.currentGame)
-    }
-  }
-  nextGame(): void {
-    if (this.currentGame < this.gameCount) {
-      this.aria.selectGame(++this.currentGame)
-    }
-  }
+ 
   
   clickedEvent(): void {
 

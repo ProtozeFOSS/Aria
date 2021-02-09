@@ -61,9 +61,6 @@ export class AriaControls implements OnInit {
     if(this.growBoard){
       this.growBoard.nativeElement.onclick = (interactive ? this.layout.grow.bind(this.layout):null);
     }
-    if(this.growBoard){
-      this.growBoard.nativeElement.onclick = (interactive ? this.layout.grow.bind(this.layout):null);
-    }
     // To Do: Move Toggle Score View to Score button tab
     if(this.settings){
       this.settings.nativeElement.onclick = (interactive ? this.aria.openSettings.bind(this.aria):null);

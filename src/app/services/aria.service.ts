@@ -243,19 +243,19 @@ export class AriaService {
               }
             }
             case Actions.MoveToFirstGame:{
-              //this.keymap.set(prop, this.moveToStart.bind(this));
+              this.keymap.set(prop, this.moveToFirstGame.bind(this));
               break;
             }
             case Actions.PreviousGame:{
-              //this.keymap.set(prop, this.previous.bind(this));
+              this.keymap.set(prop, this.previousGame.bind(this));
               break;
             }
             case Actions.NextGame:{
-              //this.keymap.set(prop, this..bind(this));
+              this.keymap.set(prop, this.nextGame.bind(this));
               break;
             }
             case Actions.MoveToLastGame:{
-              //this.keymap.set(prop, this.moveToEnd.bind(this));
+              this.keymap.set(prop, this.moveToLastGame.bind(this));
               break;
             }
             default:{
@@ -275,6 +275,8 @@ export class AriaService {
     this.keymap.set('ArrowRight', this.advance.bind(this));
     this.keymap.set('ArrowLeft', this.previous.bind(this));
     this.keymap.set('i', this.rotateBoardOrientation.bind(this));
+    this.keymap.set(']', this.nextGame.bind(this));
+    this.keymap.set('[', this.previousGame.bind(this));
   }
 
   public keyEvent(event: any): void {
@@ -286,6 +288,29 @@ export class AriaService {
     }
   }
 
+  public moveToFirstGame():void{
+    if(this.currentGame != 0) {
+      this.selectGame(0);
+    }
+  }
+  public moveToLastGame():void{
+    if(this.currentGame != this._games.length-1) {
+      this.selectGame(this._games.length-1);
+    }
+  }
+  public previousGame(): void {
+    if (this.currentGame > 0) {
+      --this.currentGame;
+    }
+    if (this.currentGame >= 0) {
+      this.selectGame(this.currentGame)
+    }
+  }
+  public nextGame(): void {
+    if (this.currentGame < (this._games.length-1)) {
+      this.selectGame(++this.currentGame)
+    }
+  }
 
   public moveToStart(): void {
     this.navigateToNode(-1);
@@ -711,7 +736,7 @@ export class AriaService {
   }
 
   public updateStatus(turn: string, last?: KNode, move: any = null): void {
-    //this._status?.updateStatus(turn, last, move);
+    this._status?.updateStatus(turn, last, move);
   }
 
   public isVariantChanged(isVariant: boolean): void {
