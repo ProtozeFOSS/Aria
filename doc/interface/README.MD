@@ -311,7 +311,7 @@ if(iFrame) {
         a1 = window['ARIA'];
     }
 }        
-var theme = {boardBGDark:'brown', boardBGLight:'beige'};
+var theme = {board{darkTL:'brown', lightTL:'beige'}};
 a1.theme.setSettings(theme);
 a1.aria.loadPGN(TestPGNData);
 ```
