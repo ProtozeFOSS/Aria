@@ -28,7 +28,7 @@ There are two methods to pass settings.
 ## `Aria Service`
 The aria service works as the core. Bringing the engine together with the visual components, the responsibility of the service is to synchronize the two. Actions performed in the UX need to be passed to the engine. Events within the engine, must propagate back to the UX.
 | Property | Type | Default | Description |
-|:---------|:-----------| :------: |--------:|
+|:---------|:-----------|:------:|:--------|
 | `fen` | *Valid FEN string*  | | Sets the starting fen position of th engine and board (ignored if PGN also supplied) |
 | `pgn` | *number*  |  | Sets the PGN to the engine **Be careful not to overflow source property! If the PGN is VERY large, pass it with the `loadPGN` JS method on Aria at runtime.** |
 | `game` | *number (int)* |  | Sets the starting game (starts at 1) |
@@ -41,8 +41,26 @@ The aria service works as the core. Bringing the engine together with the visual
 ------------------------
 ### `Key Map Table`
 The following table shows what Actions can be mapped to the keyboard and their default values.
+
+**See Below** - mapping a key to `Toggle Auto Play`, `Toggle Score View`, `Auto Play Time` - *'6'* key sets the auto play count to 1251 milliseconds, `Move To First Game`, and `Move To Last Game`. Finally, the existing map of toggle auto play is cleared from `Space`.
+> Actions Can be mapped to more than one key. And the default actions must be cleared if you do not want to use them.
+```
+  // JSON
+  {
+    "aria":{
+      "keymap":{
+        "Enter":0,
+        "q":6,
+        "6:1251":11,
+        "ArrowUp":12,
+        "ArrowDown":15,
+        "Space":16
+      }
+    }
+  }
+```
 | Name | ActionID  |Default Key | Description |
-|:---------|:--:|:-------:| --------:|
+|:---------|:--:|:-------:|:--------|
 | `Toggle Auto Play` | *`0`*  |  **'Space'** | Starts and stops auto play |
 | `Rotate Board` | *`1`*  |  **'i'** | Flips player orientation (Board) |
 | `Shrink Board` | *`2`*  |  **'-'** | Shrinks the board, making more room for other elements |
@@ -59,9 +77,11 @@ The following table shows what Actions can be mapped to the keyboard and their d
 | `Previous Game` | *`13`*  |  **'['** | Back one game |
 | `Next Game` | *`14`*  |  **']'** | Advance one game |
 | `Move To Last Game` | *`15`*  |  *Not Mapped* | Navigates the current game index to the last game |
+| `Clear` | *`16`*  |  *Not Mapped* | Clears the mapped function at the key|
 
 > **Note - Many keys already have a default function in your browser.
-> Be careful not to override an important one with an `Auto Play Time` key map.**
+> Be careful not to override an important one with an `Auto Play Time` function.
+> Use the `Clear` ActionID to clear an already set key.**
 
 ## **User Experience -** *Layout and Theme Details*
 The user interface can be configured using the Aria Menu.
@@ -72,7 +92,7 @@ The Aria Menu and Aria itself do not share a codebase. This allows other menus a
 The layout service helps tune the what and where of the UX. Handling higher level layout decisions, this service is capable of drastically changing what "Aria" is.
 
 | Property | Type | Default | Description |
-|:---------|:-------------:|:-------:| --------:|
+|:---------|:-------------:|:-------:|:--------|
 | `header` | *boolean (int)*  | **false** | Enables the header visual element |
 | `score` | *boolean (int)*  | **false** | Enables the score visual element |
 | `controls` | *boolean (int)* | **false** | Enables the controls visual element |
