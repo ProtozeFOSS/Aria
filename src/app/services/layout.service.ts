@@ -9,6 +9,11 @@ import { AriaStatus } from '../aria-status/aria-status.component';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
 
+export enum LayoutDirection{
+  RightToLeft = 0,
+  LeftToRight = 1
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -26,9 +31,7 @@ export class LayoutService {
   doNotUse: number[] = [];
   preferredRatioLandscape = .75;
   preferredRatioPortrait = 0.46;
-  preferredWidthPercentage = 1.0;
-  preferredHeightPercentage = 1.0
-  layoutDirection = true;
+  layoutDirection = LayoutDirection.LeftToRight;
   gameScoreElement: HTMLElement | null = null;
   boardElement: HTMLElement | null = null;
   controlsElement: HTMLElement | null = null;
@@ -51,7 +54,7 @@ export class LayoutService {
   }
 
   private rtl(width: number, height: number) {
-    let boardWidth = Math.ceil(width * this.preferredRatioLandscape);
+    let boardWidth = Math.floor(width * this.preferredRatioLandscape);
     
     boardWidth = this.board?.setSize(boardWidth);
     boardWidth = boardWidth > (height - 2) ? height-2 : boardWidth;
@@ -149,7 +152,7 @@ export class LayoutService {
 
   private rtp(width: number, height: number) { 
     width = width < 320 ? 320:width;
-    let boardWidth = this.board?.setSize(Math.ceil(width * this.preferredRatioPortrait));
+    let boardWidth = this.board?.setSize(Math.floor(width * this.preferredRatioPortrait));
     if(boardWidth < 96) {
       boardWidth = 96;
       this.preferredRatioPortrait = (96/width);
@@ -181,11 +184,12 @@ export class LayoutService {
       }
       switch (this.state) {
         case 1: {
-          height = height < 610 ? 610: height;       
+          height = height < 610 ? 610: height;
+          const margin = (Math.floor(width - boardWidth)/2)-2;      
           if (this.layoutDirection) { // RTL
-            this.boardElement.style.marginLeft = (width - boardWidth)/2 + 'px';
+            this.boardElement.style.marginLeft =  margin + 'px';
           } else {
-            this.boardElement.style.marginRight = (width - boardWidth)/2 + 'px';
+            this.boardElement.style.marginRight = margin + 'px';
           }      
           if(this.gameScoreElement){  
             this.gameScoreElement.style.maxWidth = '';
@@ -283,13 +287,13 @@ export class LayoutService {
   public shrink() {
     if (this.landscapeOrientation.value) {
       this.preferredRatioLandscape -= .02;
-      if (this.preferredRatioLandscape < .1) {
-        this.preferredRatioLandscape = .1;
+      if (this.preferredRatioLandscape < .02) {
+        this.preferredRatioLandscape = .02;
       }
     } else {
       this.preferredRatioPortrait -= .02;
-      if (this.preferredRatioPortrait < .1) {
-        this.preferredRatioPortrait = .1;
+      if (this.preferredRatioPortrait < .02) {
+        this.preferredRatioPortrait = .02;
       }
     }
     this.resizeLayout(window.innerWidth, window.innerHeight);

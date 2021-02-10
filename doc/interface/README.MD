@@ -38,6 +38,31 @@ The aria service works as the core. Bringing the engine together with the visual
 | `interactiveScore` | *boolean (int)* |  | Sets if the moves are interactive |
 | `keymap` | *object=>{KeyName:ActionID}* |  | Sets the assigned keymap |
 
+------------------------
+### `Key Map Table`
+The following table shows what Actions can be mapped to the keyboard and their default values.
+| Name | ActionID  |Default Key | Description |
+|:---------|:--:|:-------:| --------:|
+| `Toggle Auto Play` | *`0`*  |  **'Space'** | Starts and stops auto play |
+| `Rotate Board` | *`1`*  |  **'i'** | Flips player orientation (Board) |
+| `Shrink Board` | *`2`*  |  **'-'** | Shrinks the board, making more room for other elements |
+| `Grow Board` | *`3`*  |  **'='** | Grows the board, emphasizing the game |
+| `Shrink Font` | *`4`*  |  *Not Mapped* | Decreases the scale of the Score font |
+| `Grow Font` | *`5`*  |  *Not Mapped* | Increases the scale of the Score font |
+| `Toggle Score View ` | *`6`*  |  *Not Mapped* | Toggles the current Score view type *(Flow | Table )*|
+| `Move To Start` | *`7`*  |  **'Home'** | Navigates the current move to the starting position of the game  |
+| `Previous` | *`8`*  |  **'ArrowLeft'** | Back one move |
+| `Next` | *`9`*  |  **'ArrowRight'** | Advance one move |
+| `Move To End` | *`10`*  |  **'End'** | Navigates the current move to end position of the game |
+| `Auto Play Time(x)` | *`11`*  |  *Not Mapped* | Maps an autoplay value to a key |
+| `Move To First Game` | *`12`*  |  *Not Mapped* | Navigates the current game index to the first game |
+| `Previous Game` | *`13`*  |  **'['** | Back one game |
+| `Next Game` | *`14`*  |  **']'** | Advance one game |
+| `Move To Last Game` | *`15`*  |  *Not Mapped* | Navigates the current game index to the last game |
+
+> **Note - Many keys already have a default function in your browser.
+> Be careful not to override an important one with an `Auto Play Time` key map.**
+
 ## **User Experience -** *Layout and Theme Details*
 The user interface can be configured using the Aria Menu.
 The Aria Menu and Aria itself do not share a codebase. This allows other menus and controls to be developed for Aria and integrated seamlessly. For instance, Aria by default is actually just a wrapper around Canvas Chess Board. Turn on the score, and you have a board that can be navigated by the score alone. Turn on only the controls, you have a "blind" game that can be navigated on autoplay. Enable header, score, controls, and status and you have a full blown "PGN Viewer". A combination of enabling interactive flags in Aria service and enabling components in the layout service, allows Aria to adapt to different applications. 

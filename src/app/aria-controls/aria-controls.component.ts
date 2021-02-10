@@ -121,7 +121,11 @@ export class AriaControls implements OnInit {
   }
 
   public setTimer(time: number) {
-    this.timeLeft = (time / 1000) + 's';
+    this.timeLeft = String((time / 1000));
+    if(this.timeLeft.indexOf('.') > 0) {
+      this.timeLeft = String(this.timeLeft).padEnd(4,'0');
+    }
+    this.timeLeft += 's';
   }
 
 }

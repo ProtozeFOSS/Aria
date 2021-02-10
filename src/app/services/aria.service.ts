@@ -42,7 +42,8 @@ export enum Actions {
   MoveToFirstGame = 12,
   PreviousGame = 13,
   NextGame = 14,
-  MoveToLastGame = 15
+  MoveToLastGame = 15,
+  Clear = 16
 };
 
 
@@ -76,7 +77,7 @@ export class AriaService {
 
 
   protected autoIntervalID = -1;
-  public timeLeft = 1000;
+  public timeStarted = 0;
   public UUID: string = '';
   public setName: string = '';
   public setDate: string = '';
@@ -258,6 +259,11 @@ export class AriaService {
               this.keymap.set(prop, this.moveToLastGame.bind(this));
               break;
             }
+            case Actions.Clear:{
+              if(this.keymap.has(prop)) {
+                this.keymap.set(prop,null);
+              }
+            }
             default:{
               console.log('Invalid Action ID in aria.keymap setting:' + prop + ' -> Invalid (' + actionID + ')' );
             }
@@ -402,17 +408,18 @@ export class AriaService {
     }
   }
   protected autoAdvance(): void {
-    this.timeLeft -= 100;
-    if (this._controls) {
-      this._controls.setTimer(this.timeLeft);
-    }
-    if (this.timeLeft <= 0) {
+    let millis = (this.autoPlaySpeed.value - (Date.now() - this.timeStarted));
+    if (millis <= 0) {
       if (!this.isFinalPosition()) {
         this.advance();
       } else {
         this.toggleAutoPlay();
       }
-      this.timeLeft = this.autoPlaySpeed.value;
+      this.timeStarted = Date.now();
+      millis = this.autoPlaySpeed.value;
+    }
+    if (this._controls) {
+      this._controls.setTimer(millis);
     }
   }
 
@@ -437,16 +444,16 @@ export class AriaService {
   public toggleAutoPlay(): void {
 
     if (!this.isFinalPosition() && this.autoIntervalID == -1) {
-      this.autoIntervalID = window.setInterval(this.autoAdvance.bind(this), 100);
+      this.timeStarted = Date.now();
+      this.autoIntervalID = window.setInterval(this.autoAdvance.bind(this), this.autoPlaySpeed.value / 4);
       if (this._controls) {
         this._controls.playing = true;
       }
     } else {
       window.clearInterval(this.autoIntervalID);
       this.autoIntervalID = -1;
-      this.timeLeft = this.autoPlaySpeed.value;
       if (this._controls) {
-        this._controls.setTimer(this.timeLeft);
+        this._controls.setTimer(this.autoPlaySpeed.value);
         this._controls.playing = false;
       }
     }
