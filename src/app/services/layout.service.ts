@@ -50,22 +50,22 @@ export class LayoutService {
 
   public setSettings(settings: object) {
     //@ts-ignore
-    if(settings.header) {
+    if(settings.header != undefined) {
       //@ts-ignore
       this.enableHeader = settings.header as boolean;
     }
     //@ts-ignore
-    if(settings.controls) {
+    if(settings.controls != undefined) {
       //@ts-ignore
       this.enableControls = settings.controls as boolean;
     }
     //@ts-ignore
-    if(settings.score) {
+    if(settings.score != undefined) {
       //@ts-ignore
       this.enableScore = settings.score as boolean;
     }
     //@ts-ignore
-    if(settings.status) {
+    if(settings.status != undefined) {
       //@ts-ignore
       this.enableStatus = settings.status as boolean;
     }
@@ -75,7 +75,7 @@ export class LayoutService {
       this.state = settings.state;
     }
     //@ts-ignore
-    if(settings.layoutDirection) {
+    if(settings.layoutDirection != undefined) {
       //@ts-ignore
       this.layoutDirection = settings.layoutDirection as LayoutDirection;
     }
@@ -246,18 +246,20 @@ export class LayoutService {
           height = height < 580 ? 580: height; 
           this.boardElement.style.marginLeft = '';
           if(this.gameScoreElement){         
-            const gsWidth = Math.floor(width - boardWidth) - 12;
-            const margin = (width - (boardWidth + gsWidth))/4 + 'px';
+            const gsWidth = Math.floor(width - boardWidth - 22);
+            const margin = Math.floor((width - (boardWidth + gsWidth))/4) + 'px';
             if (this.layoutDirection) { // RTL
               this.boardElement.style.order = '0';
-              this.gameScoreElement.style.order = '1';
-              this.gameScoreElement.style.marginLeft = margin; 
-              this.boardElement.style.marginLeft = margin; 
+              this.gameScoreElement.style.order = '1'; 
+              this.boardElement.style.marginLeft = margin;
+              this.gameScoreElement.style.marginRight = margin;
+              this.gameScoreElement.style.marginLeft = '2px';
             } else {
               this.boardElement.style.order = '1';
               this.gameScoreElement.style.order = '0'; 
-              this.gameScoreElement.style.marginRight = margin;
-              this.boardElement.style.marginRight = margin; 
+              this.gameScoreElement.style.marginLeft = margin;
+              this.gameScoreElement.style.marginRight = '2px';
+              this.boardElement.style.marginRight = margin;
             }
             this.gameScoreElement.style.height = (boardWidth + 4) +  'px';
             this.gameScoreElement.style.maxHeight = (boardWidth + 4) + 'px';

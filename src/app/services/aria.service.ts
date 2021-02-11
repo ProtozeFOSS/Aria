@@ -144,17 +144,18 @@ export class AriaService {
     
     if(this._board){
       // @ts-ignore
-      if(settings.interactiveBoard) {
-        this.interactiveBoard = true;
+      if(settings.interactiveBoard != undefined) {
+        // @ts-ignore
+        this.interactiveBoard = settings.interactiveBoard as boolean;
         // @ts-ignore
         this._board.setInteractive(this.interactiveBoard);
       }
       // @ts-ignore
-      if(settings.interactiveControls) {
-        this.interactiveControls = true;
+      if(settings.interactiveControls != undefined) {
+        // @ts-ignore
+        this.interactiveControls = settings.interactiveControls as boolean;
         // @ts-ignore
         this._controls.setInteractive(this.interactiveBoard);
-
       }
       // @ts-ignore
       if(settings.fen) {

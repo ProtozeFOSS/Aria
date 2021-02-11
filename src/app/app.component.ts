@@ -62,6 +62,9 @@ export class Aria {
         this.layout.resizeLayout(this.container.nativeElement.clientWidth, window.innerHeight);
       };
       window.setTimeout(()=>{this.layout.resizeLayout(this.container.nativeElement.clientWidth, window.innerHeight);},30);
+      window.setTimeout(()=>{
+        this.layout.setSettings({header:0,state:2});
+      },10000);
     }
     public registerControls(controls: AriaControls, element: HTMLElement): void {
       this.layout.controls  = controls;
