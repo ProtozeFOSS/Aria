@@ -26,7 +26,6 @@ export class LayoutService {
   gameScore: AriaScore | null = null;
   status: AriaStatus | null = null;
   board: CanvasChessBoard | null = null;
-  resizeElement: HTMLElement | null = null;
   preferredLayout: Layout = 'auto';
   doNotUse: number[] = [];
   preferredRatioLandscape = .75;
@@ -50,7 +49,51 @@ export class LayoutService {
   }
 
   public setSettings(settings: object) {
-    
+    //@ts-ignore
+    if(settings.header) {
+      //@ts-ignore
+      this.enableHeader = settings.header as boolean;
+    }
+    //@ts-ignore
+    if(settings.controls) {
+      //@ts-ignore
+      this.enableControls = settings.controls as boolean;
+    }
+    //@ts-ignore
+    if(settings.score) {
+      //@ts-ignore
+      this.enableScore = settings.score as boolean;
+    }
+    //@ts-ignore
+    if(settings.status) {
+      //@ts-ignore
+      this.enableStatus = settings.status as boolean;
+    }
+    //@ts-ignore
+    if(settings.state) {
+      //@ts-ignore
+      this.state = settings.state;
+    }
+    //@ts-ignore
+    if(settings.layoutDirection) {
+      //@ts-ignore
+      this.layoutDirection = settings.layoutDirection as LayoutDirection;
+    }
+    //@ts-ignore
+    if(settings.ratioLandscape) {
+      //@ts-ignore
+      this.preferredRatioLandscape = settings.ratioLandscape;
+    }
+    //@ts-ignore
+    if(settings.ratioPortrait) {
+      //@ts-ignore
+      this.preferredRatioPortrait = settings.ratioPortrait;
+    }
+    //@ts-ignore
+    if(settings.preferredLayout) {
+      //@ts-ignore
+      this.preferredLayout = settings.preferredLayout;
+    }
   }
 
   private rtl(width: number, height: number) {
