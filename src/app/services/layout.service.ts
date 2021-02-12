@@ -297,8 +297,8 @@ export class LayoutService {
 
   public grow() {
     this.boardRatio += .02;
-    if (innerWidth - (this.boardRatio * innerWidth) < 180) {
-      this.boardRatio = (innerWidth - 180)/innerWidth;
+    if(this.boardRatio > 1) {
+      this.boardRatio = 1;
     }
     this.resizeLayout(innerWidth, innerHeight);
   }
