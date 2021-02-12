@@ -1,5 +1,4 @@
 import { environment } from ".././environments/environment";
-
 export const TESTANNOTATION = '\n[Event \"GMA, Wijk aan Zee NED\"]\n[Site \"?\"]\n[Date \"2003.??.??\"]\n[Round \"1\"]\n[White \"V Anand\"]\n[Black \"T Radjabov\"]\n[Result \"1/2\"]\n[WhiteElo \"2750\"]\n[BlackElo \"2620\"]\n[ECO \"C12\"]\n[PlyCount \"55\"]\n[Annotator \"Hathaway\"]\n\n'
 +
 '1. e4 e6\

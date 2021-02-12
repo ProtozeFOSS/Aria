@@ -97,6 +97,8 @@ The layout service helps tune the what and where of the UX. Handling higher leve
 | `score` | *boolean (int)*  | **false** | Enables the score visual element |
 | `controls` | *boolean (int)* | **false** | Enables the controls visual element |
 | `status` | *boolean (int)* | **false** | Enables the status visual element |
+| `preferredLayout` | string value | **'auto'** | auto -> Aria chooses.'landscape' (state 2), 'portrait' (state 1) -> you choose |
+| `boardRatio` | *number (fraction 0.1->1.0)* | **.75** | Sets the ratio of the board to width .5 will make the board half the width of the window |
 
 ## `Theme Service`
  Understanding the variable naming system might help you understand the structure of the internal theme service. The theme service is used to **style** Aria. Colors, font sizes, families, etcetera can be configured through the Theme setting. **SKIP** to the `Variable Tables` section for the full list of variable names and descriptions. Otherwise, below is a breakdown of how variable names are produced.

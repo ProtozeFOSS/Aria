@@ -8,7 +8,7 @@ import { AriaService } from './services/aria.service';
 import { AriaControls } from './aria-controls/aria-controls.component';
 import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/themes.service';
-
+//import { TESTANNOTATION, TestPGNData } from './test-pgn';
 enum JSRPC {
   setPGN = 'setPGN',
   onSettings = 'onSettings',

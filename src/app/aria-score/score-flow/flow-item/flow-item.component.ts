@@ -134,6 +134,11 @@ export class FlowItem implements OnInit, AfterViewInit, OnChanges {
 
   clickMove(): void {
     if (this.data.move) {
+      var target = (this.data.move.fullMoveNumber() - 1) * 2;
+      if ((this.data.type & GameScoreType.HalfPly) == GameScoreType.HalfPly) {
+        ++target;
+      }
+      this.aria.navigateToNode(target);
       const variations = this.data.move.variations();
       if (variations.length > 0) {
         this.aria.displayVariations(this.data);
