@@ -10,9 +10,9 @@
         </button>
     </div>
     <div class="player-section{{layout.state}}" #playerSectionElement>
-        <player-showcase [name]="white" [elo]="whiteElo" [playerData]="whiteData" class="player-showcase{{layout.state}}" #whiteShowcaseElement>
+        <player-showcase [name]="white" [elo]="whiteElo" [born]="whiteData.born" [playerElo]="whiteData.elo" [playerImage]="whiteData.image" class="player-showcase{{layout.state}}" #whiteShowcaseElement>
         </player-showcase>
-        <player-showcase [name]="black" [color]="true" [elo]="blackElo" [playerData]="blackData" class="player-showcase{{layout.state}}" #blackShowcaseElement>
+        <player-showcase [name]="black" [color]="true" [elo]="blackElo" [born]="blackData.born" [playerElo]="blackData.elo" [playerImage]="blackData.image" class="player-showcase{{layout.state}}" #blackShowcaseElement>
         </player-showcase>
     </div>
     <div class="result-section{{layout.state}}" #resultSectionElement>

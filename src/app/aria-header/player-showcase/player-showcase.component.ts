@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LayoutService } from 'src/app/services/layout.service';
 import { environment } from '../../../environments/environment';
-import { STOCK_IMAGE, PlayerData } from '../../services/aria.service';
+import { STOCK_IMAGE } from '../../services/aria.service';
 @Component({
   selector: 'player-showcase',
   templateUrl: './player-showcase.component.html',
@@ -12,7 +12,9 @@ export class PlayerShowcase implements OnInit {
   @Input() color: boolean = false;
   @Input() elo: string = '';
   @Input() title: string = '';
-  @Input() playerData: PlayerData = { image: STOCK_IMAGE }
+  @Input() playerImage = STOCK_IMAGE;
+  @Input() playerElo = '';
+  @Input() born = '';
   environment = environment;
   constructor(public layout: LayoutService) { }
 

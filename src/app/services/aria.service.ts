@@ -10,16 +10,8 @@ import { AriaControls } from '../aria-controls/aria-controls.component';
 import { Aria } from '../app.component';
 import { AriaHeader } from '../aria-header/aria-header.component';
 import { environment } from '../../environments/environment';
-import { trimTrailingNulls } from '@angular/compiler/src/render3/view/util';
-export interface PlayerData {
-  born?: string;
-  elo?: number;
-  image?: string;
-}
-export interface GameData {
-  opening?: string;
-  country?: string;
-}
+import { ThemeService } from './themes.service';
+import { LayoutService } from './layout.service';
 
 export enum ScoreViewType {
   Table = 101,
@@ -49,7 +41,7 @@ export enum Actions {
 
 
 
-export const STOCK_IMAGE = environment.imagesPath + 'player.png';
+export const STOCK_IMAGE = 'player.png';
 
 @Injectable({
   providedIn: 'root'
@@ -81,12 +73,9 @@ export class AriaService {
   public UUID: string = '';
   public setName: string = '';
   public setDate: string = '';
-  public playerData: object = {};
   public interactiveBoard = false;
   public interactiveControls = true;
   public interactiveScore = true;
-  public gameData = [];
-
 
   private _games: ChessGame[] = [];
   private _game: ChessGame | null = null;
@@ -102,11 +91,13 @@ export class AriaService {
   private _controls: AriaControls | null = null;
   private _header: AriaHeader | null = null;
   private _app: Aria | null = null;
+  private layout: LayoutService | null = null;
+  private theme: ThemeService | null = null;
   readonly isVariant = new BehaviorSubject<boolean>(false);
 
   // Keymap
   @Output() keymap: Map<string, any> = new Map<string, any>();
-
+  @Output() PGNMeta: object = {};
   // Visual Settings
   constructor() {
     this.figurineNotation.subscribe((figurineNotation: boolean) => {
@@ -129,6 +120,22 @@ export class AriaService {
   public settings(): object {
     var settings = {};
     return settings;
+  }
+
+  public setPGNMetaHash(hash: any) {
+    if(hash) {
+      try{
+       const data =  atob(hash);
+       const object = JSON.parse(data);
+       this.setPGNMetaObject(object);
+      } catch{
+        console.log('Bad data passed to Aria.setPGNMetaHash!!');
+      }
+    }
+  }
+  public setPGNMetaObject(data: object) {
+    this.PGNMeta = data;
+    this._header?.refreshMetaData(this.PGNMeta);
   }
 
   public loadUrlHash(data: string) {
@@ -201,14 +208,14 @@ export class AriaService {
               break;
             }
             case Actions.ShrinkBoard:{
-              if(this._app && this._app.layout) {
-                this.keymap.set(prop, this._app.layout.shrink.bind(this._app.layout));
+              if(this._app && this.layout) {
+                this.keymap.set(prop, this.layout.shrink.bind(this.layout));
               }
               break;
             }
             case Actions.GrowBoard:{
-              if(this._app && this._app.layout) {
-                this.keymap.set(prop, this._app.layout.grow.bind(this._app.layout));
+              if(this._app && this.layout) {
+                this.keymap.set(prop, this.layout.grow.bind(this.layout));
               }
               break;
             }
@@ -281,8 +288,8 @@ export class AriaService {
     this.keymap.set('End', this.moveToEnd.bind(this));
     this.keymap.set('ArrowRight', this.advance.bind(this));
     this.keymap.set('ArrowLeft', this.previous.bind(this));
-    this.keymap.set('-', ()=>{this._app.layout.shrink()});
-    this.keymap.set('=', ()=>{this._app.layout.grow()});
+    this.keymap.set('-', ()=>{this.layout.shrink()});
+    this.keymap.set('=', ()=>{this.layout.grow()});
     this.keymap.set('i', this.rotateBoardOrientation.bind(this));
     this.keymap.set(']', this.nextGame.bind(this));
     this.keymap.set('[', this.previousGame.bind(this));
@@ -405,7 +412,7 @@ export class AriaService {
     }
     if (this._score) {
       this._score.updateSelection();
-      window.setTimeout(()=>{this._app.layout.sendLayoutChanged(window.innerWidth,window.innerHeight,this._app.layout.state)},100);
+      window.setTimeout(()=>{this.layout.sendLayoutChanged(window.innerWidth,window.innerHeight,this.layout.state)},100);
     }
   }
   protected autoAdvance(): void {
@@ -493,78 +500,6 @@ export class AriaService {
   }
 
   public loadPGN(pgn: string) {
-    let fIndex = pgn.indexOf('[Set ');
-    if (fIndex >= 0) {
-      const endSet = pgn.indexOf(']', fIndex);
-      const setName = pgn.slice(fIndex, endSet + 1);
-      if (setName.length > 0 && setName.length < 240) {
-        this.setName = setName.slice(6, -2);
-      }
-      pgn = pgn.replace(setName, '');
-    }
-    fIndex = pgn.indexOf('[SetDate ');
-    if (fIndex >= 0) {
-      const endSet = pgn.indexOf(']', fIndex);
-      const setDate = pgn.slice(fIndex, endSet + 1);
-      if (setDate.length > 0 && setDate.length < 60) {
-        this.setDate = setDate.slice(10, -2);
-      }
-      pgn = pgn.replace(setDate, '');
-    }
-    fIndex = pgn.indexOf('[PlayerImages ');
-    let imagePath = '';
-    if (fIndex >= 0) {
-      const endSet = pgn.indexOf(']', fIndex);
-      const iPath = pgn.slice(fIndex, endSet + 1);
-      if (endSet >= 0 && endSet - fIndex <= 120) {
-        imagePath = iPath.slice(15, -2);
-      }
-      pgn = pgn.replace(iPath, '');
-    }
-    fIndex = pgn.indexOf('[PlayerData ');
-    this.playerData = {};
-    if (fIndex >= 0) {
-      const endSet = pgn.indexOf(']', fIndex);
-      const pData = pgn.slice(fIndex, endSet + 1);
-      if (endSet >= 0 && endSet - fIndex <= 1500) {
-        const data = pData.slice(13, -2);
-        if (data.length > 0) {
-          try {
-            this.playerData = JSON.parse(data) as object;
-            if (this.playerData) {
-              for (let k in this.playerData) {
-                // @ts-ignore
-                let pdata = this.playerData[k];
-                if (pdata.image) {
-                  pdata.image = imagePath + pdata.image;
-                }
-              }
-            }
-          } catch (ex) {
-            console.log('Bad parse on JSON player data');
-          }
-        }
-      }
-      pgn = pgn.replace(pData, '');
-    }
-    fIndex = pgn.indexOf('[GameData ');
-    this.gameData = [];
-    if (fIndex >= 0) {
-      let endSet = pgn.indexOf(']', fIndex);
-      endSet = pgn.indexOf(']', endSet + 1);
-      const pData = pgn.slice(fIndex, endSet + 1);
-      if (endSet >= 0 && endSet - fIndex <= 1500) {
-        const data = pData.slice(11, -2);
-        if (data.length > 0) {
-          try {
-            this.gameData = JSON.parse(data);
-          } catch (ex) {
-            console.log('Bad parse on JSON for game data');
-          }
-        }
-      }
-      pgn = pgn.replace(pData, '');
-    }
     this._games = ChessGame.parsePGN(this, pgn);
     if (this._games.length > 0) {
       const game = this._games[0];
@@ -597,17 +532,19 @@ export class AriaService {
           this.gameResult = result;
         }
         if (this._header) {
-          this._header.setHeader(headerData);
+          this._header.setHeader(headerData, this.PGNMeta);
           this._header.currentGame = index;
           this._header.gameCount = this._games.length;
         }
       }
-      window.setTimeout(()=>{this._app.layout.resizeLayout(document.body.clientWidth,window.innerHeight)},1);
+      window.setTimeout(()=>{this.layout.resizeLayout(document.body.clientWidth,window.innerHeight)},1);
     }
   }
 
   public attachAria(aria: Aria) {
     this._app = aria;
+    this.layout = aria.layout;
+    this.theme = aria.theme;
     this.attachScore(aria.gameScoreComponent);
     this.attachBoard(aria.canvasBoardComponent);
     this.attachHeader(aria.headerComponent);
@@ -661,7 +598,7 @@ export class AriaService {
           this.gameResult = result;
         }
         if (this._header) {
-          this._header.setHeader(headerData);
+          this._header.setHeader(headerData,this.PGNMeta);
           this._header.currentGame = this.currentGame;
           this._header.gameCount = this._games.length;
         }
@@ -784,19 +721,6 @@ export class AriaService {
   public getBoard(): CanvasChessBoard | null {
     return this._board;
   }
-
-  public getPlayerData(player: string): PlayerData | null {
-    // @ts-ignore
-    return this.playerData[player] as PlayerData;
-  }
-
-  public getGameData(index: number): GameData | null {
-    if (this.gameData.length > index && index >= 0) {
-      return this.gameData[index] as GameData;
-    }
-    return null;
-  }
-
 
   // engine interface
   public isMoveDescriptor(move: any): boolean {

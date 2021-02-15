@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, Output, Renderer2, ViewChild } fr
 import { environment } from '../../environments/environment';
 import { AriaScore } from '../aria-score/aria-score.component';
 import { LayoutService } from '../services/layout.service';
-import { STOCK_IMAGE, PlayerData, AriaService } from '../services/aria.service';
+import { STOCK_IMAGE,  AriaService } from '../services/aria.service';
 @Component({
   selector: 'aria-header',
   templateUrl: './aria-header.component.html',
@@ -16,8 +16,8 @@ export class AriaHeader implements OnInit {
   @Input() setDate: string = '';
   @Input() white: string = '';
   @Input() black: string = '';
-  @Input() whiteData: PlayerData = { image: environment.imagesPath + "player.png" };
-  @Input() blackData: PlayerData = { image: environment.imagesPath + "player.png" };
+  @Input() whiteData = { image: STOCK_IMAGE, elo:'', born:'' };
+  @Input() blackData = { image: STOCK_IMAGE, elo:'', born:'' };
   @Input() whiteElo: string = '';
   @Input() blackElo: string = '';
   @Input() round = '';
@@ -51,7 +51,7 @@ export class AriaHeader implements OnInit {
     this.aria.attachHeader(this);
   }
 
-  setHeader(map: Map<string, string>): void {
+  setHeader(map: Map<string, string>, meta: object): void {
     this.eventDate = this.aria.setDate;
     const event = map.get('Event');
     if (event) {
@@ -64,43 +64,10 @@ export class AriaHeader implements OnInit {
     const white = map.get('White');
     if (white) {
       this.white = white;
-      const pdata = this.aria.getPlayerData(white) as PlayerData;
-      if (pdata) {
-        this.whiteData = pdata;
-        if (!pdata.image) {
-          this.whiteData.image = STOCK_IMAGE;
-        }
-      } else {
-        this.whiteData = { image: STOCK_IMAGE } as PlayerData;
-      }
     }
     const black = map.get('Black');
     if (black) {
       this.black = black;
-      const pdata = this.aria.getPlayerData(black) as PlayerData | null;
-      if (pdata) {
-        this.blackData = pdata;
-        if (!pdata.image) {
-          this.blackData.image = STOCK_IMAGE;
-        }
-      } else {
-        this.blackData = { image: STOCK_IMAGE } as PlayerData;
-      }
-    }
-    const gameData = this.aria.getGameData(this.currentGame);
-    if (gameData) {
-      if (gameData.opening)
-        this.opening = gameData.opening;
-      else this.opening = '';
-
-      if (gameData.country) {
-        this.siteFlag = environment.flagsPath + gameData.country + '.png';
-      } else {
-        this.siteFlag = '';
-      }
-    } else {
-      this.opening = '';
-      this.siteFlag = '';
     }
     const site = map.get('Site');
     if (site) {
@@ -136,6 +103,7 @@ export class AriaHeader implements OnInit {
         this.trophySource = '';
         return;
       }
+      this.refreshMetaData(meta);
       this.result = result + ' in ' + this.aria.getPlyCount() + ' moves';
       if (result == '1-0') {
         this.trophySource = environment.imagesPath + 'wwins.png';
@@ -149,6 +117,48 @@ export class AriaHeader implements OnInit {
         this.trophySource = environment.imagesPath + 'draw.png';
         return;
       }
+    }
+  }
+
+  public refreshMetaData(data: object) {
+    if(data[this.white]) { // whites player data
+      const pdata = data[this.white];
+      if(!pdata.image) {
+        pdata.image = STOCK_IMAGE;
+      } 
+      this.whiteData = pdata;
+    }else {
+      this.whiteData = {image:STOCK_IMAGE, elo:"", born:""};
+    }
+    if(data[this.black]) { 
+      const pdata = data[this.black];
+      if(!pdata.image) {
+        pdata.image = STOCK_IMAGE;
+      }
+      this.blackData = pdata;
+    }else {
+      this.blackData = {image:STOCK_IMAGE, elo:"", born:""};
+    }
+    const ghash = btoa(this.event + this.white + this.black + this.eventDate + this.round).toString();
+    if(data[ghash]) {
+      const gameData = data[ghash];
+      if (gameData) {
+        if (gameData.opening)
+          this.opening = gameData.opening;
+        else this.opening = '';
+
+        if (gameData.country) {
+          this.siteFlag = environment.flagsPath + gameData.country + '.png';
+        } else {
+          this.siteFlag = '';
+        }
+      } else {
+        this.opening = '';
+        this.siteFlag = '';
+      }
+    }else {
+      this.opening = '';
+      this.siteFlag = '';
     }
   }
 

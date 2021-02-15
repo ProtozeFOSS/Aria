@@ -37,13 +37,6 @@
     left:0px;
     overflow: hidden;
     max-height:unset;
-
-}.header3{
-    @extend .header;
-
-}.header4{
-    @extend .header;
-
 }
 
 
@@ -60,16 +53,7 @@
     @extend .board;
     position:relative;
     flex-grow: 1;
-}.board3{
-    @extend .board;
-    position:absolute;
-
-}.board4{
-    @extend .board;
-    position:absolute;
-
 }
-
 .score{
     position:relative;
 }.score1{
@@ -99,13 +83,6 @@
     width:100%;
 }.controls2{
     @extend .controls1;
-}.controls3{
-    @extend .controls;
-    left:unset;
-    right: 0px; 
-    bottom: 64px;
-}.controls4{
-    @extend .controls3;
 }
 
 .status{
@@ -116,15 +93,8 @@
     right:unset;
     bottom:unset;
 }.status2{
-    @extend .status1; 
+    @extend .status1;
     order:4;
     right:unset;
     bottom:unset;
-}.status3{
-    position:absolute;
-    @extend .status;
-    right:0px;
-    bottom:8px;
-}.status4{
-    @extend .status3;
 }
