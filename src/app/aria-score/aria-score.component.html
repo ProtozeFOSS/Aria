@@ -1,6 +1,11 @@
 <div class="container" #container>
 <div class="titleContainer" #title>
     <div class="scoreText">Score</div>
+    <div class="toggleView" (click)="toggleViewType()">
+        <svg class="feather">
+            <use  attr.xlink:href="{{(viewIcon | iconpipe)}}" />
+        </svg>
+    </div>
     <div class="shrinkFont" (mousedown)="startShrink()" (mouseleave)="stopShrink()" (mouseup)="stopShrink()">
         <svg class="feather">
             <use  attr.xlink:href="{{(theme.gsIconSF | iconpipe)}}" />

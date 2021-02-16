@@ -10,6 +10,8 @@ import { ScoreTable } from './score-table/score-table.component';
 const icons = {
   Smaller : 'chevron-down',
   Larger : 'chevron-up',
+  TableView : 'align-justify',
+  FlowView : 'align-left'
 }
 
 @Component({
@@ -29,10 +31,15 @@ export class AriaScore implements OnInit {
   ScoreViewType = ScoreViewType;
   @Input() fontScale = 1.0; //TODO: Move out to Aria
   scaleTimer = null;
+  @Input() viewIcon = icons.FlowView;
   icons = icons;
 
   constructor(public aria: AriaService, public layout: LayoutService, public theme: ThemeService) {
-
+    if(this.aria.scoreViewType.value == ScoreViewType.Flow){
+      this.viewIcon = icons.TableView;
+    } else {
+      this.viewIcon = icons.FlowView;
+    }
   }
 
   ngOnInit(): void {
@@ -58,6 +65,15 @@ export class AriaScore implements OnInit {
     }
   }
 
+
+  public toggleViewType() {
+    this.aria.toggleScoreType();
+    if(this.aria.scoreViewType.value == ScoreViewType.Flow){
+      this.viewIcon = icons.TableView;
+    } else {
+      this.viewIcon = icons.FlowView;
+    }
+  }
 
   public updateSelection(): void {
     window.setTimeout(() => { this.selectGameScoreItem(this.aria.currentIndex); }, 5);

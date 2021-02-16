@@ -44,13 +44,28 @@
   fill:none;
 }
 
+.toggleView{
+  @extend .noselect;
+  width:$gsWidthTV;
+  max-width:$gsWidthTV;
+  height:$gsHeightTV;
+  max-height:$gsHeightTV;
+  stroke-width: 3;
+  stroke:$gsStrokeTV;
+  background: $gsBackgroundTV;
+  border: $gsBorderTV;
+  padding: $gsPaddingTV;
+  margin: $gsMarginTV;
+  border-radius: $gsBorderRadiusTV;
+}
+
 .shrinkFont{
   @extend .noselect;
   width:$gsWidthSF;
   max-width:$gsWidthSF;
   height:$gsHeightSF;
   max-height:$gsHeightSF;
-  stroke-width: 3;
+  stroke-width: $gsStrokeWidthSF;
   stroke:$gsStrokeSF;
   background: $gsBackgroundSF;
   border: $gsBorderSF;

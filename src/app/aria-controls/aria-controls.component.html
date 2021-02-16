@@ -25,14 +25,6 @@
                 <use attr.xlink:href={{icons.Pawn|iconpipe}} />
         </svg>
     </div>
-    <div class="buttonQA toggleScore" #view>
-        <svg class="featherThicc">
-                <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Flow) ? 'visible':'hidden'}"
-                attr.xlink:href={{icons.FlowScore|iconpipe}} />
-                <use [ngStyle]="{'visibility': (aria.scoreViewType.value === ScoreViewType.Table) ? 'visible':'hidden'}"
-                attr.xlink:href={{icons.TableScore|iconpipe}} />
-        </svg>
-</div>
     <div class="buttonQA settings" #settings>
         <svg class="featherThicc">
                 <use [ngStyle]="{'visibility':aria.showSettings.value  ? 'visible':'hidden'}"

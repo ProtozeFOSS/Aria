@@ -128,15 +128,6 @@
     bottom:4px;
 }
 
-.toggleScore {
-    @extend .buttonQA;
-    position:absolute;
-    width: 12%;
-    right: calc(4% + 2px);
-    top: 4px;
-    bottom:4px; 
-}
-
 .settings{
     @extend .buttonQA;
     position:absolute;

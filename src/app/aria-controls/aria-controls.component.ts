@@ -5,8 +5,6 @@ import { LayoutService } from '../services/layout.service';
 
 const icons = {
   Settings : 'sliders',
-  FlowScore : 'align-left',
-  TableScore : 'align-justify',
   Pawn : 'pawn-icon',
   Flip : 'refresh-cw',
   Play : 'play',
@@ -32,7 +30,6 @@ export class AriaControls implements OnInit {
   @ViewChild('shrinkBoard') shrinkBoard!: ElementRef | null;
   @ViewChild('growBoard') growBoard!: ElementRef | null;
   @ViewChild('settings') settings!: ElementRef | null;
-  @ViewChild('view') view!: ElementRef | null;
   @ViewChild('start') start!: ElementRef | null;
   @ViewChild('previous') previous!: ElementRef | null;
   @ViewChild('next') next!: ElementRef | null;
@@ -89,12 +86,14 @@ export class AriaControls implements OnInit {
     }
     if(this.aria.showSettings.value) {
       this.renderer.setStyle(this.settings.nativeElement, 'width', '8%');
-      this.renderer.setStyle(this.view.nativeElement, 'right', ((width * .08) + 2) + 'px');
-      this.renderer.setStyle(this.view.nativeElement, 'width',  '12%');
+      this.renderer.setStyle(this.growBoard.nativeElement, 'right', ((width * .08) + 2) + 'px');
+      this.renderer.setStyle(this.growBoard.nativeElement, 'width',  '12%');
+      this.renderer.setStyle(this.settings.nativeElement, 'right', '2px');
+      this.renderer.setStyle(this.settings.nativeElement, 'width',  '16%');
     } else {
-      this.renderer.setStyle(this.view.nativeElement, 'right', '2px');
+      this.renderer.setStyle(this.growBoard.nativeElement, 'right', '2px');
       this.renderer.setStyle(this.settings.nativeElement, 'width', '0px');
-      this.renderer.setStyle(this.view.nativeElement, 'width',  '16%');
+      this.renderer.setStyle(this.growBoard.nativeElement, 'width',  '16%');
     }
     let startW = Math.ceil(width* .125);
     startW = (startW % 2 == 0) ? startW : startW + 1;

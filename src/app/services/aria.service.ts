@@ -490,17 +490,13 @@ export class AriaService {
     return 0;
   }
 
-
-  public toggleGameScoreViewType(): void {
-    if (this.scoreViewType.value === ScoreViewType.Flow) {
-      this.scoreViewType.next(ScoreViewType.Table);
-    } else {
-      this.scoreViewType.next(ScoreViewType.Flow);
-    }
-  }
-
   public loadPGN(pgn: string) {
-    this._games = ChessGame.parsePGN(this, pgn);
+    try{
+      this._games = ChessGame.parsePGN(this, pgn);
+    } catch(error) {
+      console.log('Caught Parsing Error for PGN');
+      console.log(error);
+    }
     if (this._games.length > 0) {
       const game = this._games[0];
       this._game = game;

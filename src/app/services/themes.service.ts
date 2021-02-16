@@ -181,10 +181,21 @@ export class ThemeService {
     document.documentElement.style.setProperty('--gsBorderST', 'none');
     document.documentElement.style.setProperty('--gsBorderRadiusST', '2px');
 
+    // Game Score Toggle View
+    document.documentElement.style.setProperty('--gsWidthTV', '20px');
+    document.documentElement.style.setProperty('--gsHeightTV', '20px');
+    document.documentElement.style.setProperty('--gsStrokeWidthTV', '1.5');
+    document.documentElement.style.setProperty('--gsStrokeTV', 'yellow');
+    document.documentElement.style.setProperty('--gsBackgroundTV', '#0c0c0c6b');
+    document.documentElement.style.setProperty('--gsMarginTV', '-3px 3px 0px 0px');
+    document.documentElement.style.setProperty('--gsPaddingTV', '2px 3px 3px 3px');
+    document.documentElement.style.setProperty('--gsBorderTV', 'none');
+    document.documentElement.style.setProperty('--gsBorderRadiusTV', '4px');
+
     // Game Score Shrink Font
     document.documentElement.style.setProperty('--gsWidthSF', '20px');
     document.documentElement.style.setProperty('--gsHeightSF', '20px');
-    document.documentElement.style.setProperty('--gsStrokeWidthSF', '1.5');
+    document.documentElement.style.setProperty('--gsStrokeWidthSF', '3');
     document.documentElement.style.setProperty('--gsStrokeSF', '#ee75ff');
     document.documentElement.style.setProperty('--gsBackgroundSF', '#0c0c0c6b');
     document.documentElement.style.setProperty('--gsMarginSF', '-3px 3px 0px 0px');
