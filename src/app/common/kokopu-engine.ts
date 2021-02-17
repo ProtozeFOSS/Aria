@@ -300,6 +300,113 @@ export class ChessGame {
         return map;
     }
 
+    public generateRecursiveVariation(vindex: number, variations: [KVariation], followsComment: boolean): string {
+        let variationPGN = '';
+        let variation = variations[vindex];
+        if(variation) {
+            let current = variation.first();
+            variationPGN += ' (' + this.printPGNLine(current, true, followsComment) + ') ';
+        }
+        return variationPGN;
+    }
+
+    public printPGNLine(current: KNode, recursive = false, followsComment = false): string {
+        let pgn = '';
+        while(current){
+            const currentPly = current.fullMoveNumber();
+            if(current.moveColor() == 'w' ){ // white
+                pgn += (` ${currentPly}.` + current.notation());
+            } else {
+                if(recursive || followsComment) { 
+                    pgn += (` ${currentPly}...` + current.notation());
+                }else {
+                    pgn += ' ' + current.notation();
+                }
+            }
+            const comment = current.comment();
+            if(comment && comment.length > 0) {
+                pgn += ` { ${comment} } `;
+                followsComment = true;
+            } else {
+                followsComment = false;
+            }
+            const variations = current.variations();
+            for( let i = 0; i < variations.length; ++i){
+                pgn += this.generateRecursiveVariation(i, variations, followsComment);
+            }
+            current = current.next();
+        }        
+        return pgn;
+    }
+
+    public generatePGNHeader(): string {
+        let pgn = '';
+        if(this.game) {
+            pgn += '[Event "' + this.game.event() + '"]\n';
+            const site = this.game.site();
+            if(site){
+                pgn += `[Site "${site}"]\n`;
+            }
+            const date =this.game.date();
+            if(date) {
+                let dateString = '';
+                if (date.toDateString) {
+                    dateString = date.toDateString();
+                } else {
+                    if (date.month) {
+                        dateString += date.month;
+                    }
+                    if (date.year) {
+                        if (dateString.length > 0) {
+                            dateString += ' of ';
+                        }
+                        dateString += date.year;
+                    }
+                }
+                if (dateString.length == 0) {
+                    if (date.toString) {
+                        dateString = date.toString();
+                    }
+                }                
+                pgn += `[Date "${dateString}"]\n`;
+            }
+            pgn += '[Round "' + this.game.round() + '"]\n';
+            pgn += '[White "' + this.game.playerName('w') + '"]\n';
+            pgn += '[Black "' + this.game.playerName('b') + '"]\n';
+            pgn += '[Result "' + this.game.result() + '"]\n';
+            const startFEN = this.game.initialPosition().fen();
+            if(startFEN != 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'){                
+                pgn += `[FEN "${startFEN}"]\n`;
+            }
+            const variant = this.game.variant();
+            if(variant !== 'regular') {
+                pgn += `[Variant "${variant}"]\n`;
+            }
+            if(this.game.playerElo('w')){
+                pgn += '[WhiteElo "' + this.game.playerElo('w') + '"]\n';
+            }
+            if(this.game.playerElo('b')){
+                pgn += '[BlackElo "' + this.game.playerElo('b') + '"]\n';
+            }
+            if(this.game.playerTitle('w')){
+                pgn += '[WhiteTitle "' + this.game.playerTitle('w') + '"]\n';
+            }
+            if(this.game.playerTitle('b')){
+                pgn += '[BlackTitle "' + this.game.playerTitle('b') + '"]\n';
+            }
+            pgn += '[Annotator "' + this.game.annotator() + '"]\n';
+        }
+        return pgn.length ? pgn+'\n':'';
+    }
+    public generatePGN(): string {
+        let pgn = this.generatePGNHeader();
+        let last = null;
+        let current = this.startNode;
+        pgn += this.printPGNLine(current, last);
+        pgn += ' ' + this.game?.result();
+        return pgn;
+    }
+
     public generateGameScore(): GameScoreItem[] {
         let items = Array<GameScoreItem>();
         let gItem = null;

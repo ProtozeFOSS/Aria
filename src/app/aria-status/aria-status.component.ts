@@ -25,7 +25,7 @@ export class AriaStatus implements OnInit {
 
   sendForAnalysis(): void {
     if (this.lastNode) {
-      let fen = this.aria.gameFEN();
+      let fen = this.aria.FEN();
       var addr = 'http://www.chessgames.com/perl/nph-analysis_prereq?atype=FEN&fen=';
       addr += fen.split(" ").join("%20");
       addr += '&move=';

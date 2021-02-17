@@ -431,6 +431,17 @@ export class AriaService {
     }
   }
 
+  protected generateGamePGN(index:number): string{
+    let output = '';
+    if(index >= 0 && index < this._games.length) {
+      const game = this._games[index];      
+      if(game){
+        output = game.generatePGN();        
+      }
+    }
+    return output;
+  }
+
   protected createJsonSettings(): string {
     if (this._app) {
       return this._app.getJsonSettings();
@@ -555,6 +566,18 @@ export class AriaService {
   public attachBoard(board: CanvasChessBoard) {
     this._board = board;
     this._app?.registerBoard(board, document.getElementById('ccb-'+ this.UUID));
+  }
+
+  public gamePGN(game: number): string{
+    return this.generateGamePGN(game);
+  }
+
+  public PGN(): string {
+    let pgn = '';
+    for(let g =0; g < this._games.length; ++g) {
+      pgn += this.generateGamePGN(g) + '\n\n';
+    }
+    return pgn;
   }
 
   public attachScore(score: AriaScore): void {
