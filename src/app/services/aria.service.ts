@@ -746,7 +746,7 @@ export class AriaService {
     return ChessGame.isMoveDescriptor(move);
   }
 
-  public gameFEN(): string {
+  public FEN(): string {
     let fen = '';
     if (this._game) {
       return this._game.getPosition().fen();

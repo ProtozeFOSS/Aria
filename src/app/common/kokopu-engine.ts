@@ -400,9 +400,8 @@ export class ChessGame {
     }
     public generatePGN(): string {
         let pgn = this.generatePGNHeader();
-        let last = null;
         let current = this.startNode;
-        pgn += this.printPGNLine(current, last);
+        pgn += this.printPGNLine(current);
         pgn += ' ' + this.game?.result();
         return pgn;
     }
