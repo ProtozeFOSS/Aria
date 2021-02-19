@@ -1,5 +1,5 @@
-import { Injectable, Output, Input } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Injectable, Output,  ElementRef } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { GameScoreItem, ChessGame, GameScoreType, ChessMove } from '../common/kokopu-engine';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
 import { AriaScore } from '../aria-score/aria-score.component';
@@ -12,6 +12,7 @@ import { AriaHeader } from '../aria-header/aria-header.component';
 import { environment } from '../../environments/environment';
 import { ThemeService } from './themes.service';
 import { LayoutService } from './layout.service';
+import { AriaCMenu } from '../aria-cmenu/aria-cmenu.component';
 
 export enum ScoreViewType {
   Table = 101,
@@ -91,12 +92,14 @@ export class AriaService {
   private _controls: AriaControls | null = null;
   private _header: AriaHeader | null = null;
   private _app: Aria | null = null;
+  private _cmenu: AriaCMenu | null = null;
   private layout: LayoutService | null = null;
   private theme: ThemeService | null = null;
   readonly isVariant = new BehaviorSubject<boolean>(false);
 
   // Keymap
   @Output() keymap: Map<string, any> = new Map<string, any>();
+  @Output() contextMap: Map<string,()=>void> = new Map<string, ()=>void>();
   @Output() PGNMeta: object = {};
   // Visual Settings
   constructor() {
@@ -147,8 +150,17 @@ export class AriaService {
     }
   }
 
+  public setContextMenuItem(name: string, callback: ()=>void): void {
+    this.contextMap.set(name, callback);
+  }
+
+  public clearContextMenuItem(name:string): boolean {
+    if(this.contextMap.has(name)){
+      return this.contextMap.delete(name);
+    }return false;
+  }
+
   public setSettings(settings: object) {
-    
     if(this._board){
       // @ts-ignore
       if(settings.interactiveBoard != undefined) {
@@ -557,6 +569,7 @@ export class AriaService {
     this.attachHeader(aria.headerComponent);
     this.attachControls(aria.controlsComponent);
     this.attachStatus(aria.statusComponent);
+    this.attachCMenu(aria.menuComponent);
   }
 
   public attachControls(controls: AriaControls) {
@@ -628,6 +641,11 @@ export class AriaService {
   public attachStatus(status: AriaStatus): void {
     this._status = status;
     this._app?.registerStatus(status, document.getElementById('status-'+ this.UUID));
+  }
+
+  public attachCMenu(menu: AriaCMenu): void {
+    this._cmenu = menu;
+    this._app?.registerMenu(menu, document.getElementById('cmenu-'+this.UUID));
   }
 
   public editComment(data: GameScoreItem): void {

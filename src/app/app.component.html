@@ -11,4 +11,5 @@
 <aria-score *ngIf="layout.enableScore && layout.state == 1" id="score-{{aria.UUID}}" class="score{{layout.state}}"></aria-score>
 <aria-controls *ngIf="layout.enableControls" id="controls-{{aria.UUID}}"  class="controls{{layout.state}}"></aria-controls>
 <aria-status *ngIf="layout.enableStatus" id="status-{{aria.UUID}}"  class="status{{layout.state}}"></aria-status>
+<aria-cmenu *ngIf="layout.enableControls" id="cmenu-{{aria.UUID}}" ></aria-cmenu>
 </div>

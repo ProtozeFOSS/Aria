@@ -47,32 +47,58 @@ export class AriaControls implements OnInit {
 
   public setInteractive(interactive: boolean) {
     if(this.autoPlay){
+      this.autoPlay.nativeElement.style.cursor = 'pointer';
       this.autoPlay.nativeElement.onclick = (interactive ? this.aria.toggleAutoPlay.bind(this.aria):null);
+    }else {
+      this.autoPlay.nativeElement.style.cursor = 'default';
     }
     if(this.rotateBoard){
+      this.rotateBoard.nativeElement.style.cursor = 'pointer';
       this.rotateBoard.nativeElement.onclick = (interactive ? this.aria.rotateBoardOrientation.bind(this.aria):null);
+    }else {
+      this.rotateBoard.nativeElement.style.cursor = 'default';
     }
     if(this.shrinkBoard){
+      this.shrinkBoard.nativeElement.style.cursor = 'pointer';
       this.shrinkBoard.nativeElement.onclick = (interactive ? this.layout.shrink.bind(this.layout):null);
+    }else {
+      this.shrinkBoard.nativeElement.style.cursor = 'default';
     }
     if(this.growBoard){
+      this.growBoard.nativeElement.style.cursor = 'pointer';
       this.growBoard.nativeElement.onclick = (interactive ? this.layout.grow.bind(this.layout):null);
+    }else {
+      this.growBoard.nativeElement.style.cursor = 'default';
     }
-    // To Do: Move Toggle Score View to Score button tab
     if(this.settings){
-      this.settings.nativeElement.onclick = (interactive ? this.aria.openSettings.bind(this.aria):null);
+      this.settings.nativeElement.style.cursor = 'pointer';
+      this.settings.nativeElement.onclick = (interactive ? this.layout.openGlobalMenu.bind(this.layout):null);
+    }else {
+      this.settings.nativeElement.style.cursor = 'default';
     }
     if(this.start){
+      this.start.nativeElement.style.cursor = 'pointer';
       this.start.nativeElement.onclick = (interactive ? this.aria.moveToStart.bind(this.aria):null);
+    }else {
+      this.start.nativeElement.style.cursor = 'default';
     }
     if(this.previous){
+      this.previous.nativeElement.style.cursor = 'pointer';
       this.previous.nativeElement.onclick = (interactive ? this.aria.previous.bind(this.aria):null);
+    }else {
+      this.previous.nativeElement.style.cursor = 'default';
     }
     if(this.next){
+      this.next.nativeElement.style.cursor = 'pointer';
       this.next.nativeElement.onmouseup = (interactive ? this.aria.advance.bind(this.aria):null);
+    }else {
+      this.next.nativeElement.style.cursor = 'default';
     }
     if(this.end){
+      this.end.nativeElement.style.cursor = 'pointer';
       this.end.nativeElement.onclick = (interactive ? this.aria.moveToEnd.bind(this.aria):null);
+    }else {
+      this.end.nativeElement.style.cursor = 'default';
     }
   }
 

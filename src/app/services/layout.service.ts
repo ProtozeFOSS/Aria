@@ -6,6 +6,7 @@ import { AriaScore } from '../aria-score/aria-score.component';
 import { CanvasChessBoard } from '../canvas-chessboard/canvas-chessboard.component';
 import { AriaControls } from '../aria-controls/aria-controls.component';
 import { AriaStatus } from '../aria-status/aria-status.component';
+import { AriaCMenu } from '../aria-cmenu/aria-cmenu.component';
 
 export declare type Layout = 'auto' | 'landscape' | 'portrait';
 
@@ -25,6 +26,7 @@ export class LayoutService {
   controls: AriaControls | null = null;
   gameScore: AriaScore | null = null;
   status: AriaStatus | null = null;
+  cmenu: AriaCMenu | null = null;
   board: CanvasChessBoard | null = null;
   preferredLayout: Layout = 'auto';
   boardRatio = 0.75;
@@ -34,6 +36,7 @@ export class LayoutService {
   controlsElement: HTMLElement | null = null;
   statusElement: HTMLElement | null = null;
   headerElement: HTMLElement | null = null;
+  cmenuElement: HTMLElement | null = null;
   public enableHeader = true;
   public enableScore = true;
   public enableControls = true;
@@ -91,6 +94,23 @@ export class LayoutService {
       ()=>{
       this.resizeLayout(window.innerWidth, window.innerHeight);
     },100);
+  }
+
+  public openGlobalMenu(e: MouseEvent) {
+    console.log('Clicked with mouse event - ');
+    console.log(e);
+    const maxHeight = window.innerHeight - 8;
+    if(this.cmenuElement){
+      let width = Math.min(440, document.body.clientWidth * .9);
+      width = Math.max(240, width);
+      let height = this.cmenu?.setSize(width, Math.max(48, window.innerHeight *.5));
+      
+      let mouseToScreenRatio = (e.clientY)/height;
+      this.cmenuElement.style.left = Math.floor(e.clientX - width - 4) + 'px';
+      this.cmenuElement.style.top = Math.floor(e.pageY - height) +'px';
+      this.cmenuElement.style.visibility = 'visible';
+    }
+
   }
 
   

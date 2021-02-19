@@ -18,6 +18,7 @@ import { AriaService } from './services/aria.service';
 import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/themes.service';
 import { IconPipe } from './icon.pipe';
+import { AriaCMenu } from './aria-cmenu/aria-cmenu.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { IconPipe } from './icon.pipe';
     TableItem,
     ScoreFlow,
     FlowItem,
-    IconPipe
+    IconPipe,
+    AriaCMenu
   ],
   imports: [
     BrowserModule,
