@@ -96,8 +96,9 @@ export class LayoutService {
     },100);
   }
 
-  public openGlobalMenu() {
+  public toggleGlobalMenu() {
     if(this.cmenuElement && this.cmenu.hasItems()){
+      if(this.cmenuElement.style.visibility == 'hidden') {
       if(this.state == 1){
         this.cmenuElement.style.left = '1%';
         let boardRect = this.boardElement.getBoundingClientRect();
@@ -111,7 +112,10 @@ export class LayoutService {
         this.cmenuElement.style.height = boardRect.height - 4 + 'px';
         this.cmenuElement.style.width = '99%';
       }
-      this.cmenuElement.style.visibility = this.cmenuElement.style.visibility == 'visible' ? 'hidden':'visible' ;
+      this.cmenuElement.style.visibility = 'visible';
+      } else {
+        this.cmenuElement.style.visibility = 'hidden';
+      }
     }
   }
   

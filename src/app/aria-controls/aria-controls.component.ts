@@ -72,7 +72,7 @@ export class AriaControls implements OnInit {
     }
     if(this.settings){
       this.settings.nativeElement.style.cursor = 'pointer';
-      this.settings.nativeElement.onclick = (interactive ? this.layout.openGlobalMenu.bind(this.layout):null);
+      this.settings.nativeElement.onclick = (interactive ? this.layout.toggleGlobalMenu.bind(this.layout):null);
     }else {
       this.settings.nativeElement.style.cursor = 'default';
     }

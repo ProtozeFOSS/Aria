@@ -30,6 +30,7 @@ export class AriaCMenu implements OnInit {
       const action = this.aria.actionMap.get(key).action;
       if(action) {
         action();
+        this.layout.toggleGlobalMenu();
       }
     }
   }
