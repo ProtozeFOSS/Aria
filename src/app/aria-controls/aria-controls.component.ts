@@ -4,7 +4,7 @@ import { AriaService, ScoreViewType } from '../services/aria.service';
 import { LayoutService } from '../services/layout.service';
 
 const icons = {
-  Settings : 'sliders',
+  Settings : 'share-2',
   Pawn : 'pawn-icon',
   Flip : 'refresh-cw',
   Play : 'play',

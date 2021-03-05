@@ -10,7 +10,7 @@ import { ScoreTable } from './score-table/score-table.component';
 const icons = {
   Smaller : 'chevron-down',
   Larger : 'chevron-up',
-  TableView : 'align-justify',
+  TableView : 'columns',
   FlowView : 'align-left'
 }
 

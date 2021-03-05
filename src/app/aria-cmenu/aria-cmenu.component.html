@@ -1,0 +1,11 @@
+<ngtemplate *ngFor="let action of aria.actionMap | keyvalue">
+    <div (click)="invoke(action.key);" class="action">
+        <div *ngIf="action.value.icon" class="iconBox">
+            <svg class="icon">
+                <use attr.xlink:href={{action.value.icon|iconpipe}} />
+            </svg>
+        </div>
+        <div class="text">{{action.key}}</div>
+    </div>
+</ngtemplate>
+

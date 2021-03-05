@@ -96,27 +96,29 @@ export class LayoutService {
     },100);
   }
 
-  public openGlobalMenu(e: MouseEvent) {
-    console.log('Clicked with mouse event - ');
-    console.log(e);
-    const maxHeight = window.innerHeight - 8;
-    if(this.cmenuElement){
-      let width = Math.min(440, document.body.clientWidth * .9);
-      width = Math.max(240, width);
-      let height = this.cmenu?.setSize(width, Math.max(48, window.innerHeight *.5));
-      
-      let mouseToScreenRatio = (e.clientY)/height;
-      this.cmenuElement.style.left = Math.floor(e.clientX - width - 4) + 'px';
-      this.cmenuElement.style.top = Math.floor(e.pageY - height) +'px';
-      this.cmenuElement.style.visibility = 'visible';
+  public openGlobalMenu() {
+    if(this.cmenuElement && this.cmenu.hasItems()){
+      if(this.state == 1){
+        this.cmenuElement.style.left = '1%';
+        let boardRect = this.boardElement.getBoundingClientRect();
+        this.cmenuElement.style.top =  boardRect.top +'px';
+        this.cmenuElement.style.height = boardRect.height - 4 + 'px';
+        this.cmenuElement.style.width = '98%';
+      } else {
+        this.cmenuElement.style.left = '2px';
+        let boardRect = this.boardElement.getBoundingClientRect();
+        this.cmenuElement.style.top =  boardRect.top +'px';
+        this.cmenuElement.style.height = boardRect.height - 4 + 'px';
+        this.cmenuElement.style.width = '99%';
+      }
+      this.cmenuElement.style.visibility = this.cmenuElement.style.visibility == 'visible' ? 'hidden':'visible' ;
     }
-
   }
-
   
   public layoutChanged(width: number, height:number, state: number)
   {}
-  public sendLayoutChanged(width:number, height:number, state: number): void {
+
+  public notifyLayoutChanged(width:number, height:number, state: number): void {
     switch(state) {
       case 1:{ height = Math.max(document.body.clientHeight, document.documentElement.clientHeight, height); break;}
       case 2:{
@@ -201,11 +203,18 @@ export class LayoutService {
         this.controlsElement.style.left = '';
         this.controls?.resize(width, 100);
       }
+      if(this.cmenuElement){
+        this.cmenuElement.style.left = '2px';
+        let boardRect = this.boardElement.getBoundingClientRect();
+        this.cmenuElement.style.top =  boardRect.top +'px';
+        this.cmenuElement.style.height = boardRect.height - 4 + 'px';
+        this.cmenuElement.style.width = '99%';
+      }
 
       if(this.headerElement){
         this.header?.resize(width, -1);
       }
-      this.sendLayoutChanged(width, height, this.state);
+      this.notifyLayoutChanged(width, height, this.state);
     }else {
       window.setTimeout(()=>{this.resizeLayout(width, height);}, 20);
     }
@@ -264,12 +273,19 @@ export class LayoutService {
         this.controlsElement.style.left = '';
         this.controls?.resize(width, 100);
       }
+      if(this.cmenuElement){
+        this.cmenuElement.style.left = '1%';
+        let boardRect = this.boardElement.getBoundingClientRect();
+        this.cmenuElement.style.top =  boardRect.top +'px';
+        this.cmenuElement.style.height = boardRect.height  - 4 + 'px';
+        this.cmenuElement.style.width = '98%';
+      }
 
       if(this.headerElement){
         this.header?.resize(width, -1);
       }
       this.board?.setSize(boardWidth);
-      this.sendLayoutChanged(width, height, this.state);
+      this.notifyLayoutChanged(width, height, this.state);
     }else {
       window.setTimeout(()=>{this.resizeLayout(width, height);}, 20);
     }

@@ -2,11 +2,26 @@
 
 aria-cmenu{
     position:absolute;
-    width:auto;
-    height:auto;
     left: -300px;
     top:-500px;
     z-index: 10001;
+    visibility: hidden;
+    background: #202831;
+    color: $csAccentQA;
+    stroke: $csAccentQA;
+    border: black solid 1px;
+    display: flex;
+    border-radius: 8px;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    align-content: center;
+    height: auto;
+    width: 210px;
+    overflow-y:scroll;
+    overflow-x:hidden;
+    padding-top:2px;
 }
 
 .container{
@@ -96,7 +111,7 @@ aria-cmenu{
 
 .status{
     position:relative;
-    order:2;   
+    order:3;   
 }.status1{
     @extend .status;
     right:unset;

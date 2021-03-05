@@ -99,7 +99,7 @@ export class AriaService {
 
   // Keymap
   @Output() keymap: Map<string, any> = new Map<string, any>();
-  @Output() contextMap: Map<string,()=>void> = new Map<string, ()=>void>();
+  @Output() actionMap = new Map<string, { icon:string, action:()=>void}>();
   @Output() PGNMeta: object = {};
   // Visual Settings
   constructor() {
@@ -150,13 +150,13 @@ export class AriaService {
     }
   }
 
-  public setContextMenuItem(name: string, callback: ()=>void): void {
-    this.contextMap.set(name, callback);
+  public setContextMenuItem(name: string, action: ()=>void, icon = 'plus'): void {
+    this.actionMap.set(name, {icon, action});
   }
 
   public clearContextMenuItem(name:string): boolean {
-    if(this.contextMap.has(name)){
-      return this.contextMap.delete(name);
+    if(this.actionMap.has(name)){
+      return this.actionMap.delete(name);
     }return false;
   }
 
@@ -424,7 +424,7 @@ export class AriaService {
     }
     if (this._score) {
       this._score.updateSelection();
-      window.setTimeout(()=>{this.layout.sendLayoutChanged(window.innerWidth,window.innerHeight,this.layout.state)},100);
+      window.setTimeout(()=>{this.layout.notifyLayoutChanged(window.innerWidth,window.innerHeight,this.layout.state)},100);
     }
   }
   protected autoAdvance(): void {
