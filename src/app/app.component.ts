@@ -8,7 +8,7 @@ import { AriaService } from './services/aria.service';
 import { AriaControls } from './aria-controls/aria-controls.component';
 import { LayoutService } from './services/layout.service';
 import { ThemeService } from './services/themes.service';
-//import { TESTANNOTATION, TestPGNData } from './test-pgn';
+import { TESTANNOTATION, TestPGNData } from './test-pgn';
 import { AriaCMenu } from './aria-cmenu/aria-cmenu.component';
 
 @Component({
@@ -43,7 +43,7 @@ export class Aria {
           }
         }
       });
-      // this.aria.loadPGN(TESTANNOTATION + TestPGNData);
+      this.aria.loadPGN(TESTANNOTATION + TestPGNData);
     }
     ngAfterViewInit() {
       window.onkeydown = this.aria.keyEvent.bind(this.aria);
